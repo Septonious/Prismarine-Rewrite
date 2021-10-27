@@ -1,0 +1,1204 @@
+#shaders/lang/en_us.lang
+
+#Profiles
+profile.LOW=§aLow
+profile.MEDIUM=§bMedium
+profile.RUSSIAN_DOOMER=§8Russian Doomer
+profile.HIGH=§eHigh
+profile.ULTRA=§cUltra
+
+#Screens
+screen.LIGHTING=Lighting
+
+screen.SHADOW_CONFIG=Shadows Config
+screen.MATERIAL=Material
+screen.SPECULAR=Specular & Reflections
+screen.NORMALS=Normals & Parallax
+
+screen.ATMOSPHERICS=Atmospherics
+screen.SKY=Sky Config
+screen.CLOUDS=Vol. Clouds Config
+screen.FOGWEATHER=Fog & Weather Config
+screen.NEBULA_CONFIG=Nebula Config
+screen.STARS_CONFIG=Stars Config
+screen.LIGHTSHAFT_OPTIONS=Volumetric Rays Config 
+
+screen.WATER=Water
+
+screen.BLUR=Blur Effects
+screen.POST_EFFECTS=Post Effects
+
+screen.CGT=Color Grading & Tonemap
+screen.COLOR_GRADING=Color Grading Config
+screen.CG_R=Red Channel
+screen.CG_G=Green Channel
+screen.CG_B=Blue Channel
+screen.CG_T=Tint
+
+screen.COLOR=Color
+screen.LIGHT_COLOR=Lighting Color
+screen.CLOUDS_COLOR=Clouds Color
+screen.VCLOUD_M=Upper Parts (Morning)
+screen.VCLOUD_D=Upper Parts (Day)
+screen.VCLOUD_E=Upper Parts (Evening)
+screen.VCLOUD_N=Upper Parts (Night)
+screen.VCLOUDDOWN_M=Lower Parts (Morning)
+screen.VCLOUDDOWN_D=Lower Parts (Day)
+screen.VCLOUDDOWN_E=Lower Parts (Evening)
+screen.VCLOUDDOWN_N=Lower Parts (Night)
+screen.FOGCOLOR_M=Fog (Morning)
+screen.FOGCOLOR_D=Fog (Day)
+screen.FOGCOLOR_E=Fog (Evening)
+screen.FOGCOLOR_N=Fog (Night)
+screen.LIGHTSHAFTAMBIENT_M=Ambient Fog (Morning)
+screen.LIGHTSHAFTAMBIENT_D=Ambient Fog (Day)
+screen.LIGHTSHAFTAMBIENT_E=Ambient Fog (Evening)
+screen.LIGHTSHAFTAMBIENT_N=Ambient Fog (Night)
+screen.LIGHTSHAFT_M=Light Shafts (Morning)
+screen.LIGHTSHAFT_D=Light Shafts (Day)
+screen.LIGHTSHAFT_E=Light Shafts (Evening)
+screen.LIGHTSHAFT_N=Light Shafts (Night)
+screen.LIGHTSHAFT_W=Light Shafts (Underwater)
+screen.SKYLIGHT_M=Sky (Morning)
+screen.SKYLIGHT_D=Sky (Day)
+screen.SKYLIGHT_E=Sky (Evening)
+screen.SKYLIGHT_N=Sky (Night)
+screen.LIGHT_M=Light (Morning)
+screen.AMBIENT_M=Ambient (Morning)
+screen.LIGHT_D=Light (Day)
+screen.AMBIENT_D=Ambient (Day)
+screen.LIGHT_E=Light (Evening)
+screen.AMBIENT_E=Ambient (Evening)
+screen.LIGHT_N=Light (Night)
+screen.AMBIENT_N=Ambient (Night)
+screen.MINLIGHT=Minimum Light
+screen.BLOCKLIGHT_COLOR=Blocklight Color
+screen.SKY_DENSITY=Density
+screen.SKY_EXPOSURE=Exposure
+screen.SKY_COLOR=Sky Color
+screen.SKY_COLOR_DEFAULT=Base Sky Color
+screen.FOG_TINT=Tint
+screen.WATER_COLOR=Water Color
+screen.WEATHER_COLOR=Weather Color
+screen.WEATHER_R=Rain (Normal)
+screen.WEATHER_C=Snowfall
+screen.WEATHER_D=Desert Sandstorm
+screen.WEATHER_B=Mesa Sandstorm
+screen.WEATHER_S=Swamp Rain
+screen.WEATHER_M=Mushroom Island Rain
+screen.WEATHER_V=Savanna Cloudy
+screen.BIOMECOLOR_COLOR=Per-Biome Color
+screen.BIOMECOLOR_C=Cold Biomes
+screen.BIOMECOLOR_D=Desert
+screen.BIOMECOLOR_B=Mesa
+screen.BIOMECOLOR_S=Swamp
+screen.BIOMECOLOR_M=Mushroom Island
+screen.BIOMECOLOR_V=Savanna
+screen.BIOMECOLOR_T=Taiga
+screen.BIOMECOLOR_J=Jungle
+screen.BIOMECOLOR_BL=Badlands
+screen.BIOMECOLOR_F=Forest
+screen.AURORA_COLOR=Aurora Color
+screen.AURORA_L=Low Section Color
+screen.AURORA_H=High Section Color
+screen.RIFT_COLOR=Nebulas Color
+screen.RIFT_L=Low Section (First Layer)
+screen.RIFT_H=High Section (First Layer)
+screen.SECONDRIFT_L=Low Section (Second Layer)
+screen.SECONDRIFT_H=High Section (Second Layer)
+screen.DIMENSION_COLOR=Dimension Color
+screen.NETHER_COLOR=Nether Color
+screen.NETHER_N=Nether Wastes
+screen.NETHER_V=Soul Sand Valley
+screen.NETHER_C=Crimson Forest
+screen.NETHER_W=Warped Forest
+screen.NETHER_B=Basalt Deltas
+screen.END_COLOR=End Color
+screen.END_CLOUDS_COLOR=End Clouds Color
+screen.VOLUMETRIC_FOG=Volumetric Fog Config
+screen.FOG_COLOR=Low-Altitude Fog Color
+screen.LIGHTSHAFT_COLOR=Light Shafts Color
+screen.LENSFLARE_CONFIG=Lens Flare Config
+screen.OTHERLENS=Other
+screen.BASELENS=Base Lens
+screen.OVERLAPLENS=Overlap Lens
+screen.RINGLENS=Rings
+screen.BASERINGS=Base Rings 
+screen.SUNRINGS=Rings Around Sun
+screen.POINTLENS=Points
+screen.SOUL=Soul Torch / Lantern
+screen.SHROOMLIGHT=Shroomlight 
+screen.LAVA=Lava Bucket
+screen.TORCH=Torch / Lantern
+screen.END_ROD=End Rod
+screen.BEACON=Beacon
+screen.REDSTONE_TORCH=Redstone Torch 
+screen.GLOWSTONE=Glowstone
+screen.SEA_LANTERN=Sea Lantern
+screen.JACKOLANTERN=Jack O Lantern
+screen.BLOCKLIGHT_NETHER=Nether Blocklight Col 
+screen.BLOCKLIGHT_END=End Blocklight Col 
+screen.ADDITIONAL_BLOCKLIGHT_COLORS=Additional Colors
+screen.CA_CONFIG=Ch. Aberration Config
+screen.BLOCKLIGHT_CONFIG=Blocklight Config
+
+screen.WORLD=World
+screen.WAVING=Waving Blocks
+screen.CURVATURE=Curvature
+
+#Settings
+screen.INFO=Prismarine Shader
+screen.INFO.comment=By Septonious with contribution of mlgimposter.
+
+#Lighting
+option.RANDOM_COLORED_LIGHTING=Random Colored Lighting
+option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
+option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
+option.LIGHTMAP_DIM_CUTOFF=Dim Parts Cutoff 
+option.LIGHTMAP_DIM_CUTOFF.comment=Removed dim parts of the block lightmap.
+option.DIM_CUTOFF_FACTOR=Dim Cutoff Factor
+
+option.BLOOM_FLICKERING=Bloom Flickering
+option.BLOOM_FLICKERING.comment=Enables flickering of bloom.
+option.BLOOM_FLICKERING_STRENGTH=Flickering Strength
+
+option.BLOCKLIGHT_FLICKERING=Blocklight Flickering
+option.BLOCKLIGHT_FLICKERING.comment=Enables flickering of blocklight.
+option.BLOCKLIGHT_FLICKERING_STRENGTH=Flickering Strength
+
+option.SHADING_REDUCTION_FACTOR=Shading Reduction
+option.COLORED_SHADOW_OPACITY=Colored Shadows Opacity
+option.COLORED_SHADOW_BRIGHTNESS=Colored Shadows Brightness
+option.NOISEMAP_SHADOWS=Noisemap Shadows
+option.NOISEMAP_SHADOWS.comment=Random shadows on the world surface. First mode adds cloud shadows (not synced with clouds). Second mode adds small shadows to all blocks.
+value.NOISEMAP_SHADOWS.0=OFF
+value.NOISEMAP_SHADOWS.1=Cloud Shadows
+value.NOISEMAP_SHADOWS.2=Shading
+
+option.shadowMapResolution=Shadowmap Quality
+option.shadowMapResolution.comment=Adjusts shadowmap size. §e[*]§rHigher resolution gives sharper shadows, but reduces performance.
+value.shadowMapResolution.512=Very Low (512)
+value.shadowMapResolution.1024=Low (1024)
+value.shadowMapResolution.2048=Medium (2048)
+value.shadowMapResolution.3072=High (3072)
+value.shadowMapResolution.4096=Very High (4096)
+value.shadowMapResolution.8192=U GOT EM SHADAW (8192)
+
+option.shadowDistance=Shadow Distance
+option.shadowDIstance.comment=Adsusts shadow distance.
+
+option.SHADOW_COLOR=Colored Shadow
+option.SHADOW_COLOR.comment=Enables tinted shadow from translucents. §a[+]§rUsed for colored volumetric light shafts. §c[-]§rSlightly higher performance cost when using shadow filtering.
+
+option.SHADOW_FILTER=Shadow Filtering
+option.SHADOW_FILTER.comment=Enables shadow filtering. §a[+]§rThis effect benefits from TAA.
+
+option.sunPathRotation=Sun Path Rotation
+option.sunPathRotation.comment=Adjusts sun angle.
+
+option.SHADOW_PIXEL=Pixel Locked Shadows
+option.SHADOW_PIXEL.comment=Applies pixelation effect on shadows.
+value.SHADOW_PIXEL.0=OFF
+
+option.AO=Ambient Occlusion
+option.AO.comment=Adds soft shadows around surface contact or intersection.
+
+option.AO_STRENGTH=AO Strength
+option.AO_STRENGTH.comment=Adjusts ambient occlusion strength.
+
+option.DESATURATION=Desaturation
+option.DESATURATION.comment=Reduces saturation while adding some tint in darker areas.
+
+option.DESATURATION_FACTOR=Max Desaturation Factor
+option.DESATURATION_FACTOR.comment=Adjusts the maximum amount of desaturation applied.
+value.DESATURATION_FACTOR.2.0=Very Low
+value.DESATURATION_FACTOR.1.5=Low
+value.DESATURATION_FACTOR.1.0=Medium
+value.DESATURATION_FACTOR.0.5=High
+value.DESATURATION_FACTOR.0.0=Very High
+
+option.DYNAMIC_HANDLIGHT=Dynamic Handlight
+option.DYNAMIC_HANDLIGHT.comment=Allows blocklight to be emitted from view when holding certain objects.
+
+option.TOON_LIGHTMAP=Toon Lightmap
+option.TOON_LIGHTMAP.comment=Reduces the quality of vanilla lighting for cel shading. §e[*]§rThis option is known for making your game "look bad", only enable this when you need it.
+
+option.WHITE_WORLD=White World
+option.WHITE_WORLD.comment=Replaces textures with flat white color.
+
+#Material
+option.INTEGRATED_EMISSION=Integrated Emission
+option.INTEGRATED_EMISSION.comment=Makes some blocks emissive.
+
+option.GLOW_STRENGTH=Glow Intensity
+
+option.ADVANCED_MATERIALS=Advanced Materials
+option.ADVANCED_MATERIALS.comment=Enables the use of specular and normal mapping which allows for more detail on various things.  §e[*]§rThis option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one. §e[*]§rOptions which requires advanced materials are indicated by *, changing these options won't affect the visuals or performance while advanced materials is disabled.
+
+option.MATERIAL_FORMAT=Material Format*
+option.MATERIAL_FORMAT.comment=Determines the specular and normal map format used by the resourcepack. §e[*]§rTexture artists usually tell which format is used in their resourcepack, using the wrong format may give weird results.
+value.MATERIAL_FORMAT.0=SEUS/Old PBR
+value.MATERIAL_FORMAT.1=labPBR 1.3
+
+option.SSS=Subsurface Scattering
+option.SSS.comment=Allows light to penetrate and scatter through certain blocks.
+value.SSS.0=§cOFF
+value.SSS.1=AdvMat Only*
+value.SSS.2=Full
+
+option.SSS_QUALITY=SSS Quality
+option.SSS_QUALITY.comment=Adjusts subsurface scattering quality.
+value.SSS_QUALITY.0=Low
+value.SSS_QUALITY.1=High
+
+option.EMISSIVE=Emissive
+option.EMISSIVE.comment=Allows certain surfaces to be brighter.
+value.EMISSIVE.0=§cOFF
+value.EMISSIVE.1=AdvMat Only*
+value.EMISSIVE.2=Full
+
+option.ALBEDO_BALANCING=Albedo Balancing
+option.ALBEDO_BALANCING.comment=Reduces brightness of very bright colored surfaces.
+
+option.ALPHA_BLEND=Alpha Blending
+option.ALPHA_BLEND.comment=TBA. 
+value.ALPHA_BLEND.0=Gamma
+value.ALPHA_BLEND.1=Linear
+
+#Specular & Reflections
+option.REFLECTION=Reflections
+option.REFLECTION.comment=Enables reflections on water and translucents.
+value.REFLECTION.0=§cOFF
+value.REFLECTION.1=Sky & Specular Only
+value.REFLECTION.2=Full
+
+option.REFLECTION_TRANSLUCENT=Translucent Reflections
+option.REFLECTION_TRANSLUCENT.comment=Allows reflection to be rendered on translucent surfaces, such as stained glass, ice, slime blocks, and more.
+
+option.REFLECTION_SPECULAR=Specular Reflection*
+option.REFLECTION_SPECULAR.comment=Enables reflection on smooth or metallic surfaces.
+
+option.REFLECTION_RAIN=Rain Reflection*
+option.REFLECTION_RAIN.comment=Allows surfaces to be wet while raining.  §e[*]§rRequires specular reflection.
+
+option.REFLECTION_ROUGH=Rough Reflection*
+option.REFLECTION_ROUGH.comment=Allows surfaces with lower smoothness to render blurry reflections. §c[-]§rMay contain minor artifacts.
+
+option.REFLECTION_PREVIOUS=Previous Frame Reflection
+option.REFLECTION_PREVIOUS.comment=Allows translucents to be reflected by using previous frame information. §c[-]§rMay cause missing reflection on screenshot (caused by screenshot size setting). §c[-]§rIncompatible with some GPUs. §c[-]§rBugged in 1.7.10.
+
+option.SPECULAR_HIGHLIGHT_ROUGH=Rough Specular Highlight
+option.SPECULAR_HIGHLIGHT_ROUGH.comment=Allows rough surfaces to have weak gloss.
+
+option.ALBEDO_METAL=Albedo Tinted Hardcoded Metal*
+option.ALBEDO_METAL.comment=Applies base texture as tint on hardcoded metallic surfaces. §e[*]§rWorks on labPBR material format only.
+
+#Normals & Parallax
+option.PARALLAX=Parallax Occlusion Mapping*
+option.PARALLAX.comment=Adds displacement on a surface using height map.
+
+option.PARALLAX_DEPTH=Parallax Depth*
+option.PARALLAX_DEPTH.comment=Adjusts parallax deepness.
+value.PARALLAX_DEPTH.0.05=5 cm
+value.PARALLAX_DEPTH.0.10=10 cm
+value.PARALLAX_DEPTH.0.15=15 cm
+value.PARALLAX_DEPTH.0.20=20 cm
+value.PARALLAX_DEPTH.0.25=25 cm
+value.PARALLAX_DEPTH.0.30=30 cm
+value.PARALLAX_DEPTH.0.35=35 cm
+value.PARALLAX_DEPTH.0.40=40 cm
+value.PARALLAX_DEPTH.0.45=45 cm
+value.PARALLAX_DEPTH.0.50=50 cm
+
+option.PARALLAX_QUALITY=Parallax Samples*
+option.PARALLAX_QUALITY.comment=Adjusts the quality of parallax occlusion mapping.
+
+option.PARALLAX_DISTANCE=Parallax Distance*
+option.PARALLAX_DISTANCE.comment=Adjusts how far parallax occlusion mapping and self shadows can be rendered.
+
+option.SELF_SHADOW=Self Shadows*
+option.SELF_SHADOW.comment=Allows a surface to cast shadow to itself using heightmap.
+
+option.SELF_SHADOW_ANGLE=Self Shadows Angle*
+option.SELF_SHADOW_ANGLE.comment=Adjusts the self shadowing angle, higher value allows the shadow to travel further.
+
+option.SELF_SHADOW_QUALITY=Self Shadows Samples*
+option.SELF_SHADOW_QUALITY.comment=Adjusts the quality of self shadowing.
+
+option.DIRECTIONAL_LIGHTMAP=Directional Lightmap*
+option.DIRECTIONAL_LIGHTMAP.comment=Adds normal mapping to vanilla lighting. §c[-]§rLightmap may glitch with this effect enabled.
+
+option.DIRECTIONAL_LIGHTMAP_STRENGTH=Dir. Lightmap Strength*
+option.DIRECTIONAL_LIGHTMAP_STRENGTH.comment=Adjusts the intensity of Directional Lightmap.
+value.DIRECTIONAL_LIGHTMAP_STRENGTH.2.0=Very Low
+value.DIRECTIONAL_LIGHTMAP_STRENGTH.1.4=Low
+value.DIRECTIONAL_LIGHTMAP_STRENGTH.1.0=Medium
+value.DIRECTIONAL_LIGHTMAP_STRENGTH.0.7=High
+value.DIRECTIONAL_LIGHTMAP_STRENGTH.0.5=Very High
+
+option.NORMAL_DAMPENING=Normal Dampening*
+option.NORMAL_DAMPENING.comment=Reduces normal map strength to prevent reflections being too noisy.
+
+option.NORMAL_PLANTS=Up-facing Plants
+option.NORMAL_PLANTS.comment=Adjusts plant shading. §e[*]§rDisable this if non-flat plant model is used or normal map applied on plants.
+
+#Atmospherics
+option.STARS_BRIGHTNESS=Stars Brightness
+option.STARS=Stars 
+option.STARS_AMOUNT=Stars Amount 
+option.DAY_STARS=Day Stars 
+option.BIG_STARS=Big Stars 
+option.SMALL_STARS=Small Stars 
+option.END_STARS=End Stars
+
+option.NEBULA_SPEED=Speed
+option.NEBULA_STRETCHING=Stretching
+option.NEBULA_STRETCHING.comment=Increases vertical stretching of nebulas.
+option.NEBULA_DISTORTION=Distortion
+option.NEBULA_DISTORTION.comment=Makes the shape more chaotic and fantasy.
+option.NEBULA_BRIGHTNESS=Brightness
+option.NEBULA_DITHERING_STRENGTH=Dithering Strength
+option.NEBULA_OFFSET_FACTOR=Offset Factor
+option.NEBULA_OFFSET_FACTOR.comment=Changes nebula movement speed
+option.NEBULA_AMOUNT=Amount
+option.NEBULA_STARS=Nebula Stars 
+option.NEBULA_AURORA_CHECK=Aurora Visibility Check
+option.NEBULA_AURORA_CHECK.comment=Automatically hides nebulas if there are auroras on the sky.
+
+option.ROUND_SUN_MOON_SIZE=Sun/Moon Size
+option.SUN_GLARE=Sun Glare 
+option.SUN_GLARE.comment=Adds a bright circle of light around sun/moon.
+option.NIGHT_SKY_MODE=Night Sky
+value.NIGHT_SKY_MODE.0=OFF
+value.NIGHT_SKY_MODE.1=Nebula
+option.FOG_COLOR_MODE=Low-Altitude Fog Col.
+option.FOG_COLOR_MODE.comment=Changes the overworld fog. Sky colored fog picks the color from the sky. Single colored fog has only one color which can be set manually. Per - biome fog picks the color depending on the biome.
+value.FOG_COLOR_MODE.2=Per - Biome
+value.FOG_COLOR_MODE.1=Single Color
+value.FOG_COLOR_MODE.0=Sky Colored
+option.VOLUMETRIC_CLOUDS=Volumetric Clouds
+option.VOLUMETRIC_CLOUDS.comment=World space 3D clouds which you can fly through. Work only with Optifine. Performance impact!
+option.PLANAR_CLOUDS=Planar Clouds
+option.PLANAR_CLOUDS.comment=Skybox projected 2.5D clouds. Work both with Iris and Optifine. Performance impact!
+option.END_SKY=End Sky
+value.END_SKY.0=Vanilla
+value.END_SKY.1=Clouds
+option.END_VOLUMETRIC_FOG=End Volumetric Fog
+option.END_VOLUMETRIC_FOG.comment=Enables cloudy fog in End.
+option.FIREFLIES=Fireflies
+option.FIREFLIES_I=F.F. Brightness
+
+option.SKY_DESATURATION=Sky Desaturation
+option.SKY_DESATURATION.comment=Reduces saturation while adding some tint to the skybox at night
+
+option.AURORA=Aurora
+option.AURORA.comment=Enables aurora. §a[+]§rThis effect benefits from TAA.
+
+option.ROUND_SUN_MOON=Round Sun & Moon
+option.ROUND_SUN_MOON.comment=Enables shader based sun & moon. §e[*]§rDisable vanilla sun & moon in Video Settings > Details > Sun & Moon
+
+option.DISTANT_FADE=Distant Fade
+option.DISTANT_FADE.comment=Fades far chunk borders. §e[*]§rThis option is affected by fog density.
+value.DISTANT_FADE.0=§cOFF
+value.DISTANT_FADE.1=Overworld Only
+value.DISTANT_FADE.2=Nether & End Only
+value.DISTANT_FADE.3=Full
+
+option.DISTANT_FADE_STYLE=Distant Fade Style
+option.DISTANT_FADE_STYLE.comment=Spherical works like vanilla fog. Cylindrical ignores Y axis.
+value.DISTANT_FADE_STYLE.0=Spherical
+value.DISTANT_FADE_STYLE.1=Cylindrical
+
+option.WEATHER_PERBIOME=Per Biome Weather
+option.WEATHER_PERBIOME.comment=Use varied weather color for different biomes. §c[-]§rMay not work under unknown conditions.
+option.PERBIOME_CLOUDS_COLOR=Per Biome Clouds
+option.PERBIOME_CLOUDS_COLOR.comment=Changes the color of clouds depending on your biome.
+
+option.FOG_MODE=Fog Mode
+value.FOG_MODE.0=Exponental
+value.FOG_MODE.1=Volumetric
+value.FOG_MODE.2=Mixed
+
+option.LIGHTSHAFTS_PERBIOME=Per Biome Light Shafts
+option.LIGHTSHAFT_DAY=Noon Light Shafts
+option.LIGHTSHAFT_NIGHT=Night Light Shafts
+option.PERBIOME_LIGHTSHAFTS=Per Biome Color
+option.LIGHTSHAFT_CLOUDY_NOISE=Cloudy Noise
+option.LIGHTSHAFT_CLOUDY_NOISE.comment=Makes light rays look like volumetric cloudy fog.
+option.LIGHTSHAFT_AUTOCOLOR=Automatic coloring 
+option.LIGHTSHAFT_AUTOCOLOR.comment=Automatically picks the color of each ray depending on the sunlight/moonlight color.
+option.LIGHTSHAFT_WATER=Underwater Light Shafts
+option.LIGHT_SHAFT_STRENGTH=Strength
+option.LIGHT_SHAFT_STRENGTH.comment=Adjusts light shaft strength.
+value.LIGHT_SHAFT_STRENGTH.16=RTX ON!
+option.LIGHTSHAFT_MIN_DISTANCE=Min Distance
+option.LIGHTSHAFT_MAX_DISTANCE=Max Distance
+option.LIGHTSHAFT_SAMPLES=Sample Count
+option.LIGHTSHAFT_HEIGHT=Fog Height
+option.LIGHTSHAFT_HORIZONTAL_THICKNESS=Fog Horizontal Thickness
+option.LIGHTSHAFT_VERTICAL_THICKNESS=Fog Vertical Thickness
+option.LIGHTSHAFT_AMOUNT=Fog Amount
+option.LIGHTSHAFT_TIME_DECREASE_FACTOR=Time Decrease Factor
+option.LIGHTSHAFT_COLOR_MODE=Color Mode 
+value.LIGHTSHAFT_COLOR_MODE.0=Automatic 
+value.LIGHTSHAFT_COLOR_MODE.1=Manual 
+value.LIGHTSHAFT_COLOR_MODE.2=Sky Color + Manual
+
+option.FOG_DENSITY=Fog Density
+option.FOG_DENSITY.comment=Adjusts fog density. §e[*]§rThis option is ignored in the nether.
+
+option.NIGHT_FOG_DENSITY=Night Fog Density
+option.DAY_FOG_DENSITY=Day Fog Density
+option.MORNING_FOG_DENSITY=Morning Fog Density
+option.EVENING_FOG_DENSITY=Evening Fog Density
+option.WEATHER_FOG_DENSITY=Weather Fog Density
+option.NETHER_FOG_DENSITY=Nether Fog Density
+option.END_FOG_DENSITY=End Fog Density
+option.FIRST_LAYER_DENSITY=First Layer Density
+option.SECOND_LAYER_DENSITY=Second Layer Density
+
+option.FOG_FIRST_LAYER_ALTITUDE=First Fog Layer Alt.
+option.FOG_SECOND_LAYER_ALTITUDE=Second Fog Layer Alt.
+
+option.LIGHT_SHAFT=Light Shafts
+option.LIGHT_SHAFT.comment=Adds volumetric rays from sun / moon. §a[+]§rThis effect benefits from TAA. §e[*]§rPerformance depends on Shadowmap Resolution.
+
+option.LIGHT_SHAFT_STRENGTH=Light Shaft Strength
+option.LIGHT_SHAFT_STRENGTH.comment=Adjusts light shaft strength.
+
+option.COLORED_FOG=Colored Fog
+option.FOG_DENSITY=Fog Density
+option.FOG_DENSITY.comment=Adjusts fog density. §e[*]§rThis option is ignored in the nether.
+
+option.WEATHER_OPACITY=Weather Opacity
+option.WEATHER_OPACITY.comment=Adjusts weather opacity.
+
+#Sky Config
+option.SKY_DENSITY_D=Day Density
+option.SKY_EXPOSURE_D=Day Exposure
+option.SKY_DENSITY_N=Night Density
+option.SKY_EXPOSURE_N=Night Exposure
+option.SKY_DENSITY_W=Weather Density
+option.SKY_EXPOSURE_W=Weather Exposure
+option.SKY_DENSITY_E=Evening Density
+option.SKY_EXPOSURE_E=Evening Exposure
+option.SKY_DENSITY_M=Morning Density
+option.SKY_EXPOSURE_M=Morning Exposure
+option.SKY_HORIZON_N=Near Horizon
+option.SKY_HORIZON_F=Far Horizon
+
+option.SKY_GROUND_I=Sky Ground Brightness
+option.SKY_GROUND=Sky Ground
+option.SKY_GROUND.comment=Darkens the bottom part of the sky.
+value.SKY_GROUND.0=§cOFF
+value.SKY_GROUND.1=Reflections Only
+value.SKY_GROUND.2=Full
+
+option.HORIZON_VERTICAL_EXPONENT=Horizon Stretching
+option.HORIZON_EXPONENT=Horizon Wideness
+option.HORIZON_DISTANCE=Horizon Distance
+option.HORIZON_DISTANCE.comment=Adjusts sky gradient. Nearer horizon gives slightly brighter sky, further horizon gives slightly darker sky. 
+value.HORIZON_DISTANCE.1.0=Very Near
+value.HORIZON_DISTANCE.1.5=Near
+value.HORIZON_DISTANCE.2.0=Medium
+value.HORIZON_DISTANCE.2.5=Far
+value.HORIZON_DISTANCE.3.0=Very Far
+value.HORIZON_DISTANCE.4.0=Far Far Away
+option.SKY_HORIZON_E=Horizon Exposure
+
+option.SKYBOX_BRIGHTNESS=Skybox Brightness
+option.SKYBOX_BRIGHTNESS.comment=Adjusts skybox brightness. §e[*]§rSet to 1.00 when subtractive skybox exists.
+
+#Cloud Config
+option.VCLOUDS_NOISE_QUALITY=Noise Quality
+value.VCLOUDS_NOISE_QUALITY.0=Low
+value.VCLOUDS_NOISE_QUALITY.1=Medium
+value.VCLOUDS_NOISE_QUALITY.2=High
+option.VCLOUDS_AMOUNT=Amount
+option.VCLOUDS_RANGE=Range
+option.VCLOUDS_RANGE.comment=Changes the maximum render distance
+option.VCLOUDS_OPACITY=Opacity
+option.VCLOUDS_SPEED=Speed
+option.VCLOUDS_QUALITY=Quality
+value.VCLOUDS_QUALITY.16=BRUH
+value.VCLOUDS_QUALITY.14=Irritatered
+value.VCLOUDS_QUALITY.12=Very Low
+value.VCLOUDS_QUALITY.10=Low
+value.VCLOUDS_QUALITY.8=Medium
+value.VCLOUDS_QUALITY.6=High
+value.VCLOUDS_QUALITY.4=Ultra
+value.VCLOUDS_QUALITY.2=AAA *intense GPU screaming*
+option.VCLOUDS_HEIGHT=Height
+option.VCLOUDS_VERTICAL_THICKNESS=Vertical Thickness
+option.VCLOUDS_HORIZONTAL_THICKNESS=Horizontal Thickness
+option.VCLOUDS_SAMPLES=Samples
+option.VCLOUDS_HEIGHT_ADJ_FACTOR=Height Adj. Factor
+option.VCLOUDS_HEIGHT_ADJ_FACTOR.comment=Adjusts cloud height at noon, then lowers it.
+option.VCLOUDS_THICKNESS_FACTOR=Thickness Adj. Factor
+option.VCLOUDS_THICKNESS_FACTOR.comment=Adjusts horizontal cloud thickness at noon, then lowers it
+option.VCLOUDS_AMOUNT_FACTOR=Amount Adj. Factor
+option.VCLOUDS_AMOUNT_FACTOR.comment=Adjusts cloud amount at noon, then lowers it
+
+#Water
+option.PROJECTED_CAUSTICS=Water Caustics
+option.WATER_CAUSTICS_STRENGTH=Caustics Strength
+value.WATER_CAUSTICS_STRENGTH.100=Very Low
+value.WATER_CAUSTICS_STRENGTH.200=Low
+value.WATER_CAUSTICS_STRENGTH.300=Medium
+value.WATER_CAUSTICS_STRENGTH.400=High
+value.WATER_CAUSTICS_STRENGTH.500=Very High
+option.WATER_CAUSTICS_AMOUNT=Caustics Amount
+value.WATER_CAUSTICS_AMOUNT.2048=Very Low
+value.WATER_CAUSTICS_AMOUNT.1024=Low
+value.WATER_CAUSTICS_AMOUNT.512=Medium
+value.WATER_CAUSTICS_AMOUNT.256=High
+value.WATER_CAUSTICS_AMOUNT.128=Very High
+
+option.WATER_MODE=Water Texture Mode
+option.WATER_MODE.comment=Determine whether vanilla water texture should be used. Default : shader's flat water color, no texture. Vanilla : vanilla texture. Tinted Vanilla : vanilla texture with shader's water color. Flat Vanilla : vanilla's flat water color.
+value.WATER_MODE.0=Default
+value.WATER_MODE.1=Vanilla
+value.WATER_MODE.2=Tinted Vanilla
+value.WATER_MODE.3=Flat Vanilla
+
+option.WATER_ALPHA_MODE=Water Alpha Mode
+option.WATER_ALPHA_MODE.comment=Determine whether the water uses shader based or texture alpha value. §e[*]§rSome effect will keep using shader based alpha value.
+value.WATER_ALPHA_MODE.0=Flat
+value.WATER_ALPHA_MODE.1=Vanilla
+
+option.WATER_NORMALS=Normals
+option.WATER_NORMALS.comment=Enables realtime-generated normal mapping for water.
+value.WATER_NORMALS.0=§cOFF
+value.WATER_NORMALS.1=Worley
+value.WATER_NORMALS.2=Perlin
+value.WATER_NORMALS.3=Custom
+
+option.WATER_PARALLAX=Parallax
+option.WATER_PARALLAX.comment=Enables water displacement.
+
+option.WATER_DETAIL=Detail
+option.WATER_DETAIL.comment=Adjusts the ratio between large and small water normals.
+value.WATER_DETAIL.0.05=5%
+value.WATER_DETAIL.0.10=10%
+value.WATER_DETAIL.0.15=15%
+value.WATER_DETAIL.0.20=20%
+value.WATER_DETAIL.0.25=25%
+value.WATER_DETAIL.0.30=30%
+value.WATER_DETAIL.0.35=35%
+value.WATER_DETAIL.0.40=40%
+value.WATER_DETAIL.0.45=45%
+value.WATER_DETAIL.0.50=50%
+
+option.WATER_BUMP=Bumpiness
+option.WATER_BUMP.comment=Adjusts the intensity of water normals.
+
+option.WATER_SHARPNESS=Sharpness
+option.WATER_SHARPNESS.comment=Adjusts the sharpness of water normals.
+value.WATER_SHARPNESS.0.8=Low
+value.WATER_SHARPNESS.0.5=Medium
+value.WATER_SHARPNESS.0.2=High
+
+option.WATER_SPEED=Speed
+option.WATER_SPEED.comment=Adjusts the noise speed for water normals.
+
+option.WATER_FOG_DENSITY=Water Fog Density
+option.WATER_FOG_DENSITY.comment=Adjusts water fog density.
+
+option.WATER_PIXEL=Pixel Lock
+option.WATER_PIXEL.comment=Applies pixelation effect on water normals.
+value.WATER_PIXEL.0=OFF
+
+option.REFRACTION=Refraction
+option.REFRACTION.comment=Distorts things behind water.
+option.REFRACTION_STRENGTH=Refraction Strength
+
+#Post Effects
+option.NETHER_HEAT_WAVE=Nether Heat Wave
+option.NETHER_HEAT_WAVE_STRENGTH=Heat Wave Strength
+
+option.CHROMATIC_ABERRATION=Chromatic Aberration
+option.CHROMATIC_ABERRATION_STRENGTH=Aberration Strength
+value.CHROMATIC_ABERRATION_STRENGTH.16=Russian Doomer
+option.CA_COLOR=Ch. Aberration Color
+value.CA_COLOR.0=Red - Blue
+value.CA_COLOR.1=Pink - Green
+value.CA_COLOR.2=Green - Red
+value.CA_COLOR.3=RGB
+
+option.DOF=Depth of Field
+options.DOF.comment=Enables camera focus effect.
+option.DOF_STRENGTH=DoF Strength
+option.DOF_STRENGTH.comment=Adjusts the focus strength, higher value blurs quicker.
+
+option.DISTANT_BLUR=Distant Blur
+option.DISTANT_BLUR.comment=Applies blur to the far objects.
+option.DISTANT_BLUR_STRENGTH=Blur Strength
+option.DISTANT_BLUR_RANGE=Blur Range
+option.DISTANT_BLUR_RANGE.comment=Changes the distance of blur. Bigger values decrease the distance making the blur closer to you.
+
+option.MOTION_BLUR=Motion Blur
+option.MOTION_BLUR.comment=Enables camera motion based blurring.
+
+option.MOTION_BLUR_STRENGTH=Motion Blur Strength
+option.MOTION_BLUR_STRENGTH.comment=Adjusts motion blur intensity.
+
+option.BLOOM_BALANCING=Bloom Balancing
+option.BLOOM_BALANCING.comment=Reduces the bloom strength when outdoors.
+option.BLOOM_RADIUS=Bloom Radius
+option.BLOOM_CONTRAST=Bloom Contrast
+option.BLOOM=Bloom
+option.BLOOM.comment=Allows bright areas to glow.
+
+option.BLOOM_STRENGTH=Bloom Strength
+option.BLOOM_STRENGTH.comment=Adjusts bloom intensity.
+value.BLOOM_STRENGTH.16=You should check BSL
+
+option.LENS_FLARE=Lens Flare
+option.LENS_FLARE.comment=Enables lens flare.
+
+option.LENS_FLARE_STRENGTH=Lens Flare Strength
+option.LENS_FLARE_STRENGTH.comment=Adjusts lens flare intensity.
+
+option.FXAA=FXAA
+option.FXAA.comment=Enables fast approximate anti-aliasing, done by smoothing out edges with minimal performance cost. §e[*]§rPlease disable Antialiasing in Shaders menu while this option is enabled.
+
+option.TAA=TAA
+option.TAA.comment=Enables temporal anti-aliasing, done by smart frame blending which captures improves tiny details and some effects. §e[*]§rSharpening included. §e[*]§rPlease disable Antialiasing in Shaders menu while this option is enabled.
+
+option.VIGNETTE=Vignette
+option.Vignette.comment=Fades the edge of the screen to black. §e[*]§rDisable for 360 imaging.
+
+option.DIRTY_LENS=Dirty Lens
+option.DIRTY_LENS.comment=Adds dusty particle effect to bloom. §e[*]§rRequires bloom.
+
+option.RETRO_FILTER=Retro Filter
+option.RETRO_FILTER.comment=Adds pixelation and dithering. §e[*]§rLower render quality for stronger pixelation. §c[-]§rIncompatible with anti-aliasing.
+
+option.OUTLINE=Outline
+option.OUTLINE.comment=Enables outline effect.
+value.OUTLINE.0=OFF
+value.OUTLINE.1=Black
+value.OUTLINE.2=Colored
+value.OUTLINE.3=1.12 Update Art
+value.OUTLINE.4=Dungeons
+
+#Color Grading & Tonemap
+option.EXPOSURE=Exposure
+option.TonemapExposure.comment=Adjusts overall brightness.
+
+option.AUTO_EXPOSURE=Auto Exposure
+option.AUTO_EXPOSURE.comment=Enables automatic adjustment to overall brightness.
+
+option.COLOR_GRADING=Color Grading
+option.COLOR_GRADING.comment=Enables color grading. §e[*]§rThis option doesn't need to be enabled to change tonemap, saturation, and vibrance sliders.
+
+option.TONEMAP_WHITE_CURVE=Tonemap White Curve
+option.TONEMAP_WHITE_CURVE.comment=Adjusts how quickly the tonemap can reach white.
+
+option.TONEMAP_LOWER_CURVE=Tonemap Lower Curve
+option.TONEMAP_LOWER_CURVE.comment=Adjusts contrast of darker colors.
+
+option.TONEMAP_UPPER_CURVE=Tonemap Upper Curve
+option.TONEMAP_UPPER_CURVE.comment=Adjusts contrast of brighter colors.
+
+option.SATURATION=Saturation
+option.SATURATION.comment=Adjusts saturation of all colors.
+value.SATURATION.2.00=Red Hat Shader
+
+option.VIBRANCE=Vibrance
+option.VIBRANCE.comment=Adjusts saturation of less saturated colors, well saturated colors are less affected.
+
+#Color Grading Config
+option.CG_RR=Red - Red Value
+option.CG_RG=Red - Green Value
+option.CG_RB=Red - Blue Value
+option.CG_RI=Red Strength Value
+option.CG_RM=Minimal Red Value
+option.CG_RC=Red Curve Value
+
+option.CG_GR=Green - Red Value
+option.CG_GG=Green - Green Value
+option.CG_GB=Green - Blue Value
+option.CG_GI=Green Strength Value
+option.CG_GM=Minimal Green Value
+option.CG_GC=Green Curve Value
+
+option.CG_BR=Blue - Red Value
+option.CG_BG=Blue - Green Value
+option.CG_BB=Blue - Blue Value
+option.CG_BI=Blue Strength Value
+option.CG_BM=Minimal Blue Value
+option.CG_BC=Blue Curve Value
+
+option.CG_TR=Tint - Red Value
+option.CG_TG=Tint - Green Value
+option.CG_TB=Tint - Blue Value
+option.CG_TI=Tint Strength Value
+option.CG_TM=Tint Mix Value
+
+#Color
+option.FOG_R=Red
+option.FOG_G=Green
+option.FOG_B=Blue
+option.FOG_I=Intensity
+
+option.LIGHTSHAFT_R=Red
+option.LIGHTSHAFT_G=Green
+option.LIGHTSHAFT_B=Blue
+option.LIGHTSHAFT_I=Intensity
+
+option.VCLOUD_MR=Red
+option.VCLOUD_MG=Green
+option.VCLOUD_MB=Blue
+option.VCLOUD_MI=Intensity
+
+option.VCLOUD_DR=Red
+option.VCLOUD_DG=Green
+option.VCLOUD_DB=Blue
+option.VCLOUD_DI=Intensity
+
+option.VCLOUD_ER=Red
+option.VCLOUD_EG=Green
+option.VCLOUD_EB=Blue
+option.VCLOUD_EI=Intensity
+
+option.VCLOUD_NR=Red
+option.VCLOUD_NG=Green
+option.VCLOUD_NB=Blue
+option.VCLOUD_NI=Intensity
+
+option.VCLOUDDOWN_MR=Red
+option.VCLOUDDOWN_MG=Green
+option.VCLOUDDOWN_MB=Blue
+option.VCLOUDDOWN_MI=Intensity
+
+option.VCLOUDDOWN_DR=Red
+option.VCLOUDDOWN_DG=Green
+option.VCLOUDDOWN_DB=Blue
+option.VCLOUDDOWN_DI=Intensity
+
+option.VCLOUDDOWN_ER=Red
+option.VCLOUDDOWN_EG=Green
+option.VCLOUDDOWN_EB=Blue
+option.VCLOUDDOWN_EI=Intensity
+
+option.VCLOUDDOWN_NR=Red
+option.VCLOUDDOWN_NG=Green
+option.VCLOUDDOWN_NB=Blue
+option.VCLOUDDOWN_NI=Intensity
+
+option.FOGCOLOR_MR=Red
+option.FOGCOLOR_MG=Green
+option.FOGCOLOR_MB=Blue
+option.FOGCOLOR_MI=Intensity
+
+option.FOGCOLOR_DR=Red
+option.FOGCOLOR_DG=Green
+option.FOGCOLOR_DB=Blue
+option.FOGCOLOR_DI=Intensity
+
+option.FOGCOLOR_ER=Red
+option.FOGCOLOR_EG=Green
+option.FOGCOLOR_EB=Blue
+option.FOGCOLOR_EI=Intensity
+
+option.FOGCOLOR_NR=Red
+option.FOGCOLOR_NG=Green
+option.FOGCOLOR_NB=Blue
+option.FOGCOLOR_NI=Intensity
+
+option.LIGHTSHAFTAMBIENT_MR=Red
+option.LIGHTSHAFTAMBIENT_MG=Green
+option.LIGHTSHAFTAMBIENT_MB=Blue
+option.LIGHTSHAFTAMBIENT_MI=Intensity
+
+option.LIGHTSHAFTAMBIENT_DR=Red
+option.LIGHTSHAFTAMBIENT_DG=Green
+option.LIGHTSHAFTAMBIENT_DB=Blue
+option.LIGHTSHAFTAMBIENT_DI=Intensity
+
+option.LIGHTSHAFTAMBIENT_ER=Red
+option.LIGHTSHAFTAMBIENT_EG=Green
+option.LIGHTSHAFTAMBIENT_EB=Blue
+option.LIGHTSHAFTAMBIENT_EI=Intensity
+
+option.LIGHTSHAFTAMBIENT_NR=Red
+option.LIGHTSHAFTAMBIENT_NG=Green
+option.LIGHTSHAFTAMBIENT_NB=Blue
+option.LIGHTSHAFTAMBIENT_NI=Intensity
+
+option.LIGHTSHAFT_MR=Red
+option.LIGHTSHAFT_MG=Green
+option.LIGHTSHAFT_MB=Blue
+option.LIGHTSHAFT_MI=Intensity
+
+option.LIGHTSHAFT_DR=Red
+option.LIGHTSHAFT_DG=Green
+option.LIGHTSHAFT_DB=Blue
+option.LIGHTSHAFT_DI=Intensity
+
+option.LIGHTSHAFT_ER=Red
+option.LIGHTSHAFT_EG=Green
+option.LIGHTSHAFT_EB=Blue
+option.LIGHTSHAFT_EI=Intensity
+
+option.LIGHTSHAFT_NR=Red
+option.LIGHTSHAFT_NG=Green
+option.LIGHTSHAFT_NB=Blue
+option.LIGHTSHAFT_NI=Intensity
+
+option.LIGHTSHAFT_WR=Red
+option.LIGHTSHAFT_WG=Green
+option.LIGHTSHAFT_WB=Blue
+option.LIGHTSHAFT_WI=Intensity
+
+option.SKYLIGHT_MR=Red
+option.SKYLIGHT_MG=Green
+option.SKYLIGHT_MB=Blue
+option.SKYLIGHT_MI=Intensity
+
+option.SKYLIGHT_DR=Red
+option.SKYLIGHT_DG=Green
+option.SKYLIGHT_DB=Blue
+option.SKYLIGHT_DI=Intensity
+
+option.SKYLIGHT_ER=Red
+option.SKYLIGHT_EG=Green
+option.SKYLIGHT_EB=Blue
+option.SKYLIGHT_EI=Intensity
+
+option.SKYLIGHT_NR=Red
+option.SKYLIGHT_NG=Green
+option.SKYLIGHT_NB=Blue
+option.SKYLIGHT_NI=Intensity
+
+option.LIGHT_MR=Red
+option.LIGHT_MG=Green
+option.LIGHT_MB=Blue
+option.LIGHT_MI=Intensity
+
+option.LIGHT_DR=Red
+option.LIGHT_DG=Green
+option.LIGHT_DB=Blue
+option.LIGHT_DI=Intensity
+
+option.LIGHT_ER=Red
+option.LIGHT_EG=Green
+option.LIGHT_EB=Blue
+option.LIGHT_EI=Intensity
+
+option.LIGHT_NR=Red
+option.LIGHT_NG=Green
+option.LIGHT_NB=Blue
+option.LIGHT_NI=Intensity
+
+option.AMBIENT_MR=Red
+option.AMBIENT_MG=Green
+option.AMBIENT_MB=Blue
+option.AMBIENT_MI=Intensity
+
+option.AMBIENT_DR=Red
+option.AMBIENT_DG=Green
+option.AMBIENT_DB=Blue
+option.AMBIENT_DI=Intensity
+
+option.AMBIENT_ER=Red
+option.AMBIENT_EG=Green
+option.AMBIENT_EB=Blue
+option.AMBIENT_EI=Intensity
+
+option.AMBIENT_NR=Red
+option.AMBIENT_NG=Green
+option.AMBIENT_NB=Blue
+option.AMBIENT_NI=Intensity
+
+option.MINLIGHT_R=Red
+option.MINLIGHT_G=Green
+option.MINLIGHT_B=Blue
+option.MINLIGHT_I=Brightness
+
+option.BLOCKLIGHT_R=Red
+option.BLOCKLIGHT_G=Green
+option.BLOCKLIGHT_B=Blue
+option.BLOCKLIGHT_I=Intensity
+option.BLOCKLIGHT_R_NETHER=Red (In Nether)
+option.BLOCKLIGHT_G_NETHER=Green (In Nether)
+option.BLOCKLIGHT_B_NETHER=Blue (In Nether)
+option.BLOCKLIGHT_R_END=Red (In End)
+option.BLOCKLIGHT_G_END=Green (In End)
+option.BLOCKLIGHT_B_END=Blue (In End)
+option.LIGHTMAP_R=Red Value
+option.LIGHTMAP_B=Blue Value
+option.LIGHTMAP_G=Green Value
+option.CLM_MAINCOL=D.W.P. Main Color
+option.CLM_MAINCOL.comment=Selects the main color for dynamic world position based colored lighting.
+value.CLM_MAINCOL.0=Green
+value.CLM_MAINCOL.1=Blue
+value.CLM_MAINCOL.2=Red
+
+option.SKY_COLOR_MODE=Sky Color Mode
+value.SKY_COLOR_MODE.0=Single Color
+value.SKY_COLOR_MODE.1=Per - Biome
+
+option.TFSKY_R=Twilight Forest - Red
+option.TFSKY_G=Twilight Forest - Green
+option.TFSKY_B=Twilight Forest - Blue
+option.TFSKY_I=Twilight Forest - Intensity
+
+option.TFSKYD_R=Twilight Forest - Red
+option.TFSKYD_G=Twilight Forest - Green
+option.TFSKYD_B=Twilight Forest - Blue
+option.TFSKYD_I=Twilight Forest - Intensity
+
+option.SKY_R=Red
+option.SKY_G=Green
+option.SKY_B=Blue
+option.SKY_I=Intensity
+
+option.CLOUDS_END_R=Red
+option.CLOUDS_END_G=Green
+option.CLOUDS_END_B=Blue
+option.CLOUDS_END_I=Intensity
+
+option.WATER_R=Red
+option.WATER_G=Green
+option.WATER_B=Blue
+option.WATER_I=Intensity
+option.WATER_A=Alpha
+
+option.BIOMECOLOR_BLR=Red
+option.BIOMECOLOR_BLG=Green
+option.BIOMECOLOR_BLB=Blue
+option.BIOMECOLOR_BLI=Intensity
+
+option.BIOMECOLOR_CR=Red
+option.BIOMECOLOR_CG=Green
+option.BIOMECOLOR_CB=Blue
+option.BIOMECOLOR_CI=Intensity
+
+option.BIOMECOLOR_DR=Red
+option.BIOMECOLOR_DG=Green
+option.BIOMECOLOR_DB=Blue
+option.BIOMECOLOR_DI=Intensity
+
+option.BIOMECOLOR_BR=Red
+option.BIOMECOLOR_BG=Green
+option.BIOMECOLOR_BB=Blue
+option.BIOMECOLOR_BI=Intensity
+
+option.BIOMECOLOR_SR=Red
+option.BIOMECOLOR_SG=Green
+option.BIOMECOLOR_SB=Blue
+option.BIOMECOLOR_SI=Intensity
+
+option.BIOMECOLOR_MR=Red
+option.BIOMECOLOR_MG=Green
+option.BIOMECOLOR_MB=Blue
+option.BIOMECOLOR_MI=Intensity
+
+option.BIOMECOLOR_VR=Red
+option.BIOMECOLOR_VG=Green
+option.BIOMECOLOR_VB=Blue
+option.BIOMECOLOR_VI=Intensity
+
+option.BIOMECOLOR_TR=Red
+option.BIOMECOLOR_TG=Green
+option.BIOMECOLOR_TB=Blue
+option.BIOMECOLOR_TI=Intensity
+
+option.BIOMECOLOR_FR=Red
+option.BIOMECOLOR_FG=Green
+option.BIOMECOLOR_FB=Blue
+option.BIOMECOLOR_FI=Intensity
+
+option.BIOMECOLOR_JR=Red
+option.BIOMECOLOR_JG=Green
+option.BIOMECOLOR_JB=Blue
+option.BIOMECOLOR_JI=Intensity
+
+option.BIOMECOLOR_SR=Red
+option.BIOMECOLOR_SG=Green
+option.BIOMECOLOR_SB=Blue
+option.BIOMECOLOR_SI=Intensity
+
+option.WEATHER_VR=Red
+option.WEATHER_VG=Green
+option.WEATHER_VB=Blue
+option.WEATHER_VI=Intensity
+
+option.WEATHER_RR=Red
+option.WEATHER_RG=Green
+option.WEATHER_RB=Blue
+option.WEATHER_RI=Intensity
+
+option.WEATHER_CR=Red
+option.WEATHER_CG=Green
+option.WEATHER_CB=Blue
+option.WEATHER_CI=Intensity
+
+option.WEATHER_DR=Red
+option.WEATHER_DG=Green
+option.WEATHER_DB=Blue
+option.WEATHER_DI=Intensity
+
+option.WEATHER_BR=Red
+option.WEATHER_BG=Green
+option.WEATHER_BB=Blue
+option.WEATHER_BI=Intensity
+
+option.WEATHER_SR=Red
+option.WEATHER_SG=Green
+option.WEATHER_SB=Blue
+option.WEATHER_SI=Intensity
+
+option.WEATHER_MR=Red
+option.WEATHER_MG=Green
+option.WEATHER_MB=Blue
+option.WEATHER_MI=Intensity
+
+option.AURORA_LR=Red
+option.AURORA_LG=Green
+option.AURORA_LB=Blue
+option.AURORA_LI=Intensity
+
+option.AURORA_HR=Red
+option.AURORA_HG=Green
+option.AURORA_HB=Blue
+option.AURORA_HI=Intensity
+
+option.RIFTSECOND_LR=Red
+option.RIFTSECOND_LG=Green
+option.RIFTSECOND_LB=Blue
+option.RIFTSECOND_LI=Intensity
+
+option.RIFTSECOND_HR=Red
+option.RIFTSECOND_HG=Green
+option.RIFTSECOND_HB=Blue
+option.RIFTSECOND_HI=Intensity
+
+option.RIFT_LR=Red
+option.RIFT_LG=Green
+option.RIFT_LB=Blue
+option.RIFT_LI=Intensity
+
+option.RIFT_HR=Red
+option.RIFT_HG=Green
+option.RIFT_HB=Blue
+option.RIFT_HI=Intensity
+
+option.NETHER_NR=Red
+option.NETHER_NG=Green
+option.NETHER_NB=Blue
+option.NETHER_NI=Intensity
+
+option.NETHER_VR=Red
+option.NETHER_VG=Green
+option.NETHER_VB=Blue
+option.NETHER_VI=Intensity
+
+option.NETHER_CR=Red
+option.NETHER_CG=Green
+option.NETHER_CB=Blue
+option.NETHER_CI=Intensity
+
+option.NETHER_WR=Red
+option.NETHER_WG=Green
+option.NETHER_WB=Blue
+option.NETHER_WI=Intensity
+
+option.NETHER_BR=Red
+option.NETHER_BG=Green
+option.NETHER_BB=Blue
+option.NETHER_BI=Intensity
+
+option.END_R=Red
+option.END_G=Green
+option.END_B=Blue
+option.END_I=Intensity
+
+option.EMISSIVE_RECOLOR=Emissive Recolor
+option.EMISSIVE_RECOLOR.comment=Tints certain emissive blocks with blocklight color.
+
+option.SKY_VANILLA=Vanilla Sky (:crong:)
+option.SKY_VANILLA.comment=Use vanilla sky color.
+
+option.NETHER_VANILLA=Vanilla Nether
+option.NETHER_VANILLA.comment=Use vanilla nether color.
+
+#World
+option.WORLD_TIME_ANIMATION=World Time Animation
+option.WORLD_TIME_ANIMATION.comment=Use ingame time for moving objects. §e[*]§rThis option is mostly used when making cinematics.
+
+option.ANIMATION_SPEED=Animation Speed
+option.ANIMATION_SPEED.comment=Adjusts animation speed.
+
+#Waving Blocks
+option.WAVING_PLANT=Plants
+option.WAVING_PLANT.comment=Allows various plants to wave.
+option.WAVING_LEAF=Leaves
+option.WAVING_LEAF.comment=Allows leaves to wave.
+option.WAVING_LIQUID=Liquids
+option.WAVING_LIQUID.comment=Allows water and lava to wave.
+option.WAVING_EXTRA=Extras
+option.WAVING_EXTRA.comment=Allows fire and lantern to wave.
+option.WAVING_AMPLITUDE=Waving Amplitude
+
+#Lens Flare
+option.BASELENS1=Base Lens 1
+option.BASELENS2=Base Lens 2
+option.BASELENS3=Base Lens 3
+option.BASELENS4=Base Lens 4
+option.BASELENS5=Base Lens 5
+option.BASELENS6=Base Lens 6
+
+option.OVERLAPLENS1=Overlap Lens 1
+option.OVERLAPLENS2=Overlap Lens 2
+option.OVERLAPLENS3=Overlap Lens 3
+option.OVERLAPLENS4=Overlap Lens 4
+option.OVERLAPLENS5=Overlap Lens 5
+
+option.RAINBOW1=Ring 1
+option.RAINBOW2=Ring 2
+option.RAINBOW3=Ring 3
+
+option.RING1=Ring 1
+option.RING2=Ring 2
+option.RING3=Ring 3
+option.RING4=Ring 4
+option.RING5=Ring 5
+option.RING6=Ring 6
+option.RING7=Ring 7
+option.RING8=Ring 8
+option.RING9=Ring 9
+option.RING10=Ring 10
+option.RING11=Ring 11
+option.RING12=Ring 12
+option.RING13=Ring 13
+option.RING14=Ring 14
+
+option.POINT1=Point 1
+option.POINT2=Point 2
+option.POINT3=Point 3
+option.POINT4=Point 4
+option.POINT5=Point 5
+option.POINT6=Point 6
+option.POINT7=Point 7
+option.POINT8=Point 8
+option.POINT9=Point 9
+option.POINT10=Point 10
+option.POINT11=Point 11
+
+option.ANAMORPHICLENS=Anamorphic Lens
+
+#Curvature
+option.WORLD_CURVATURE=World Curvature
+option.WORLD_CURVATURE.comment=Enables world curvature. §e[*]§rWorks in overworld only. §c[-]§rMissing chunks are handled by Minecraft itself which I can't fix. §c[-]§rMay break block selection highlight on 1.17.
+
+option.WORLD_CURVATURE_SIZE=World Curvature Size
+option.WORLD_CURVATURE_SIZE.comment=Adjusts world curvature size. Negative values will bend the world upwards.\
+
+#Super Secret Settings
+option.TEST01=Transparent World
+option.TEST02=Entity Highlight
+option.TEST03=Particle Highlight
+option.TEST04=playerMood Brightness
