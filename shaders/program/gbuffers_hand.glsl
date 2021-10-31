@@ -29,6 +29,9 @@ varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
 //Uniforms//
+#ifdef RANDOM_COLORED_LIGHTING
+uniform sampler2D noisetex;
+#endif
 uniform int frameCounter;
 uniform int heldItemId, heldItemId2;
 uniform int isEyeInWater;

@@ -45,7 +45,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 	float cloud = 0.0;
 	float cloudGradient = 0.0;
 	float gradientMix = dither * 0.1;
-	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength)) * 2;
+	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength * 0.50)) * 2;
 	float scattering = pow(VoL * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
 
 	float cloudHeightFactor = max(1.15 - 0.0025 * cameraPosition.y, 0.0);
@@ -54,7 +54,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 	vec3 cloudColor = vec3(0.0);
 
 	vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
-	for(int i = 0; i < 8; i++) {
+	for(int i = 0; i < 10; i++) {
 		vec2 planeCoord = wpos.xz * ((cloudHeight + (i + dither) * 4) / wpos.y) * 0.02;
 		vec2 coord = cameraPosition.xz * 0.001 + planeCoord + vec2(frametime * 0.0025, 0);
 
@@ -75,7 +75,6 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 		vcloudsCol * (1.25 + scattering),
 		cloudGradient * cloud
 	);
-	cloudColor *= 1.0 - 0.5 * rainStrength;
 	cloud *= sqrt(sqrt(clamp(VoU * 8.0 - 1.0, 0.0, 1.0)));
 	
 	return vec4(cloudColor * colorMultiplier, cloud * cloud * CLOUD_OPACITY);
@@ -204,14 +203,14 @@ vec3 DrawAurora(vec3 viewPos, float dither, int samples) {
 }
 #endif
 
-#if (defined OVERWORLD && NIGHT_SKY_MODE == 1) || (defined END && END_SKY == 1) || (defined NETHER && defined NETHER_SMOKE)
+#if (defined OVERWORLD && NIGHT_SKY_MODE == 1) || (defined END && END_SKY == 1)
 float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 	float noise = texture2D(noisetex, coord * 2.0000  + wind * 0.30).b;
-		  noise+= texture2D(noisetex, coord * 1.0000  + wind * 0.25).b;
+		  noise+= texture2D(noisetex, coord * 1.0000  - wind * 0.25).b;
 		  noise+= texture2D(noisetex, coord * 0.5000  + wind * 0.20).b;
-		  noise+= texture2D(noisetex, coord * 0.2500  + wind * 0.15).b;
+		  noise+= texture2D(noisetex, coord * 0.2500  - wind * 0.15).b;
 		  noise+= texture2D(noisetex, coord * 0.1250  + wind * 0.10).b;	
-		  noise+= texture2D(noisetex, coord * 0.0625  + wind * 0.05).b;
+		  noise+= texture2D(noisetex, coord * 0.0625  - wind * 0.05).b;
 		  noise+= texture2D(noisetex, coord * 0.03125).b;
 	noise *= NEBULA_AMOUNT;
 	noise = max(1.0 - 2.0 * (0.5 * VoU + 0.5) * abs(noise - 3.5), 0.0);
@@ -297,7 +296,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 				noise *= max(sqrt(1.0 - length(planeCoord.xz) * 2.5), 0.0);
 				if (nebulaType == 0){
 					#if defined END
-					nebulaColor = mix(endCol.rgb * 8, endCol.rgb * 10, pow(currentStep, 0.4));
+					nebulaColor = mix(endCol.rgb * 6, endCol.rgb * 8, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(nebulaLowCol, nebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER
@@ -305,7 +304,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 					#endif
 				}else{
 					#if defined END
-					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 16, pow(currentStep, 0.4));
+					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 12, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(secondnebulaLowCol, secondnebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER

@@ -141,6 +141,7 @@ screen.BLOCKLIGHT_END=End Blocklight Col
 screen.ADDITIONAL_BLOCKLIGHT_COLORS=Additional Colors
 screen.CA_CONFIG=Ch. Aberration Config
 screen.BLOCKLIGHT_CONFIG=Blocklight Config
+screen.SUNLIGHT_COLOR=Sun GI Color
 
 screen.WORLD=World
 screen.WAVING=Waving Blocks
@@ -151,6 +152,7 @@ screen.INFO=Prismarine Shader
 screen.INFO.comment=By Septonious with contribution of mlgimposter.
 
 #Lighting
+option.FAKE_GI=Fake GI
 option.RANDOM_COLORED_LIGHTING=Random Colored Lighting
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
 option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
@@ -242,7 +244,7 @@ value.MATERIAL_FORMAT.1=labPBR 1.3
 
 option.SSS=Subsurface Scattering
 option.SSS.comment=Allows light to penetrate and scatter through certain blocks.
-value.SSS.0=§cOFF
+value.SSS.0=OFF
 value.SSS.1=AdvMat Only*
 value.SSS.2=Full
 
@@ -253,7 +255,7 @@ value.SSS_QUALITY.1=High
 
 option.EMISSIVE=Emissive
 option.EMISSIVE.comment=Allows certain surfaces to be brighter.
-value.EMISSIVE.0=§cOFF
+value.EMISSIVE.0=OFF
 value.EMISSIVE.1=AdvMat Only*
 value.EMISSIVE.2=Full
 
@@ -382,7 +384,7 @@ option.PLANAR_CLOUDS=Planar Clouds
 option.PLANAR_CLOUDS.comment=Skybox projected 2.5D clouds. Work both with Iris and Optifine. Performance impact!
 option.END_SKY=End Sky
 value.END_SKY.0=Vanilla
-value.END_SKY.1=Clouds
+value.END_SKY.1=Nebula
 option.END_VOLUMETRIC_FOG=End Volumetric Fog
 option.END_VOLUMETRIC_FOG.comment=Enables cloudy fog in End.
 option.FIREFLIES=Fireflies
@@ -414,10 +416,8 @@ option.WEATHER_PERBIOME.comment=Use varied weather color for different biomes. �
 option.PERBIOME_CLOUDS_COLOR=Per Biome Clouds
 option.PERBIOME_CLOUDS_COLOR.comment=Changes the color of clouds depending on your biome.
 
-option.FOG_MODE=Fog Mode
-value.FOG_MODE.0=Exponental
-value.FOG_MODE.1=Volumetric
-value.FOG_MODE.2=Mixed
+option.VOLUMETRIC_FOG=Volumetric Fog
+option.VOLUMETRIC_LIGHT=Volumetric Light
 
 option.LIGHTSHAFTS_PERBIOME=Per Biome Light Shafts
 option.LIGHTSHAFT_DAY=Noon Light Shafts
@@ -519,25 +519,20 @@ option.VCLOUDS_RANGE=Range
 option.VCLOUDS_RANGE.comment=Changes the maximum render distance
 option.VCLOUDS_OPACITY=Opacity
 option.VCLOUDS_SPEED=Speed
-option.VCLOUDS_QUALITY=Quality
-value.VCLOUDS_QUALITY.16=BRUH
-value.VCLOUDS_QUALITY.14=Irritatered
-value.VCLOUDS_QUALITY.12=Very Low
-value.VCLOUDS_QUALITY.10=Low
-value.VCLOUDS_QUALITY.8=Medium
-value.VCLOUDS_QUALITY.6=High
-value.VCLOUDS_QUALITY.4=Ultra
-value.VCLOUDS_QUALITY.2=AAA *intense GPU screaming*
 option.VCLOUDS_HEIGHT=Height
 option.VCLOUDS_VERTICAL_THICKNESS=Vertical Thickness
 option.VCLOUDS_HORIZONTAL_THICKNESS=Horizontal Thickness
-option.VCLOUDS_SAMPLES=Samples
+option.VCLOUDS_SAMPLES=Detail
 option.VCLOUDS_HEIGHT_ADJ_FACTOR=Height Adj. Factor
 option.VCLOUDS_HEIGHT_ADJ_FACTOR.comment=Adjusts cloud height at noon, then lowers it.
 option.VCLOUDS_THICKNESS_FACTOR=Thickness Adj. Factor
 option.VCLOUDS_THICKNESS_FACTOR.comment=Adjusts horizontal cloud thickness at noon, then lowers it
 option.VCLOUDS_AMOUNT_FACTOR=Amount Adj. Factor
 option.VCLOUDS_AMOUNT_FACTOR.comment=Adjusts cloud amount at noon, then lowers it
+option.VCLOUDS_AMOUNT_DAY=Day Amount
+option.VCLOUDS_AMOUNT_NIGHT=Night Amount
+option.VCLOUDS_AMOUNT_MORNING=Morning Amount
+option.VCLOUDS_AMOUNT_EVENING=Evening Amount
 
 #Water
 option.PROJECTED_CAUSTICS=Water Caustics
@@ -807,26 +802,6 @@ option.FOGCOLOR_NG=Green
 option.FOGCOLOR_NB=Blue
 option.FOGCOLOR_NI=Intensity
 
-option.LIGHTSHAFTAMBIENT_MR=Red
-option.LIGHTSHAFTAMBIENT_MG=Green
-option.LIGHTSHAFTAMBIENT_MB=Blue
-option.LIGHTSHAFTAMBIENT_MI=Intensity
-
-option.LIGHTSHAFTAMBIENT_DR=Red
-option.LIGHTSHAFTAMBIENT_DG=Green
-option.LIGHTSHAFTAMBIENT_DB=Blue
-option.LIGHTSHAFTAMBIENT_DI=Intensity
-
-option.LIGHTSHAFTAMBIENT_ER=Red
-option.LIGHTSHAFTAMBIENT_EG=Green
-option.LIGHTSHAFTAMBIENT_EB=Blue
-option.LIGHTSHAFTAMBIENT_EI=Intensity
-
-option.LIGHTSHAFTAMBIENT_NR=Red
-option.LIGHTSHAFTAMBIENT_NG=Green
-option.LIGHTSHAFTAMBIENT_NB=Blue
-option.LIGHTSHAFTAMBIENT_NI=Intensity
-
 option.LIGHTSHAFT_MR=Red
 option.LIGHTSHAFT_MG=Green
 option.LIGHTSHAFT_MB=Blue
@@ -911,6 +886,11 @@ option.AMBIENT_NR=Red
 option.AMBIENT_NG=Green
 option.AMBIENT_NB=Blue
 option.AMBIENT_NI=Intensity
+
+option.SUNLIGHT_R=Red
+option.SUNLIGHT_G=Green
+option.SUNLIGHT_B=Blue
+option.SUNLIGHT_I=Brightness
 
 option.MINLIGHT_R=Red
 option.MINLIGHT_G=Green

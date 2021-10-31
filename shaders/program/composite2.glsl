@@ -144,10 +144,8 @@ void main() {
 	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
 	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
 
-	float lod = 2;
-
-	vec2 vc = vec2(texture2DLod(colortex8, texCoord.xy, lod).a, texture2DLod(colortex9, texCoord.xy, lod).a);
-	color = mix(color, mix(vcloudsDownCol * 1.25, vcloudsCol * 0.5, vc.x) * 1.50 * (1.00 - rainStrength * 0.25), vc.y);
+	vec2 vc = vec2(texture2D(colortex8, texCoord.xy).a, texture2D(colortex9, texCoord.xy).a);
+	color = mix(color, mix(vcloudsDownCol * 2.00, vcloudsCol, vc.x) * 2.00 * (1.00 - rainStrength * 0.25), vc.y);
 	#endif
 
 	/*DRAWBUFFERS:0*/

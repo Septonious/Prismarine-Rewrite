@@ -35,7 +35,9 @@ uniform int worldTime;
 #if defined WEATHER_PERBIOME || defined PERBIOME_CLOUDS_COLOR || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
 #endif
-
+#ifdef RANDOM_COLORED_LIGHTING
+uniform sampler2D noisetex;
+#endif
 uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;

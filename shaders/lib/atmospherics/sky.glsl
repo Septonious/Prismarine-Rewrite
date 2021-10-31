@@ -1,14 +1,14 @@
 #ifdef OVERWORLD
 #if SKY_COLOR_MODE == 1
 vec3 getBiomeskyColor(){
-	vec4 skyCold     = vec4(vec3(BIOMECOLOR_CR, BIOMECOLOR_CG, BIOMECOLOR_CB) / 255.0, 1.0) * BIOMECOLOR_CI;
-	vec4 skyDesert   = vec4(vec3(BIOMECOLOR_DR, BIOMECOLOR_DG, BIOMECOLOR_DB) / 255.0, 1.0) * BIOMECOLOR_DI;
-	vec4 skySwamp    = vec4(vec3(BIOMECOLOR_SR, BIOMECOLOR_SG, BIOMECOLOR_SB) / 255.0, 1.0) * BIOMECOLOR_SI;
-	vec4 skyMushroom = vec4(vec3(BIOMECOLOR_MR, BIOMECOLOR_MG, BIOMECOLOR_MB) / 255.0, 1.0) * BIOMECOLOR_MI;
-	vec4 skySavanna  = vec4(vec3(BIOMECOLOR_VR, BIOMECOLOR_VG, BIOMECOLOR_VB) / 255.0, 1.0) * BIOMECOLOR_VI;
-	vec4 skyForest   = vec4(vec3(BIOMECOLOR_FR, BIOMECOLOR_FG, BIOMECOLOR_FB) / 255.0, 1.0) * BIOMECOLOR_FI;
-	vec4 skyTaiga    = vec4(vec3(BIOMECOLOR_TR, BIOMECOLOR_TG, BIOMECOLOR_TB) / 255.0, 1.0) * BIOMECOLOR_TI;
-	vec4 skyJungle   = vec4(vec3(BIOMECOLOR_JR, BIOMECOLOR_JG, BIOMECOLOR_JB) / 255.0, 1.0) * BIOMECOLOR_JI;
+	vec4 skyCold     = vec4(vec3(BIOMECOLOR_CR, BIOMECOLOR_CG, BIOMECOLOR_CB) / 512.0, 1.0) * BIOMECOLOR_CI;
+	vec4 skyDesert   = vec4(vec3(BIOMECOLOR_DR, BIOMECOLOR_DG, BIOMECOLOR_DB) / 512.0, 1.0) * BIOMECOLOR_DI;
+	vec4 skySwamp    = vec4(vec3(BIOMECOLOR_SR, BIOMECOLOR_SG, BIOMECOLOR_SB) / 512.0, 1.0) * BIOMECOLOR_SI;
+	vec4 skyMushroom = vec4(vec3(BIOMECOLOR_MR, BIOMECOLOR_MG, BIOMECOLOR_MB) / 512.0, 1.0) * BIOMECOLOR_MI;
+	vec4 skySavanna  = vec4(vec3(BIOMECOLOR_VR, BIOMECOLOR_VG, BIOMECOLOR_VB) / 512.0, 1.0) * BIOMECOLOR_VI;
+	vec4 skyForest   = vec4(vec3(BIOMECOLOR_FR, BIOMECOLOR_FG, BIOMECOLOR_FB) / 512.0, 1.0) * BIOMECOLOR_FI;
+	vec4 skyTaiga    = vec4(vec3(BIOMECOLOR_TR, BIOMECOLOR_TG, BIOMECOLOR_TB) / 512.0, 1.0) * BIOMECOLOR_TI;
+	vec4 skyJungle   = vec4(vec3(BIOMECOLOR_JR, BIOMECOLOR_JG, BIOMECOLOR_JB) / 512.0, 1.0) * BIOMECOLOR_JI;
 
 	float skyWeight = isCold + isDesert + isMesa + isSwamp + isMushroom + isSavanna + isForest + isJungle + isTaiga;
 
@@ -31,13 +31,12 @@ vec3 skylightEvening    = vec3(SKYLIGHT_ER,   SKYLIGHT_EG,   SKYLIGHT_EB)   * SK
 vec3 skylightNight      = vec3(SKYLIGHT_NR,   SKYLIGHT_NG,   SKYLIGHT_NB)   * SKYLIGHT_NI * 0.3 / 255.0;
 
 vec3 skylightSun       = CalcSunColor(skylightMorning, skylightDay * skylightDay, skylightEvening);
-vec3 skylightCol 	= CalcLightColor(skylightSun, skylightNight, weatherCol.rgb);
 
 vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     vec3 nViewPos = normalize(viewPos);
 
     float VoU = clamp(dot(nViewPos,  upVec), -1.0, 1.0);
-    float VoL = clamp(dot(nViewPos, sunVec), -1.5, 1.0);
+    float VoL = clamp(dot(nViewPos, sunVec), -1.0, 1.0);
 
     float groundDensity = 0.08 * (4.0 - 3.0 * sunVisibility) *
                           (10.0 * rainStrength * rainStrength + 1.0);
@@ -79,7 +78,7 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
 
     #ifndef TF
     #if SKY_COLOR_MODE == 1
-    vec3 biomeSky = CalcLightColor(CalcSunColor(skyCol, getBiomeskyColor(), skyCol), skyCol * skylightNight, weatherSky.rgb);
+    vec3 biomeSky = CalcLightColor(CalcSunColor(getBiomeskyColor() * skyCol, getBiomeskyColor(), getBiomeskyColor() * skyCol), skyCol, weatherSky.rgb);
     sky = biomeSky * baseGradient;
     #endif
 
@@ -91,7 +90,7 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     sky = sky / sqrt(sky * sky + 1.0) * exposure * sunVisibility * (SKY_I * SKY_I) * (0.25 + timeBrightness * 0.75);
 
     float sunMix = (VoL * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) *
-                   pow(1.0 - timeBrightness * 0.6, 3.0);
+                   pow(1.0 - timeBrightness * 0.75, 3.0);
     
     #ifdef TF
     sunMix = (VoU * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) *

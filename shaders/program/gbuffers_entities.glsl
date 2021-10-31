@@ -54,7 +54,9 @@ uniform mat4 shadowProjection;
 uniform mat4 shadowModelView;
 
 uniform sampler2D texture;
-
+#ifdef RANDOM_COLORED_LIGHTING
+uniform sampler2D noisetex;
+#endif
 uniform vec3 cameraPosition;
 
 #ifdef ADVANCED_MATERIALS

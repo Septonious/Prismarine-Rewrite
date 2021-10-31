@@ -279,7 +279,7 @@ void main() {
 		color.rgb *= GetAmbientOcclusion(z);
 		#endif
 
-		#if FOG_MODE == 0 || FOG_MODE == 2
+		#ifdef EXP_FOG
 		Fog(color.rgb, viewPos.xyz);
 		#endif
 	} else {

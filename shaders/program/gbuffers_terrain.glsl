@@ -239,10 +239,8 @@ void main() {
 			emissive = float(length(albedo.rgb) > 0.975) * 0.1 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
-		if (blockEntityId == 10102 || blockEntityId == 10103){ // Flowers
-			iEmissive = float(albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
-		} else if (blockEntityId == 10101){ // Even More Flowers
-			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
+		if (mat == 1){ // Flowers
+			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.25;
 		}
 		#endif
 		emissive += iEmissive;

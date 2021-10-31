@@ -7,7 +7,7 @@ vec4 GetWaterFog(vec3 viewPos) {
     fog = 1.0 - exp(-3 * fog);
     
     #if WATER_MODE == 0 || WATER_MODE == 2    
-    vec3 waterFogColor = waterColor.rgb * waterColor.rgb * (1.25 - rainStrength);
+    vec3 waterFogColor = waterColor.rgb * waterColor.rgb * (1.25 - rainStrength) * (0.25 + timeBrightness);
     #elif  WATER_MODE == 1 || WATER_MODE == 3
     vec3 waterFogColor = fogColor * fogColor * 0.5;
     #endif

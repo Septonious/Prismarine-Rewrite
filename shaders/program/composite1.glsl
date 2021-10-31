@@ -86,7 +86,7 @@ float GetLuminance(vec3 color) {
 //Program//
 void main() {
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	float lod0 = 1;
+	float lod0 = 2;
 
 	#ifndef MC_GL_RENDERER_GEFORCE
 		if (fract(viewHeight / 2.0) > 0.25 || fract(viewWidth / 2.0) > 0.25) 
@@ -108,7 +108,8 @@ void main() {
 	vec3 aux9 = auxSum2;
 	#endif
 
-	//ty emin for this filter
+	vec2 vc = vec2(0.0);
+
 	float lod = 1;
 
 	#ifndef MC_GL_RENDERER_GEFORCE
@@ -123,10 +124,6 @@ void main() {
 	vec3 vlSum = (vl1 + vl2 + vl3 + vl4) * 0.5;
 	vec3 vl = vlSum;
 	vl *= vl;
-
-	#ifdef VOLUMETRIC_CLOUDS
-	vec2 vc = vec2(0.0);
-	#endif
 	
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
@@ -134,46 +131,22 @@ void main() {
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;
 
-	#if ((FOG_MODE == 1 || FOG_MODE == 2) && defined OVERWORLD) || (defined END_VOLUMETRIC_FOG && defined END) || (defined FIREFLIES && defined OVERWORLD)
+	#ifdef OVERWORLD
+	
+	#ifdef VOLUMETRIC_LIGHT
 	vec3 lightshaftMorning  = vec3(LIGHTSHAFT_MR, LIGHTSHAFT_MG, LIGHTSHAFT_MB) * LIGHTSHAFT_MI / 255.0;
 	vec3 lightshaftDay      = vec3(LIGHTSHAFT_DR, LIGHTSHAFT_DG, LIGHTSHAFT_DB) * LIGHTSHAFT_DI / 255.0;
 	vec3 lightshaftEvening  = vec3(LIGHTSHAFT_ER, LIGHTSHAFT_EG, LIGHTSHAFT_EB) * LIGHTSHAFT_EI / 255.0;
 	vec3 lightshaftNight    = vec3(LIGHTSHAFT_NR, LIGHTSHAFT_NG, LIGHTSHAFT_NB) * LIGHTSHAFT_NI * 0.3 / 255.0;
-
-	vec3 lightshaftMorninga  = vec3(LIGHTSHAFTAMBIENT_MR, LIGHTSHAFTAMBIENT_MG, LIGHTSHAFTAMBIENT_MB) * LIGHTSHAFTAMBIENT_MI / 255.0;
-	vec3 lightshaftDaya      = vec3(LIGHTSHAFTAMBIENT_DR, LIGHTSHAFTAMBIENT_DG, LIGHTSHAFTAMBIENT_DB) * LIGHTSHAFTAMBIENT_DI / 255.0;
-	vec3 lightshaftEveninga  = vec3(LIGHTSHAFTAMBIENT_ER, LIGHTSHAFTAMBIENT_EG, LIGHTSHAFTAMBIENT_EB) * LIGHTSHAFTAMBIENT_EI / 255.0;
-	vec3 lightshaftNighta    = vec3(LIGHTSHAFTAMBIENT_NR, LIGHTSHAFTAMBIENT_NG, LIGHTSHAFTAMBIENT_NB) * LIGHTSHAFTAMBIENT_NI * 0.3 / 255.0;
-
 	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
-	vec3 lightshaftSuna     = CalcSunColor(lightshaftMorninga, lightshaftDaya, lightshaftEveninga);
-
 	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
-	vec3 lightshaftCola = CalcLightColor(lightshaftSuna, lightshaftNighta, weatherCol.rgb);
 
-	float dayVis0 = 0;
-	float nightVis0 = 0;
-	
-	#ifdef LIGHTSHAFT_NIGHT
-	nightVis0 = 1;
-	#endif
-
-	#ifdef LIGHTSHAFT_DAY
-	dayVis0 = 1;
-	#endif
-
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1, dayVis0, 1), nightVis0);
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 0, 1), 0);
 	if (isEyeInWater == 1) visibility0 = 1;
 
-	#ifdef OVERWORLD
 	if (visibility0 > 0){
-		vec3 lightshaftWater    = vec3(LIGHTSHAFT_WR, LIGHTSHAFT_WG, LIGHTSHAFT_WB) * LIGHTSHAFT_WI / 255.0;
-
-		#if LIGHTSHAFT_COLOR_MODE == 0
-		vl *= lightCol * 0.25;
-		#elif LIGHTSHAFT_COLOR_MODE == 1
+		vec3 lightshaftWater = vec3(LIGHTSHAFT_WR, LIGHTSHAFT_WG, LIGHTSHAFT_WB) * LIGHTSHAFT_WI / 255.0;
 		vl *= lightshaftCol * 0.25;
-		#endif
 
 		#ifdef PERBIOME_LIGHTSHAFTS
 		vl *= getBiomeColor(lightshaftCol);
@@ -181,26 +154,24 @@ void main() {
 
 		if (isEyeInWater == 1) vl *= waterColor.rgb * lightshaftWater.rgb * lightCol.rgb * LIGHTSHAFT_WI;
 	}
-	#if defined FIREFLIES && !defined LIGHTSHAFT_NIGHT
+	#endif
+
+	#ifdef FIREFLIES
 	float visibility1 = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS) * (1 - isEyeInWater);
 	if (visibility1 > 0) vl *= vec3(100, 255, 180) * FIREFLIES_I * 16;	
 	#endif
-	#endif
 
-	#ifdef END
-    vl *= endCol.rgb * 0.25;
 	#endif
 
     vl *= LIGHT_SHAFT_STRENGTH * (1.0 - rainStrength * 0.875) * shadowFade *
 		  (1.0 - blindFactor);
 
 	color.rgb += vl;
-	#endif
 
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float dither = Bayer64(gl_FragCoord.xy);
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
-	vc = getVolumetricCloud(pixeldepth1, pixeldepth0, VCLOUDS_HEIGHT_ADJ_FACTOR, 2, dither);
+	vc = getVolumetricCloud(pixeldepth1, VCLOUDS_HEIGHT_ADJ_FACTOR, 2, dither);
 	#endif
 
 	/* DRAWBUFFERS:089 */

@@ -47,7 +47,7 @@ uniform sampler2D depthtex1, depthtex2;
 
 uniform sampler2D noisetex;
 
-#if FOG_MODE == 1 || FOG_MODE == 2 || defined FIREFLIES
+#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES
 uniform sampler2DShadow shadowtex0;
 uniform sampler2DShadow shadowtex1;
 uniform sampler2D shadowcolor0;
@@ -128,14 +128,23 @@ vec2 getRefract(vec2 coord, vec3 waterPos, vec4 viewPos, float z0, float z1){
 #include "/lib/util/dither.glsl"
 #include "/lib/atmospherics/waterFog.glsl"
 
-#if FOG_MODE == 1 || FOG_MODE == 2 || defined FIREFLIES
-vec3 lightshaftMorninga  = vec3(LIGHTSHAFTAMBIENT_MR, LIGHTSHAFTAMBIENT_MG, LIGHTSHAFTAMBIENT_MB) * LIGHTSHAFTAMBIENT_MI / 255.0;
-vec3 lightshaftDaya      = vec3(LIGHTSHAFTAMBIENT_DR, LIGHTSHAFTAMBIENT_DG, LIGHTSHAFTAMBIENT_DB) * LIGHTSHAFTAMBIENT_DI / 255.0;
-vec3 lightshaftEveninga  = vec3(LIGHTSHAFTAMBIENT_ER, LIGHTSHAFTAMBIENT_EG, LIGHTSHAFTAMBIENT_EB) * LIGHTSHAFTAMBIENT_EI / 255.0;
-vec3 lightshaftNighta    = vec3(LIGHTSHAFTAMBIENT_NR, LIGHTSHAFTAMBIENT_NG, LIGHTSHAFTAMBIENT_NB) * LIGHTSHAFTAMBIENT_NI * 0.3 / 255.0;
-vec3 lightshaftCola = CalcLightColor(CalcSunColor(lightshaftMorninga, lightshaftDaya, lightshaftEveninga), lightshaftNighta, vec3(1));
+#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+#include "/lib/atmospherics/stuffsForVolumetrics.glsl"
+#endif
 
+#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+#if FOG_COLOR_MODE == 2 && defined OVERWORLD
+#include "/lib/prismarine/biomeColor.glsl"
+#endif
+#include "/lib/atmospherics/volumetricFog.glsl"
+#endif
+
+#if defined VOLUMETRIC_LIGHT && defined OVERWORLD
 #include "/lib/atmospherics/volumetricLight.glsl"
+#endif
+
+#if defined FIREFLIES && defined OVERWORLD
+#include "/lib/atmospherics/fireflies.glsl"
 #endif
 
 #ifdef REFRACTION
@@ -154,10 +163,10 @@ vec3 lightshaftCola = CalcLightColor(CalcSunColor(lightshaftMorninga, lightshaft
 //Program//
 void main() {
     vec4 color = texture2D(colortex0, texCoord);
-    vec3 translucent = texture2D(colortex1, texCoord).rgb;
+    vec4 translucent = texture2D(colortex1, texCoord);
 	float z0 = texture2D(depthtex0, texCoord).r;
 	float z1 = texture2D(depthtex1, texCoord).r;
-	vec3 vl = vec3(0.0);
+	vec4 vl = vec4(0.0);
 
 	vec4 screenPos = vec4(texCoord.x, texCoord.y, z0, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
@@ -185,36 +194,24 @@ void main() {
 	color.rgb = mix(color.rgb, outerOutline.rgb, outerOutline.a);
 	#endif
 
-	#if ((FOG_MODE == 1 || FOG_MODE == 2) && defined OVERWORLD) || (defined END_VOLUMETRIC_FOG && defined END) || (defined OVERWORLD && defined FIREFLIES)
-	float dayVis0 = 0;
-	float nightVis0 = 0;
-	
-	#ifdef LIGHTSHAFT_NIGHT
-	nightVis0 = 1;
-	#endif
-
-	#ifdef LIGHTSHAFT_DAY
-	dayVis0 = 1;
-	#endif
-
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1, dayVis0, 1), nightVis0);
-	if (isEyeInWater == 1) visibility0 = 1;
-
-	#ifdef END
-	visibility0 = 1;
-	#endif
-	
 	float dither = Bayer64(gl_FragCoord.xy);
-	if (visibility0 > 0) vl = GetLightShafts(z0, z1, translucent, dither);
+
+	#ifdef OVERWORLD
+	#if defined VOLUMETRIC_LIGHT
+	vl.rgb += GetLightShafts(z0, z1, translucent.rgb, dither);
+	#endif
+	#endif
+
+	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+	vl += getVolumetricFog(z0, z1, translucent, dither, viewPos.xyz);
 	#endif
 
 	#if defined FIREFLIES && defined OVERWORLD
-	if (visibility0 == 0) {
-		float visibility1 = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS) * (1 - isEyeInWater);
-		if (visibility1 > 0) vl = GetFireflies(z0, translucent, dither);
-	}
+	float visibility1 = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS) * (1 - isEyeInWater);
+	if (visibility1 > 0) vl.rgb = GetFireflies(z0, translucent.rgb, dither);
 	#endif
 
+	//REFRACTION & WATER TINT
 	#ifdef REFRACTION
 	vec3 worldPos = ToWorld(viewPos.xyz);
 
@@ -222,14 +219,14 @@ void main() {
 		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition, viewPos, z0, z0);
 		color.rgb = texture2D(colortex0, refractionCoord).rgb;
 		if (isEyeInWater == 1){
-			color.rgb *= waterColor.rgb * 16 * eBS;
+			color.rgb *= waterColor.rgb * 16;
 		}
 	}
 	#endif
 
 	#ifdef OVERWORLD
 	if (z0 < z1 && translucent.r < 0.25 && isEyeInWater == 0){
-		vec3 newColor = waterColor.rgb * (1.00 - rainStrength * 0.50) * 0.5 * timeBrightness * (1 - (z1 - z0));
+		vec3 newColor = waterColor.rgb * (1.00 - rainStrength * 0.50) * 0.5 * timeBrightness * (1 - (z1 - z0)) * eBS;
 		color.rgb += newColor;
 	}
 	if (isEyeInWater == 1) color.rgb *= waterColor.rgb * 15 * (0.25 + timeBrightness);
@@ -239,7 +236,7 @@ void main() {
 	
     /*DRAWBUFFERS:01*/
 	gl_FragData[0] = color;
-	gl_FragData[1] = vec4(vl, 1.0);
+	gl_FragData[1] = vl;
 	
     #ifdef REFLECTION_PREVIOUS
     /*DRAWBUFFERS:015*/

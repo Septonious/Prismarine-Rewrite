@@ -311,7 +311,7 @@ void main() {
 			if (isEyeInWater == 1){
 				albedo.a *= 0.25;
 			} else {
-				albedo.a *= (0.50 + eBS * 0.50);
+				albedo.a *= 0.80;
 			}
 
 			baseReflectance = vec3(0.02);

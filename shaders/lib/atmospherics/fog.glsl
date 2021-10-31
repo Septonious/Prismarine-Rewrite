@@ -205,12 +205,6 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 	fog = 1.0 - exp(-fog);
 
 	vec3 fogColor = netherCol.rgb * 0.04;
-
-	#ifdef NETHER_SMOKE
-	fogColor += DrawRift(viewPos.xyz, dither, 4, 1);
-	fogColor += DrawRift(viewPos.xyz, dither, 4, 0);
-	#endif
-
 	#endif
 
 	#ifdef END
@@ -218,11 +212,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 	float fog = length(viewPos) * END_FOG_DENSITY / 128.0;
 	fog += 6.0 * pow(fogFactor * 1 / far, 6.0);
 	fog = 1.0 - exp(-0.8 * fog * fog);
-	vec3 fogColor = endCol.rgb * 0.025;
-	#if END_SKY == 1
-	fogColor.rgb += DrawRift(viewPos.xyz, dither, 4, 1);
-	fogColor.rgb += DrawRift(viewPos.xyz, dither, 4, 0);
-	#endif
+	vec3 fogColor = endCol.rgb * 0.03;
 	#endif
 	#endif
 

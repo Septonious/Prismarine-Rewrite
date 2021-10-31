@@ -26,6 +26,10 @@ uniform int worldTime;
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
 #endif
 
+#ifdef RANDOM_COLORED_LIGHTING
+uniform sampler2D noisetex;
+#endif
+
 uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;

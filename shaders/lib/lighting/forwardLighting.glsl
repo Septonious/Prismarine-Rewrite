@@ -5,11 +5,10 @@
 void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos,
                  vec2 lightmap, float smoothLighting, float NoL, float vanillaDiffuse,
                  float parallaxShadow, float emission, float subsurface) {
+
     #if EMISSIVE == 0 || (!defined ADVANCED_MATERIALS && EMISSIVE == 1)
     emission = 0.0;
     #endif
-
-    if (isEyeInWater == 1) lightmap.y = 0.50 + lightmap.y;
 
     #if SSS == 0 || (!defined ADVANCED_MATERIALS && SSS == 1)
     subsurface = 0.0;
@@ -32,8 +31,8 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     
     #ifdef OVERWORLD
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
-    vec3 sceneLighting = mix(ambientCol * lightmap.y, lightCol * lightmap.y, fullShadow * shadowMult);
-    sceneLighting *= lightmap.y * lightmap.y * (1.0 + scattering * shadow);
+    vec3 sceneLighting = mix(ambientCol * color.rgb, lightCol * color.rgb, fullShadow * shadowMult);
+    sceneLighting *= (4.0 - 3.0) * lightmap.y * lightmap.y * (1.0 + scattering * shadow);
     #endif
 
     #ifdef END
@@ -43,11 +42,70 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #else
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
     #endif
-    
-    float newLightmap  = pow(lightmap.x, 10.0) * 1.5 + lightmap.x * 0.7 * (1 - lightmap.y * 0.75);
-    vec3 blockLighting = blocklightCol * newLightmap * newLightmap;
 
-    vec3 minLighting = minLightCol * (1.0 - eBS);
+    float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
+
+    float lightmapBrightness = lightmap.x * 15;
+    float lightMapBrightnessFactor = 1.25 - pow(lightmap.x, 6);
+    blocklightCol *= lightMapBrightnessFactor;
+    blocklightCol *= 1.25 - eBS;
+
+    #ifdef FAKE_GI
+    newLightmap = pow(lightmap.x, 0.25) + lightmap.x * 0.75;
+    newLightmap *= (lightmapBrightness * 0.50);
+    #endif
+
+    #ifdef FAKE_GI
+    float sunlightmap = pow(lightmap.y, 8.0) * timeBrightness * lightmap.y * 0.75;
+    vec3 sunlight = vec3(SUN_R, SUN_G, SUN_B) / 255 * SUN_I * color.rgb * sunlightmap * sunlightmap;
+    #endif
+
+    #ifdef LIGHTMAP_BRIGHTNESS_RECOLOR
+    float lightFlatten1 = clamp(1.0 - pow(1.0 - emission, 128.0), 0.0, 1.0);
+    if (lightFlatten1 == 0){
+        blocklightCol.r *= (pow(newLightmap, 4)) * 3 * LIGHTMAP_R;
+        blocklightCol.g *= (3.50 - newLightmap) * newLightmap * 1.25 * LIGHTMAP_G;
+        blocklightCol.b *= (3.50 - newLightmap - newLightmap) * 2.50 * LIGHTMAP_B;
+    } else {
+        float blocklightColr = (pow(newLightmap, 4)) * 3 * LIGHTMAP_R;
+        float blocklightColg = (3.50 - newLightmap) * newLightmap * 1.25 * LIGHTMAP_G;
+        float blocklightColb = (3.50 - newLightmap - newLightmap) * 2.50 * LIGHTMAP_B;
+        blocklightCol = mix(blocklightCol, vec3(blocklightColr, blocklightColg, blocklightColb), 0.5);
+    }
+    #endif
+
+    #ifdef LIGHTMAP_DIM_CUTOFF
+    blocklightCol *= pow(newLightmap, DIM_CUTOFF_FACTOR);
+    #endif
+
+    #ifdef BLOCKLIGHT_FLICKERING
+    float jitter = 1.0 - sin(frameTimeCounter + cos(frameTimeCounter)) * BLOCKLIGHT_FLICKERING_STRENGTH;
+    blocklightCol *= jitter;
+    #endif
+
+    #ifdef NETHER
+    vec3 blocklightColSqrtNether = vec3(BLOCKLIGHT_R_NETHER, BLOCKLIGHT_G_NETHER, BLOCKLIGHT_B_NETHER) * BLOCKLIGHT_I / 300.0;
+    vec3 blocklightColNether = blocklightColSqrtNether * blocklightColSqrtNether;
+    blocklightCol = blocklightColNether;
+    #endif
+
+    #ifdef END
+    vec3 blocklightColSqrtEnd = vec3(BLOCKLIGHT_R_END, BLOCKLIGHT_G_END, BLOCKLIGHT_B_END) * BLOCKLIGHT_I / 300.0;
+    vec3 blocklightColEnd = blocklightColSqrtEnd * blocklightColSqrtEnd;
+    blocklightCol = blocklightColEnd;
+    #endif
+
+    //WORLD POSITION BASED - STATIC
+    #ifdef RANDOM_COLORED_LIGHTING
+    vec2 pos = (cameraPosition.xz + worldPos.xz);
+	float CLr = texture2D(noisetex, 0.0002 * pos).r;
+	float CLg = texture2D(noisetex, 0.0004 * pos).r;
+	float CLb = texture2D(noisetex, 0.0008 * pos).r;
+	blocklightCol = vec3(CLr, CLg, CLb) * vec3(CLr, CLg, CLb);
+    #endif
+
+    vec3 blockLighting = newLightmap * newLightmap * blocklightCol;
+    vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
 
     #ifdef TOON_LIGHTMAP
     minLighting *= floor(smoothLighting * 8.0 + 1.001) / 4.0;
@@ -71,7 +129,11 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #endif
 
     //albedo = vec3(0.5);
+    #ifdef FAKE_GI
+    albedo *= sceneLighting + blockLighting + emissiveLighting + nightVisionLighting + minLighting + sunlight;
+    #else
     albedo *= sceneLighting + blockLighting + emissiveLighting + nightVisionLighting + minLighting;
+    #endif
     albedo *= vanillaDiffuse * smoothLighting * smoothLighting;
 
     #ifdef DESATURATION
@@ -108,4 +170,5 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     albedo = mix(GetLuminance(albedo) * desatColor, albedo, desatAmount);
     #endif
+
 }
