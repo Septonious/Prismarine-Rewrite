@@ -29,8 +29,8 @@ varying vec4 vTexCoord, vTexCoordAM;
 //Uniforms//
 uniform int entityId;
 uniform int frameCounter;
-uniform int isEyeInWater;
 uniform int worldTime;
+uniform int isEyeInWater;
 
 #if defined WEATHER_PERBIOME || defined PERBIOME_CLOUDS_COLOR || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
@@ -100,6 +100,9 @@ float InterleavedGradientNoise() {
 }
 
 //Includes//
+#ifdef OVERWORLD
+#include "/lib/color/waterColor.glsl"
+#endif
 #include "/lib/color/blocklightColor.glsl"
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
@@ -165,6 +168,9 @@ void main() {
 
 	if (albedo.a > 0.001 && lightningBolt < 0.5) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
+		#ifdef OVERWORLD
+		if (isEyeInWater == 1) lightmap.y = clamp(lightmap.y, 0.15, 1.00);
+		#endif
 		
 		float metalness      = 0.0;
 		float emissive       = float(entityColor.a > 0.05) * 0.125;
@@ -316,6 +322,15 @@ void main() {
 		#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR && defined REFLECTION_ROUGH
 		normalMap = mix(vec3(0.0, 0.0, 1.0), normalMap, smoothness);
 		newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
+		#endif
+
+		#ifdef OVERWORLD
+		float depth = clamp(length(viewPos.xyz), 0, 9);
+		depth = 10 - depth;
+		if (isEyeInWater == 1){
+			albedo.rgb *= vec3(waterColor.r * 1.8, waterColor.g * 1.2, waterColor.b * 0.4) * 6;
+			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512 * (0.25 + timeBrightness) + depth;
+		}
 		#endif
 
 		#if ALPHA_BLEND == 0

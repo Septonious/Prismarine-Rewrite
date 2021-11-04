@@ -56,8 +56,8 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
     vec4 wpos = vec4(0.0);
 
     if (visibility > 0){
-		for(int i = 0; i < 8; i++) {
-			float minDist = (i + dither) * 8; 
+		for(int i = 0; i < LIGHTSHAFT_SAMPLES; i++) {
+			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE; 
 
 			wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.st);
 
@@ -88,16 +88,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                     #ifdef NETHER
                     vec4 color0 = vec4(mix(netherCol.rgb * 0.05, netherCol.rgb * 0.15, noise), noise);
                     #else
-
-                    vec3 fog = vec3(0.0);
-
-                    #if FOG_COLOR_MODE == 1
-                    fog = fogColorC;
-                    #elif FOG_COLOR_MODE == 2
-                    fog = getBiomeColor(fogColorC);
-                    #endif
-
-                    vec4 color0 = vec4(mix(fog * 0.1, fog * 0.3, noise), noise);
+                    vec4 color0 = vec4(mix(fogColorC * 0.2, fogColorC * 0.4, noise), noise);
                     #endif
                     color0.rgb *= color0.w;
 

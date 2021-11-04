@@ -54,8 +54,6 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
 
 	vec3 fog = vec3(0);
 
-	if (fogType == 1) fog = GetSkyColor(viewPos, false) * baseGradient / (SKY_I * SKY_I);
-	if (fogType == 0){
         #if FOG_COLOR_MODE == 1
         fog = fogCol * baseGradient / (SKY_I * SKY_I);
         #elif FOG_COLOR_MODE == 0
@@ -63,7 +61,6 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
         #elif FOG_COLOR_MODE == 2
         fog = getBiomeColor(fogCol) * baseGradient / (SKY_I * SKY_I);
         #endif
-    }
 
 	#ifdef TF
 	fog = GetSkyColor(viewPos, false) * baseGradient / (SKY_I * SKY_I);
@@ -87,8 +84,6 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
 
 	vec3 lightFog = vec3(0);
 
-	if (fogType == 1) lightFog = GetSkyColor(viewPos, false) * baseGradient / (SKY_I * SKY_I);
-	if (fogType == 0){
         #if FOG_COLOR_MODE == 1
         lightFog = pow(fogcolorSun / 2 * vec3(FOG_R, FOG_G, FOG_B) * FOG_I, vec3(4.0 - sunVisibility)) * baseGradient;
         #elif FOG_COLOR_MODE == 0
@@ -96,7 +91,6 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
         #elif FOG_COLOR_MODE == 2
         lightFog = pow(getBiomeColor(fogCol) / 2, vec3(4.0 - sunVisibility)) * baseGradient;
         #endif
-    }
 
 	#ifdef TF
 	lightFog = pow(GetSkyColor(viewPos, false) / 2, vec3(4.0 - sunVisibility)) * baseGradient;

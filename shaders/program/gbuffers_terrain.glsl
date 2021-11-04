@@ -30,9 +30,9 @@ varying vec4 vTexCoord, vTexCoordAM;
 
 //Uniforms//
 uniform int frameCounter;
-uniform int isEyeInWater;
 uniform int worldTime;
 uniform int blockEntityId;
+uniform int isEyeInWater;
 
 #if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
@@ -104,6 +104,10 @@ float InterleavedGradientNoise() {
 }
 
 //Includes//
+#ifdef OVERWORLD
+#include "/lib/color/waterColor.glsl"
+#endif
+
 #include "/lib/color/blocklightColor.glsl"
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
@@ -160,6 +164,7 @@ tysm emin for allowing me to use your ipbr code!
 //Program//
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);
+	
 	vec3 newNormal = normal;
 	float smoothness = 0.0;
 
@@ -182,6 +187,10 @@ void main() {
 
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
+
+		#ifdef OVERWORLD
+		if (isEyeInWater == 1) lightmap.y = clamp(lightmap.y, 0.15, 1.00);
+		#endif
 		
 		float foliage  = float(mat > 0.98 && mat < 1.02);
 		float leaves   = float(mat > 1.98 && mat < 2.02);
@@ -240,7 +249,7 @@ void main() {
 		}
 		#ifdef OVERWORLD
 		if (mat == 1){ // Flowers
-			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.25;
+			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
 		}
 		#endif
 		emissive += iEmissive;
@@ -428,6 +437,15 @@ void main() {
 			normalMap = mix(vec3(0.0, 0.0, 1.0), normalMap, smoothness);
 			newNormal = mix(normalMap * tbnMatrix, newNormal, 1.0 - pow(1.0 - puddles, 4.0));
 			newNormal = clamp(normalize(newNormal), vec3(-1.0), vec3(1.0));
+		}
+		#endif
+
+		#ifdef OVERWORLD
+		float depth = clamp(length(viewPos.xyz), 0, 7);
+		depth = 8 - depth;
+		if (isEyeInWater == 1){
+			albedo.rgb *= vec3(waterColor.r * 2.25, waterColor.g * 1.75, waterColor.b * 0.50) * (6 - rainStrength - rainStrength);
+			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512 * (0.25 + timeBrightness) + depth;
 		}
 		#endif
 

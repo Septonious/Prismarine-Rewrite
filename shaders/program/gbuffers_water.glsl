@@ -127,7 +127,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 	noise = mix(noiseA, noiseB, WATER_DETAIL);
 	#endif
 
-    return noise * WATER_BUMP;
+    return noise * WATER_BUMP * (1 + isEyeInWater);
 }
 
 vec3 GetParallaxWaves(vec3 worldPos, vec3 viewVector) {
@@ -227,6 +227,7 @@ void main() {
 
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
+		#define GB_WATER
 		
 		float water       = float(mat > 0.98 && mat < 1.02);
 		float glass 	  = float(mat > 1.98 && mat < 2.02);
@@ -309,9 +310,9 @@ void main() {
 			#endif
 			
 			if (isEyeInWater == 1){
-				albedo.a *= 0.25;
+				albedo.a *= 0.50;
 			} else {
-				albedo.a *= 0.80;
+				albedo.a *= 0.85;
 			}
 
 			baseReflectance = vec3(0.02);
@@ -542,7 +543,6 @@ void main() {
 
 		Fog(albedo.rgb, viewPos);
 
-		/*
 		if((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
 		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
 		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);
@@ -555,7 +555,7 @@ void main() {
 		 	vec4 waterFog = GetWaterFog(viewPos.xyz - oViewPos);
 		 	albedo = mix(waterFog, vec4(albedo.rgb, 1.0), albedo.a);
 		}
-		*/
+
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));
 		#endif

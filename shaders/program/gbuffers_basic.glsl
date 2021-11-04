@@ -30,6 +30,10 @@ uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest
 uniform sampler2D noisetex;
 #endif
 
+#ifdef FAKE_GI
+uniform sampler2D texture;
+#endif
+
 uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;

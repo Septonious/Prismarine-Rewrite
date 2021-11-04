@@ -48,11 +48,11 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     float lightmapBrightness = lightmap.x * 15;
     float lightMapBrightnessFactor = 1.25 - pow(lightmap.x, 6);
     blocklightCol *= lightMapBrightnessFactor;
-    blocklightCol *= 1.25 - eBS;
+    blocklightCol *= 1.25 - lightmap.y;
 
     #ifdef FAKE_GI
-    newLightmap = pow(lightmap.x, 0.25) + lightmap.x * 0.75;
-    newLightmap *= (lightmapBrightness * 0.50);
+    newLightmap = clamp(pow(lightmap.x, 6.00) + lightmap.x * 0.75, 0, 0.40);
+    newLightmap *= (lightmapBrightness * 0.40);
     #endif
 
     #ifdef FAKE_GI

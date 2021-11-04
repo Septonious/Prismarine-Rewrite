@@ -101,8 +101,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     return noise * WATER_BUMP;
 }
 
-vec2 getRefract(vec2 coord, vec3 waterPos, vec4 viewPos, float z0, float z1){
-	float depthFactor = clamp(32 - clamp(length(viewPos.xyz), 0, 31.95), 0, 1);
+vec2 getRefract(vec2 coord, vec3 waterPos, float z0, float z1){
 	float normalOffset = WATER_SHARPNESS;
 	float h1 = GetWaterHeightMap(waterPos, vec2( normalOffset, 0.0));
 	float h2 = GetWaterHeightMap(waterPos, vec2(-normalOffset, 0.0));
@@ -114,7 +113,7 @@ vec2 getRefract(vec2 coord, vec3 waterPos, vec4 viewPos, float z0, float z1){
 
 	vec2 noise = vec2(xDelta, yDelta);
 
-	vec2 waveN = noise * REFRACTION_STRENGTH * 0.025 * depthFactor * (1 - (z1 - z0));
+	vec2 waveN = noise * REFRACTION_STRENGTH * 0.025 * (1 - (z1 - z0));
 
 	return coord + waveN;
 }
@@ -216,7 +215,7 @@ void main() {
 	vec3 worldPos = ToWorld(viewPos.xyz);
 
 	if (z0 < z1 && translucent.r < 0.25){
-		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition, viewPos, z0, z0);
+		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition, z0, z0);
 		color.rgb = texture2D(colortex0, refractionCoord).rgb;
 		if (isEyeInWater == 1){
 			color.rgb *= waterColor.rgb * 16;
@@ -226,10 +225,19 @@ void main() {
 
 	#ifdef OVERWORLD
 	if (z0 < z1 && translucent.r < 0.25 && isEyeInWater == 0){
-		vec3 newColor = waterColor.rgb * (1.00 - rainStrength * 0.50) * 0.5 * timeBrightness * (1 - (z1 - z0)) * eBS;
-		color.rgb += newColor;
+		vec4 screenPosW = vec4(texCoord.x, texCoord.y, z1, 1.0);
+		vec4 viewPosW = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
+		viewPosW /= viewPosW.w;
+		vec3 absorbColor = (normalize(waterColor.rgb) * sqrt(WATER_I)) * color.rgb * 2;
+		float absorbDist = 1.0 - clamp((length(viewPosW.xyz) - length(viewPos.xyz)) / 6.0, 0.0, 1.0);
+		vec3 newAlbedo = mix(absorbColor, color.rgb, absorbDist);
+		newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);
+
+		float fog2 = length(viewPosW.xyz) / pow(far, 0.25) * 0.035 * (0.50 + sunVisibility * 0.50);
+		fog2 = 1.0 - (exp(-50.0 * pow(fog2 * 0.125, 3.25) * eBS));
+
+		color.rgb = mix(color.rgb, newAlbedo, (1.0 - color.a));
 	}
-	if (isEyeInWater == 1) color.rgb *= waterColor.rgb * 15 * (0.25 + timeBrightness);
 	#endif
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;

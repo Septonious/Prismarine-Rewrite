@@ -85,6 +85,9 @@ float GetLuminance(vec3 color) {
 
 //Program//
 void main() {
+	vec4 color = texture2D(colortex0, texCoord.xy);
+	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
+	
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float lod0 = 2;
 
@@ -97,20 +100,18 @@ void main() {
 	vec3 aux2 = texture2DLod(colortex8, texCoord.xy + vec2( 0.0, -1 / viewHeight), lod0).rgb;
 	vec3 aux3 = texture2DLod(colortex8, texCoord.xy + vec2( 1 / viewWidth,   0.0), lod0).rgb;
 	vec3 aux4 = texture2DLod(colortex8, texCoord.xy + vec2(-1 / viewWidth,   0.0), lod0).rgb;
-	vec3 auxSum = (aux1 + aux2 + aux3 + aux4) * 0.5;
-	vec3 aux8 = auxSum;
+	vec3 aux8 = (aux1 + aux2 + aux3 + aux4) * 0.5;
 
 	vec3 auxA = texture2DLod(colortex9, texCoord.xy + vec2( 0.0,  1 / viewHeight), lod0).rgb;
 	vec3 auxB = texture2DLod(colortex9, texCoord.xy + vec2( 0.0, -1 / viewHeight), lod0).rgb;
 	vec3 auxC = texture2DLod(colortex9, texCoord.xy + vec2( 1 / viewWidth,   0.0), lod0).rgb;
 	vec3 auxD = texture2DLod(colortex9, texCoord.xy + vec2(-1 / viewWidth,   0.0), lod0).rgb;
-	vec3 auxSum2 = (auxA + auxB + auxC + auxD) * 0.5;
-	vec3 aux9 = auxSum2;
+	vec3 aux9 = (auxA + auxB + auxC + auxD) * 0.5;
 	#endif
 
 	vec2 vc = vec2(0.0);
 
-	float lod = 1;
+	float lod = 2;
 
 	#ifndef MC_GL_RENDERER_GEFORCE
 		if (fract(viewHeight / 2.0) > 0.25 || fract(viewWidth / 2.0) > 0.25) 
@@ -124,9 +125,6 @@ void main() {
 	vec3 vlSum = (vl1 + vl2 + vl3 + vl4) * 0.5;
 	vec3 vl = vlSum;
 	vl *= vl;
-	
-	vec4 color = texture2D(colortex0, texCoord.xy);
-	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;
@@ -141,7 +139,7 @@ void main() {
 	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 0, 1), 0);
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 1, 1), 0);
 	if (isEyeInWater == 1) visibility0 = 1;
 
 	if (visibility0 > 0){
@@ -171,7 +169,7 @@ void main() {
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float dither = Bayer64(gl_FragCoord.xy);
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
-	vc = getVolumetricCloud(pixeldepth1, VCLOUDS_HEIGHT_ADJ_FACTOR, 2, dither);
+	vc = getVolumetricCloud(pixeldepth1, pixeldepth0, VCLOUDS_HEIGHT_ADJ_FACTOR, 2, dither);
 	#endif
 
 	/* DRAWBUFFERS:089 */

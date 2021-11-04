@@ -36,10 +36,11 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	float VoL = dot(nViewPos, lightVec);
 	float VoU = dot(nViewPos, upVec);
 
-	#ifdef OVERWORLD	
+	#ifdef OVERWORLD
 	float visfactor = 0.05 * (-0.1 * timeBrightness + 1.0) * (1.0 - rainStrength);
 	float invvisfactor = 1.0 - visfactor;
-	float visibility = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0) * (1 - rainStrength);
+	float visibility = CalcTotalAmount(CalcDayAmount(1, 1, 1), 0) * (1.0 - rainStrength);
+	if (isEyeInWater == 1) visibility = 1;
 
 	visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
 	visibility = clamp(visibility * 1.015 / invvisfactor - 0.015, 0.0, 1.0);

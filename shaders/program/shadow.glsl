@@ -72,7 +72,7 @@ void main() {
 	#ifdef PROJECTED_CAUSTICS
 	if (water > 0.9){
 		albedo.rgb = waterColor.rgb;
-		albedo.rgb = getCaustics(position0.xyz + cameraPosition.xyz) * albedo.rgb * WATER_CAUSTICS_STRENGTH * (0.25 + timeBrightness);
+		albedo.rgb += getCaustics(position0.xyz + cameraPosition.xyz) * albedo.rgb * WATER_CAUSTICS_STRENGTH * (0.25 + timeBrightness);
 	}
 	#endif
 
@@ -128,7 +128,11 @@ void main() {
 	mat = 0;
 	if (mc_Entity.x == 10301 || mc_Entity.x == 10302) mat = 1;
 	if (mc_Entity.x == 10300 || mc_Entity.x == 10204) mat = 2;
+	#ifdef PROJECTED_CAUSTICS
 	if (mc_Entity.x == 10303) mat = 3;
+	#else
+	if (mc_Entity.x == 10303) mat = 2;
+	#endif
 	
 	position0 = shadowModelViewInverse * shadowProjectionInverse * ftransform();
 

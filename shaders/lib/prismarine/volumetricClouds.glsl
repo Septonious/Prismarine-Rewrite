@@ -7,10 +7,6 @@ float GetLinearDepth2(float depth) {
   return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 }
 
-float getNoise(vec2 pos){
-	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
-}
-
 vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord, shadowdepth, 1.0) * 2.0 - 1.0);
 	viewPos /= viewPos.w;
@@ -34,10 +30,10 @@ float getHeightNoise(vec2 pos){
 	vec2 frc = fract(pos);
 	frc = frc * frc * (3 - 2 * frc);
 	
-	float noisedl = getNoise(flr);
-	float noisedr = getNoise(flr + vec2(1.0,0.0));
-	float noiseul = getNoise(flr + vec2(0.0,1.0));
-	float noiseur = getNoise(flr + vec2(1.0,1.0));
+	float noisedl = rand2D(flr);
+	float noisedr = rand2D(flr + vec2(1.0, 0.0));
+	float noiseul = rand2D(flr + vec2(0.0, 1.0));
+	float noiseur = rand2D(flr + vec2(1.0, 1.0));
 	float noise = mix(mix(noisedl, noisedr, frc.x),
 			          mix(noiseul, noiseur, frc.x), frc.y);
 	return noise;
@@ -69,7 +65,7 @@ float getCloudSample(vec3 pos, float height, float verticalThickness, float deta
 	float noise = 0.0;
 	float ymult = pow(abs(height - pos.y) / verticalThickness, VCLOUDS_VERTICAL_THICKNESS);
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
-	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT);
+	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (1.00 + rainStrength * 0.50);
 	float thickness = (VCLOUDS_HORIZONTAL_THICKNESS + (VCLOUDS_THICKNESS_FACTOR * timeBrightness)) * 64;
 
 	if (quality == 2){
@@ -84,7 +80,8 @@ float getCloudSample(vec3 pos, float height, float verticalThickness, float deta
 		noise += perlin(pos * detail * 0.00216 - wind * 0.2) * 4.0 * thickness;
 		amount *= 0.8;
 	} else if (quality == 1){
-		thickness *= 3;
+		amount *= 0.6;
+		thickness *= 6;
 		noise+= perlin(pos * detail * 0.5 - wind * 0.5) * 0.5 * thickness;
 		noise+= perlin(pos * detail * 0.25 - wind * 0.4) * 2.0 * thickness;
 		noise+= perlin(pos * detail * 0.125 - wind * 0.3) * 3.5 * thickness;
@@ -100,12 +97,13 @@ float getCloudSample(vec3 pos, float height, float verticalThickness, float deta
 	return noise;
 }
 
-vec2 getVolumetricCloud(float pixeldepth1, float heightAdjFactor, float vertThicknessFactor, float dither) {
+vec2 getVolumetricCloud(float pixeldepth1, float pixeldepth0, float heightAdjFactor, float vertThicknessFactor, float dither) {
 	vec2 vc = vec2(0);
 
-	dither *= 8;
+	dither *= 16;
 	
 	float depth1 = GetLinearDepth2(pixeldepth1);
+	float depth0 = GetLinearDepth2(pixeldepth0);
 	vec4 wpos = vec4(0.0);
 
 	float maxDist = 256 * VCLOUDS_RANGE;
@@ -139,7 +137,7 @@ vec2 getVolumetricCloud(float pixeldepth1, float heightAdjFactor, float vertThic
 			vc.x = max(noise * col, vc.x);
 			vc.y = max(noise, vc.y);
 		}
-		minDist = minDist + 10;
+		minDist = minDist + 16;
 	}
 	
 	return vc;

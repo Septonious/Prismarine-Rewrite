@@ -157,7 +157,7 @@ option.RANDOM_COLORED_LIGHTING=Random Colored Lighting
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
 option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
 option.LIGHTMAP_DIM_CUTOFF=Dim Parts Cutoff 
-option.LIGHTMAP_DIM_CUTOFF.comment=Removed dim parts of the block lightmap.
+option.LIGHTMAP_DIM_CUTOFF.comment=Removes dim parts of the block lightmap.
 option.DIM_CUTOFF_FACTOR=Dim Cutoff Factor
 
 option.BLOOM_FLICKERING=Bloom Flickering
@@ -910,11 +910,6 @@ option.BLOCKLIGHT_B_END=Blue (In End)
 option.LIGHTMAP_R=Red Value
 option.LIGHTMAP_B=Blue Value
 option.LIGHTMAP_G=Green Value
-option.CLM_MAINCOL=D.W.P. Main Color
-option.CLM_MAINCOL.comment=Selects the main color for dynamic world position based colored lighting.
-value.CLM_MAINCOL.0=Green
-value.CLM_MAINCOL.1=Blue
-value.CLM_MAINCOL.2=Red
 
 option.SKY_COLOR_MODE=Sky Color Mode
 value.SKY_COLOR_MODE.0=Single Color

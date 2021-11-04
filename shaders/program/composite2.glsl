@@ -25,6 +25,7 @@ uniform float frameTimeCounter;
 uniform float rainStrength;
 uniform float timeAngle, timeBrightness;
 varying vec3 sunVec, upVec;
+uniform int isEyeInWater;
 #endif
 
 uniform vec3 cameraPosition, previousCameraPosition;
@@ -102,6 +103,7 @@ vec3 MotionBlur(vec3 color, float z, float dither) {
 #if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
+#include "/lib/color/waterColor.glsl"
 #ifdef PERBIOME_CLOUDS_COLOR
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
@@ -144,12 +146,15 @@ void main() {
 	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
 	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
 
-	vec2 vc = vec2(texture2D(colortex8, texCoord.xy).a, texture2D(colortex9, texCoord.xy).a);
-	color = mix(color, mix(vcloudsDownCol * 2.00, vcloudsCol, vc.x) * 2.00 * (1.00 - rainStrength * 0.25), vc.y);
+	float lod0 = 2.0;
+
+	vec2 vc = vec2(texture2DLod(colortex8, texCoord.xy, lod0).a, texture2DLod(colortex9, texCoord.xy, lod0).a);
+	if (isEyeInWater == 1) vc.y *= cameraPosition.y * 0.001;
+	color = mix(color, mix(vcloudsDownCol * 2.00, vcloudsCol, vc.x) * 1.50 * (1.00 - rainStrength * 0.25), vc.y);
 	#endif
 
 	/*DRAWBUFFERS:0*/
-	gl_FragData[0] = vec4(color,1.0);
+	gl_FragData[0] = vec4(color, 1.0);
 }
 
 #endif

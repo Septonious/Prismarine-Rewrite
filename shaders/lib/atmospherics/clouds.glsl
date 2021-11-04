@@ -181,7 +181,7 @@ vec3 DrawAurora(vec3 viewPos, float dither, int samples) {
 	if (VoU > 0.0 && visibility > 0.0) {
 		vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 		for(int i = 0; i < samples; i++) {
-			vec3 planeCoord = wpos * ((2.0 + currentStep * 6.0) / wpos.y) * 0.01;
+			vec3 planeCoord = wpos * ((2.0 + currentStep * 6.0) / wpos.y) * 0.02;
 			vec2 coord = cameraPosition.xz * 0.00004 + planeCoord.xz;
 
 			float noise = AuroraSample(coord, wind, VoU);
@@ -213,6 +213,11 @@ float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 		  noise+= texture2D(noisetex, coord * 0.0625  - wind * 0.05).b;
 		  noise+= texture2D(noisetex, coord * 0.03125).b;
 	noise *= NEBULA_AMOUNT;
+
+	#ifdef OVERWORLD
+	noise *= 2.25;
+	#endif
+	
 	noise = max(1.0 - 2.0 * (0.5 * VoU + 0.5) * abs(noise - 3.5), 0.0);
 
 	return noise;
@@ -234,7 +239,11 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 	visFactor = (moonVisibility - rainStrength) * (moonVisibility - auroraVisibility) * (1 - auroraVisibility);
 	#endif
 
+	#ifdef END
 	float VoU = abs(dot(normalize(viewPos.xyz), upVec));
+	#else
+	float VoU = dot(normalize(viewPos.xyz), upVec);
+	#endif
 	float sampleStep = 1.0 / samples;
 	float currentStep = dither * sampleStep;
 
@@ -246,9 +255,18 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 	vec3 nebula = vec3(0.0);
 	vec3 nebulaColor = vec3(0.0);
 
+	#ifdef END
+	if (visFactor > 0){
+	#else
+	if (visFactor > 0 && VoU > 0){
+	#endif
 		vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 		for(int i = 0; i < samples; i++) {
+			#ifdef END
 			vec3 planeCoord = wpos * (16.0 + currentStep * -8.0) * 0.001 * NEBULA_STRETCHING;
+			#else
+			vec3 planeCoord = wpos * ((8.0 + currentStep * -4.0) / wpos.y) * 0.0025 * NEBULA_STRETCHING;
+			#endif
 			vec2 coord = (cameraPosition.xz * 0.0000225 * NEBULA_OFFSET_FACTOR + planeCoord.xz);
 
 			#ifdef NETHER
@@ -269,7 +287,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 
 			float noise = nebulaSample(coord, wind, VoU);
 
-			#ifdef NEBULA_STARS
+			#if defined NEBULA_STARS && defined END
 			vec3 planeCoordstar = wpos / (wpos.y + length(wpos.xz));
 			vec2 starcoord = planeCoordstar.xz * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125;
 			starcoord = floor(starcoord * 1024.0) / 1024.0;
@@ -311,13 +329,15 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 					nebulaColor = mix(netherCol.rgb, netherCol.rgb, pow(currentStep, 0.4));
 					#endif
 				}
-				#ifndef NETHER
+				#if defined NEBULA_STARS && defined END
 				nebulaColor += star;
 				#endif
+
 				nebula += noise * nebulaColor * exp2(-4.0 * i * sampleStep);
 			}
 			currentStep += sampleStep;
 		}
+	}
 
 	return nebula * NEBULA_BRIGHTNESS * visFactor;
 }
