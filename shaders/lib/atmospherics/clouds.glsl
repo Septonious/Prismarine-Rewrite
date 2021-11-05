@@ -165,7 +165,7 @@ vec3 DrawAurora(vec3 viewPos, float dither, int samples) {
 
 	float VoU = dot(normalize(viewPos), upVec);
 
-	float visibility = moonVisibility * (1.0 - rainStrength) * (1.0 - rainStrength);
+	float visibility = moonVisibility * (1.0 - rainStrength);
 
 	#ifdef WEATHER_PERBIOME
 	visibility *= isCold * isCold;
@@ -205,6 +205,13 @@ vec3 DrawAurora(vec3 viewPos, float dither, int samples) {
 
 #if (defined OVERWORLD && NIGHT_SKY_MODE == 1) || (defined END && END_SKY == 1)
 float nebulaSample(vec2 coord, vec2 wind, float VoU) {
+	#ifdef OVERWORLD
+	float noise = texture2D(noisetex, coord * 1.0000 - wind * 0.25).b * -6.0;
+		  noise+= texture2D(noisetex, coord * 0.5000 + wind * 0.20).b * 2.0;
+		  noise+= texture2D(noisetex, coord * 0.2500 - wind * 0.15).b * 3.0;
+		  noise+= texture2D(noisetex, coord * 0.1250 + wind * 0.10).b * -4.0;	
+		  noise+= texture2D(noisetex, coord * 0.0625 - wind * 0.05).b * 6.0;
+	#else
 	float noise = texture2D(noisetex, coord * 2.0000  + wind * 0.30).b;
 		  noise+= texture2D(noisetex, coord * 1.0000  - wind * 0.25).b;
 		  noise+= texture2D(noisetex, coord * 0.5000  + wind * 0.20).b;
@@ -212,10 +219,11 @@ float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 		  noise+= texture2D(noisetex, coord * 0.1250  + wind * 0.10).b;	
 		  noise+= texture2D(noisetex, coord * 0.0625  - wind * 0.05).b;
 		  noise+= texture2D(noisetex, coord * 0.03125).b;
+	#endif
 	noise *= NEBULA_AMOUNT;
 
 	#ifdef OVERWORLD
-	noise *= 2.25;
+	noise *= 3.00;
 	#endif
 	
 	noise = max(1.0 - 2.0 * (0.5 * VoU + 0.5) * abs(noise - 3.5), 0.0);
@@ -265,7 +273,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 			#ifdef END
 			vec3 planeCoord = wpos * (16.0 + currentStep * -8.0) * 0.001 * NEBULA_STRETCHING;
 			#else
-			vec3 planeCoord = wpos * ((8.0 + currentStep * -4.0) / wpos.y) * 0.0025 * NEBULA_STRETCHING;
+			vec3 planeCoord = wpos * ((6.0 + currentStep * -2.0) / wpos.y) * 0.0025 * NEBULA_STRETCHING;
 			#endif
 			vec2 coord = (cameraPosition.xz * 0.0000225 * NEBULA_OFFSET_FACTOR + planeCoord.xz);
 
@@ -274,12 +282,18 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 			#endif
 
 			if (nebulaType == 0){
+				#ifdef END
 				coord += vec2(coord.y, -coord.x) * 1.00 * NEBULA_DISTORTION;
+				#endif
+
 				coord += cos(mix(vec2(cos(currentStep * 1), sin(currentStep * 2.00)), vec2(cos(currentStep * 3.0), sin(currentStep * 4.00)), currentStep) * 0.005);
 				coord += sin(mix(vec2(cos(currentStep * 2), sin(currentStep * 2.50)), vec2(cos(currentStep * 3.0), sin(currentStep * 3.50)), currentStep) * 0.010);
 				coord += cos(mix(vec2(cos(currentStep * 3), sin(currentStep * 3.75)), vec2(cos(currentStep * 4.5), sin(currentStep * 5.25)), currentStep) * 0.015);
 			}else{
+				#ifdef END
 				coord += vec2(coord.y, -coord.x) * 2.00 * NEBULA_DISTORTION;
+				#endif
+				
 				coord += cos(mix(vec2(cos(currentStep * 0.50), sin(currentStep * 1.00)), vec2(cos(currentStep * 1.50), sin(currentStep * 2.00)), currentStep) * 0.020);
 				coord += sin(mix(vec2(cos(currentStep * 1.00), sin(currentStep * 2.00)), vec2(cos(currentStep * 3.00), sin(currentStep * 4.00)), currentStep) * 0.015);
 				coord += cos(mix(vec2(cos(currentStep * 1.50), sin(currentStep * 3.00)), vec2(cos(currentStep * 4.50), sin(currentStep * 6.00)), currentStep) * 0.010);

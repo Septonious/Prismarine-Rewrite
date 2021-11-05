@@ -88,7 +88,6 @@ screen.WEATHER_S=Swamp Rain
 screen.WEATHER_M=Mushroom Island Rain
 screen.WEATHER_V=Savanna Cloudy
 screen.BIOMECOLOR_COLOR=Per-Biome Color
-screen.BIOMECOLOR_C=Cold Biomes
 screen.BIOMECOLOR_D=Desert
 screen.BIOMECOLOR_B=Mesa
 screen.BIOMECOLOR_S=Swamp
@@ -270,7 +269,7 @@ value.ALPHA_BLEND.1=Linear
 #Specular & Reflections
 option.REFLECTION=Reflections
 option.REFLECTION.comment=Enables reflections on water and translucents.
-value.REFLECTION.0=§cOFF
+value.REFLECTION.0=OFF
 value.REFLECTION.1=Sky & Specular Only
 value.REFLECTION.2=Full
 
@@ -401,7 +400,7 @@ option.ROUND_SUN_MOON.comment=Enables shader based sun & moon. §e[*]§rDisable 
 
 option.DISTANT_FADE=Distant Fade
 option.DISTANT_FADE.comment=Fades far chunk borders. §e[*]§rThis option is affected by fog density.
-value.DISTANT_FADE.0=§cOFF
+value.DISTANT_FADE.0=OFF
 value.DISTANT_FADE.1=Overworld Only
 value.DISTANT_FADE.2=Nether & End Only
 value.DISTANT_FADE.3=Full
@@ -490,7 +489,7 @@ option.SKY_HORIZON_F=Far Horizon
 option.SKY_GROUND_I=Sky Ground Brightness
 option.SKY_GROUND=Sky Ground
 option.SKY_GROUND.comment=Darkens the bottom part of the sky.
-value.SKY_GROUND.0=§cOFF
+value.SKY_GROUND.0=OFF
 value.SKY_GROUND.1=Reflections Only
 value.SKY_GROUND.2=Full
 
@@ -563,7 +562,7 @@ value.WATER_ALPHA_MODE.1=Vanilla
 
 option.WATER_NORMALS=Normals
 option.WATER_NORMALS.comment=Enables realtime-generated normal mapping for water.
-value.WATER_NORMALS.0=§cOFF
+value.WATER_NORMALS.0=OFF
 value.WATER_NORMALS.1=Worley
 value.WATER_NORMALS.2=Perlin
 value.WATER_NORMALS.3=Custom

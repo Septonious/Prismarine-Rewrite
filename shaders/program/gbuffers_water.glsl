@@ -312,7 +312,7 @@ void main() {
 			if (isEyeInWater == 1){
 				albedo.a *= 0.50;
 			} else {
-				albedo.a *= 0.85;
+				albedo.a *= 0.8;
 			}
 
 			baseReflectance = vec3(0.02);
@@ -543,7 +543,8 @@ void main() {
 
 		Fog(albedo.rgb, viewPos);
 
-		if((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
+		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
+			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
 		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
 		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);
 		 	#ifdef TAA
@@ -552,8 +553,17 @@ void main() {
 		 	vec3 oViewPos = ToNDC(oScreenPos);
 		 	#endif
 
-		 	vec4 waterFog = GetWaterFog(viewPos.xyz - oViewPos);
-		 	albedo = mix(waterFog, vec4(albedo.rgb, 1.0), albedo.a);
+			float difT = length(oViewPos - viewPos.xyz);
+					
+			vec3 absorbColor = (normalize(vec3(waterColor.r, waterColor.g * (0.50 + lightmap.y * lightmap.y * 0.75), waterColor.b)) * 2 * WATER_I) * terrainColor * terrainColor * (12 * (0.25 + sunVisibility * 0.75));
+			float absorbDist = 1.0 - clamp(difT / (0.25 + sunVisibility * 7.25), 0.0, 1.0);
+			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
+			newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);
+
+			float fog2 = length(oViewPos) / far * 0.025 * (0.25 + sunVisibility * 0.75);
+			fog2 = 1.0 - (exp(-waterFogRange * pow(fog2 * 0.125, 4.0) * eBS));
+
+			albedo.rgb = mix(albedo.rgb, newAlbedo, (1.0 - albedo.a) * lightmap.y);
 		}
 
 		#if ALPHA_BLEND == 0

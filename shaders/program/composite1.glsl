@@ -109,8 +109,6 @@ void main() {
 	vec3 aux9 = (auxA + auxB + auxC + auxD) * 0.5;
 	#endif
 
-	vec2 vc = vec2(0.0);
-
 	float lod = 2;
 
 	#ifndef MC_GL_RENDERER_GEFORCE
@@ -169,14 +167,13 @@ void main() {
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float dither = Bayer64(gl_FragCoord.xy);
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
-	vc = getVolumetricCloud(pixeldepth1, pixeldepth0, VCLOUDS_HEIGHT_ADJ_FACTOR, 2, dither);
 	#endif
 
 	/* DRAWBUFFERS:089 */
 	gl_FragData[0] = color;
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	gl_FragData[1] = vec4(aux8, vc.x);
-	gl_FragData[2] = vec4(aux9, vc.y);
+	gl_FragData[1] = getVolumetricCloud(pixeldepth0, pixeldepth1, dither, aux8, aux9, 0);
+	gl_FragData[2] = getVolumetricCloud(pixeldepth0, pixeldepth1, dither, aux8, aux9, 1);
 	#endif
 }
 

@@ -97,20 +97,25 @@ float getCloudSample(vec3 pos, float height, float verticalThickness, float deta
 	return noise;
 }
 
-vec2 getVolumetricCloud(float pixeldepth1, float pixeldepth0, float heightAdjFactor, float vertThicknessFactor, float dither) {
-	vec2 vc = vec2(0);
-
-	dither *= 16;
+vec4 getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, vec3 aux8, vec3 aux9, float type){
+	vec4 result = vec4(0.0);
+	vec4 wpos = vec4(0.0);
+	vec2 cloudAlpha = vec2(0.0);
 	
 	float depth1 = GetLinearDepth2(pixeldepth1);
 	float depth0 = GetLinearDepth2(pixeldepth0);
-	vec4 wpos = vec4(0.0);
 
-	float maxDist = 256 * VCLOUDS_RANGE;
-	float minDist = 0.01 + dither;
+	float maxDist = 256.0 * VCLOUDS_RANGE;
+	float minDist = 0.01 + (dither*12);
+
+	if (type == 0){
+		result.rgb += aux8;
+	} else {
+		result.rgb += aux9;
+	}
 
 	for (minDist; minDist < maxDist; ) {
-		if (depth1 < minDist || vc.y > 0.999){
+		if (depth1 < minDist || cloudAlpha.y > 0.999){
 			break;
 		}
 
@@ -124,22 +129,28 @@ vec2 getVolumetricCloud(float pixeldepth1, float pixeldepth0, float heightAdjFac
 			else break;
 			#endif
 
-			float offset = 64;
-			if (VCLOUDS_NOISE_QUALITY == 0) offset = 1;
+			float offset = 64.0;
+			if (VCLOUDS_NOISE_QUALITY == 0) offset = 1.0;
 
 			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -vh * offset, 0.0);
 
-			float height = VCLOUDS_HEIGHT + (heightAdjFactor * timeBrightness);
-			float vertThickness = VCLOUDS_VERTICAL_THICKNESS * vertThicknessFactor + timeBrightness;
+			float height = VCLOUDS_HEIGHT + (VCLOUDS_HEIGHT_ADJ_FACTOR * timeBrightness);
+			float vertThickness = VCLOUDS_VERTICAL_THICKNESS * 2.0 + timeBrightness;
 
 			float noise = getCloudSample(wpos.xyz, height, vertThickness, VCLOUDS_SAMPLES, VCLOUDS_NOISE_QUALITY);
 			float col = smoothstep(height - vertThickness * noise, height + vertThickness * noise, wpos.y);
-			vc.x = max(noise * col, vc.x);
-			vc.y = max(noise, vc.y);
+			cloudAlpha.x = max(noise * col, cloudAlpha.x);
+			cloudAlpha.y = max(noise, cloudAlpha.y);
 		}
-		minDist = minDist + 16;
+		minDist = minDist + 12.0;
 	}
-	
-	return vc;
+
+	if (type == 0){
+		result.a = cloudAlpha.x;
+	} else {
+		result.a = cloudAlpha.y;
+	}
+
+	return result;
 }
 #endif

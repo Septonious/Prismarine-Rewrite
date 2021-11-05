@@ -3,13 +3,14 @@ uniform vec3 fogColor;
 #endif
 
 #ifdef OVERWORLD
+uniform float playerMood;
 vec3 fogcolorMorning    = vec3(FOGCOLOR_MR,   FOGCOLOR_MG,   FOGCOLOR_MB)   * FOGCOLOR_MI / 255.0;
 vec3 fogcolorDay        = vec3(FOGCOLOR_DR,   FOGCOLOR_DG,   FOGCOLOR_DB)   * FOGCOLOR_DI / 255.0;
 vec3 fogcolorEvening    = vec3(FOGCOLOR_ER,   FOGCOLOR_EG,   FOGCOLOR_EB)   * FOGCOLOR_EI / 255.0;
 vec3 fogcolorNight      = vec3(FOGCOLOR_NR,   FOGCOLOR_NG,   FOGCOLOR_NB)   * FOGCOLOR_NI * 0.3 / 255.0;
 
 vec3 fogcolorSun    = CalcSunColor(fogcolorMorning, fogcolorDay, fogcolorEvening);
-vec4 fogColorC    	= vec4(CalcLightColor(fogcolorSun, fogcolorNight, weatherCol.rgb), 1);
+vec3 fogColorC    	= CalcLightColor(fogcolorSun, fogcolorNight, weatherCol.rgb);
 #endif
 
 #include "/lib/atmospherics/clouds.glsl"
@@ -59,7 +60,7 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
         #elif FOG_COLOR_MODE == 0
         fog = GetSkyColor(viewPos, false) * baseGradient / (SKY_I * SKY_I);
         #elif FOG_COLOR_MODE == 2
-        fog = getBiomeColor(fogCol) * baseGradient / (SKY_I * SKY_I);
+        fog = getBiomeColor(fogColorC * 2.0) * baseGradient / (SKY_I * SKY_I);
         #endif
 
 	#ifdef TF
@@ -85,15 +86,15 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
 	vec3 lightFog = vec3(0);
 
         #if FOG_COLOR_MODE == 1
-        lightFog = pow(fogcolorSun / 2 * vec3(FOG_R, FOG_G, FOG_B) * FOG_I, vec3(4.0 - sunVisibility)) * baseGradient;
+        lightFog = pow(fogcolorSun * vec3(FOG_R, FOG_G, FOG_B) * FOG_I, vec3(4.0 - sunVisibility)) * baseGradient;
         #elif FOG_COLOR_MODE == 0
-        lightFog = pow(GetSkyColor(viewPos, false) / 2, vec3(4.0 - sunVisibility)) * baseGradient;
+        lightFog = pow(GetSkyColor(viewPos, false), vec3(4.0 - sunVisibility)) * baseGradient;
         #elif FOG_COLOR_MODE == 2
-        lightFog = pow(getBiomeColor(fogCol) / 2, vec3(4.0 - sunVisibility)) * baseGradient;
+        lightFog = pow(getBiomeColor(fogColorC * 2.0), vec3(4.0 - sunVisibility)) * baseGradient;
         #endif
 
 	#ifdef TF
-	lightFog = pow(GetSkyColor(viewPos, false) / 2, vec3(4.0 - sunVisibility)) * baseGradient;
+	lightFog = pow(GetSkyColor(viewPos, false) / 2.0, vec3(4.0 - sunVisibility)) * baseGradient;
 	#endif
 
 	#ifdef COLORED_FOG
@@ -142,8 +143,9 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 	#ifdef OVERWORLD
 	float densitySun = CalcFogDensity(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY);
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
-	density *= 0 + eBS;
-	if (fogType == 0) density *= 4;
+	density *= 1 - playerMood;
+	if (fogType == 0) density *= FIRST_LAYER_DENSITY;
+	if (fogType == 1) density *= SECOND_LAYER_DENSITY;
 
 	float fog = length(viewPos) * density / 64.0;
 	float clearDay = sunVisibility * (1.0 - rainStrength);
@@ -162,7 +164,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 			height = clamp(height, 0, 1);
 		fog *= 1 - height;
 	} else {
-		fog *= 0;
+		fog *= 0.0;
 	}
 
 	vec3 fogColor = vec3(0);

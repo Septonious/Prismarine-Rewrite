@@ -39,7 +39,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	#ifdef OVERWORLD
 	float visfactor = 0.05 * (-0.1 * timeBrightness + 1.0) * (1.0 - rainStrength);
 	float invvisfactor = 1.0 - visfactor;
-	float visibility = CalcTotalAmount(CalcDayAmount(1, 1, 1), 0) * (1.0 - rainStrength);
+	float visibility = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0) * (1.0 - rainStrength);
 	if (isEyeInWater == 1) visibility = 1;
 
 	visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
@@ -106,7 +106,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 					else break;
 					#endif
 
-					shadow *= getFogSample(npos.xyz, LIGHTSHAFT_HEIGHT + 10, LIGHTSHAFT_VERTICAL_THICKNESS, 0.2, 1.75);
+					shadow *= getFogSample(npos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS, 0.5, 1.75);
 				}
 				#endif
 

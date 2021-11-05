@@ -1,21 +1,20 @@
 #ifdef OVERWORLD
 #if SKY_COLOR_MODE == 1
 vec3 getBiomeskyColor(){
-	vec4 skyCold     = vec4(vec3(BIOMECOLOR_CR, BIOMECOLOR_CG, BIOMECOLOR_CB) / 512.0, 1.0) * BIOMECOLOR_CI;
-	vec4 skyDesert   = vec4(vec3(BIOMECOLOR_DR, BIOMECOLOR_DG, BIOMECOLOR_DB) / 512.0, 1.0) * BIOMECOLOR_DI;
-	vec4 skySwamp    = vec4(vec3(BIOMECOLOR_SR, BIOMECOLOR_SG, BIOMECOLOR_SB) / 512.0, 1.0) * BIOMECOLOR_SI;
-	vec4 skyMushroom = vec4(vec3(BIOMECOLOR_MR, BIOMECOLOR_MG, BIOMECOLOR_MB) / 512.0, 1.0) * BIOMECOLOR_MI;
-	vec4 skySavanna  = vec4(vec3(BIOMECOLOR_VR, BIOMECOLOR_VG, BIOMECOLOR_VB) / 512.0, 1.0) * BIOMECOLOR_VI;
-	vec4 skyForest   = vec4(vec3(BIOMECOLOR_FR, BIOMECOLOR_FG, BIOMECOLOR_FB) / 512.0, 1.0) * BIOMECOLOR_FI;
-	vec4 skyTaiga    = vec4(vec3(BIOMECOLOR_TR, BIOMECOLOR_TG, BIOMECOLOR_TB) / 512.0, 1.0) * BIOMECOLOR_TI;
-	vec4 skyJungle   = vec4(vec3(BIOMECOLOR_JR, BIOMECOLOR_JG, BIOMECOLOR_JB) / 512.0, 1.0) * BIOMECOLOR_JI;
+	vec3 skyDesert   = vec3(BIOMECOLOR_DR, BIOMECOLOR_DG, BIOMECOLOR_DB) / 512.0 * BIOMECOLOR_DI;
+	vec3 skySwamp    = vec3(BIOMECOLOR_SR, BIOMECOLOR_SG, BIOMECOLOR_SB) / 512.0 * BIOMECOLOR_SI;
+	vec3 skyMushroom = vec3(BIOMECOLOR_MR, BIOMECOLOR_MG, BIOMECOLOR_MB) / 512.0 * BIOMECOLOR_MI;
+	vec3 skySavanna  = vec3(BIOMECOLOR_VR, BIOMECOLOR_VG, BIOMECOLOR_VB) / 512.0 * BIOMECOLOR_VI;
+	vec3 skyForest   = vec3(BIOMECOLOR_FR, BIOMECOLOR_FG, BIOMECOLOR_FB) / 512.0 * BIOMECOLOR_FI;
+	vec3 skyTaiga    = vec3(BIOMECOLOR_TR, BIOMECOLOR_TG, BIOMECOLOR_TB) / 512.0 * BIOMECOLOR_TI;
+	vec3 skyJungle   = vec3(BIOMECOLOR_JR, BIOMECOLOR_JG, BIOMECOLOR_JB) / 512.0 * BIOMECOLOR_JI;
 
-	float skyWeight = isCold + isDesert + isMesa + isSwamp + isMushroom + isSavanna + isForest + isJungle + isTaiga;
+	float skyWeight = isDesert + isMesa + isSwamp + isMushroom + isSavanna + isForest + isJungle + isTaiga;
 
-	vec4 biomeskyCol = mix(
-		vec4(skyCol, 1.0),
+	vec3 biomeskyCol = mix(
+		skyCol,
 		(
-			skyCold * isCold  +  skyDesert * isDesert  +  skySavanna * isMesa    +
+			skyDesert * isDesert  +  skySavanna * isMesa    +
 			skySwamp * isSwamp  +  skyMushroom * isMushroom  +  skySavanna * isSavanna +
 			skyForest * isForest  +  skyJungle * isJungle  +  skyTaiga * isTaiga
 		) / max(skyWeight, 0.0001),
@@ -70,7 +69,7 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
 
     vec3 weatherSky = weatherCol.rgb * weatherCol.rgb * weatherExposure;
 
-    vec3 sky = mix(skyCol * 0.75, skyCol * skyCol, 0.75) * baseGradient;
+    vec3 sky = skyCol * 2.0 * skyCol * baseGradient;
 
     #ifdef TF
     sky = mix(tfSkyUp * 0.75, tfSkyUp * tfSkyUp, 0.75) * baseGradient;

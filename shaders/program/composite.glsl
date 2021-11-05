@@ -217,26 +217,6 @@ void main() {
 	if (z0 < z1 && translucent.r < 0.25){
 		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition, z0, z0);
 		color.rgb = texture2D(colortex0, refractionCoord).rgb;
-		if (isEyeInWater == 1){
-			color.rgb *= waterColor.rgb * 16;
-		}
-	}
-	#endif
-
-	#ifdef OVERWORLD
-	if (z0 < z1 && translucent.r < 0.25 && isEyeInWater == 0){
-		vec4 screenPosW = vec4(texCoord.x, texCoord.y, z1, 1.0);
-		vec4 viewPosW = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
-		viewPosW /= viewPosW.w;
-		vec3 absorbColor = (normalize(waterColor.rgb) * sqrt(WATER_I)) * color.rgb * 2;
-		float absorbDist = 1.0 - clamp((length(viewPosW.xyz) - length(viewPos.xyz)) / 6.0, 0.0, 1.0);
-		vec3 newAlbedo = mix(absorbColor, color.rgb, absorbDist);
-		newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);
-
-		float fog2 = length(viewPosW.xyz) / pow(far, 0.25) * 0.035 * (0.50 + sunVisibility * 0.50);
-		fog2 = 1.0 - (exp(-50.0 * pow(fog2 * 0.125, 3.25) * eBS));
-
-		color.rgb = mix(color.rgb, newAlbedo, (1.0 - color.a));
 	}
 	#endif
 

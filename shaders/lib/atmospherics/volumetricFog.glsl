@@ -73,22 +73,20 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #ifdef NETHER
                 wpos.xyz += cameraPosition.xyz + vec3(frametime * 0.75, vh * 48, 0.0);
                 #else
-                wpos.xyz += cameraPosition.xyz + vec3(frametime * 0.25, vh * 32, 0.0);
+                wpos.xyz += cameraPosition.xyz + vec3(frametime * 0.25, vh * 24, 0.0);
                 #endif
-
-                float noiseShape = clamp(sin(1), 0, 1);
 
                 #ifdef NETHER
                 float noise = getFogSample(wpos.xyz, 100, 48, 1.25, 1.10);
                 #else
-                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, 24, 0.15, 2.00) * noiseShape;
+                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, 16, 0.4, 2.00);
                 #endif
 
                 if (noise > 1e-3) {
                     #ifdef NETHER
                     vec4 color0 = vec4(mix(netherCol.rgb * 0.05, netherCol.rgb * 0.15, noise), noise);
                     #else
-                    vec4 color0 = vec4(mix(fogColorC * 0.2, fogColorC * 0.4, noise), noise);
+                    vec4 color0 = vec4(mix(fogColorC * 0.1, fogColorC * 0.2, noise), noise);
                     #endif
                     color0.rgb *= color0.w;
 

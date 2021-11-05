@@ -12,6 +12,10 @@ https://bitslablab.com
 //Varyings//
 varying float mat, recolor;
 
+#ifdef INTEGRATED_EMISSION
+varying float isPlant;
+#endif
+
 varying vec2 texCoord, lmCoord;
 
 varying vec3 normal;
@@ -31,7 +35,6 @@ varying vec4 vTexCoord, vTexCoordAM;
 //Uniforms//
 uniform int frameCounter;
 uniform int worldTime;
-uniform int blockEntityId;
 uniform int isEyeInWater;
 
 #if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2
@@ -248,7 +251,7 @@ void main() {
 			emissive = float(length(albedo.rgb) > 0.975) * 0.1 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
-		if (mat == 1){ // Flowers
+		if (isPlant == 1.0){ // Flowers
 			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
 		}
 		#endif
@@ -444,7 +447,7 @@ void main() {
 		float depth = clamp(length(viewPos.xyz), 0, 7);
 		depth = 8 - depth;
 		if (isEyeInWater == 1){
-			albedo.rgb *= vec3(waterColor.r * 2.25, waterColor.g * 1.75, waterColor.b * 0.50) * (6 - rainStrength - rainStrength);
+			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6 - rainStrength - rainStrength);
 			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512 * (0.25 + timeBrightness) + depth;
 		}
 		#endif
@@ -479,6 +482,10 @@ void main() {
 
 //Varyings//
 varying float mat, recolor;
+
+#ifdef INTEGRATED_EMISSION
+varying float isPlant;
+#endif
 
 varying vec2 texCoord, lmCoord;
 
@@ -598,6 +605,7 @@ void main() {
 		color.a = 1.0;
 
 	#ifdef INTEGRATED_EMISSION
+	isPlant = 0.0;
 	if (mc_Entity.x == 20000) mat = 100.0;
 	if (mc_Entity.x == 20001) mat = 101.0;
 	if (mc_Entity.x == 20002) mat = 102.0;
@@ -607,6 +615,7 @@ void main() {
 	if (mc_Entity.x == 20006) mat = 106.0;
 	if (mc_Entity.x == 20007) mat = 109.0;
 	if (mc_Entity.x == 20008) mat = 110.0;
+	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
