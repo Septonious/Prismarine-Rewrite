@@ -27,7 +27,7 @@ uniform sampler2D colortex2;
 uniform sampler2D depthtex1;
 
 //Optifine Constants//
-#ifdef LIGHTSHAFT
+#if defined VOLUMETRIC_LIGHT || defined VOLUMETRIC_FOG || defined FIREFLIES || defined NETHER_SMOKE
 const bool colortex1MipmapEnabled = true;
 #endif
 

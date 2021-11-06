@@ -19,7 +19,7 @@ vec4 GetShadowSpace(vec4 wpos) {
 }
 
 //Light shafts from Robobo1221 (modified)
-vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dither) {
+vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dither, float visibility) {
 	vec3 vl = vec3(0.0);
 
 	dither = InterleavedGradientNoiseVL();
@@ -39,7 +39,6 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	#ifdef OVERWORLD
 	float visfactor = 0.05 * (-0.1 * timeBrightness + 1.0) * (1.0 - rainStrength);
 	float invvisfactor = 1.0 - visfactor;
-	float visibility = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0) * (1.0 - rainStrength);
 	if (isEyeInWater == 1) visibility = 1;
 
 	visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
@@ -117,7 +116,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 			}
 		}
 		vl = sqrt(vl * visibility);
-		if(dot(vl, vl) > 0.0) vl += (dither - 0.25) / 128.0;
+		vl += vl * dither * 0.19;
 	}
 	
 	return vl;

@@ -59,10 +59,14 @@ screen.LIGHTSHAFT_D=Light Shafts (Day)
 screen.LIGHTSHAFT_E=Light Shafts (Evening)
 screen.LIGHTSHAFT_N=Light Shafts (Night)
 screen.LIGHTSHAFT_W=Light Shafts (Underwater)
-screen.SKYLIGHT_M=Sky (Morning)
-screen.SKYLIGHT_D=Sky (Day)
-screen.SKYLIGHT_E=Sky (Evening)
-screen.SKYLIGHT_N=Sky (Night)
+screen.SKYLIGHT_M=Sky Horizon (Morning)
+screen.SKYLIGHT_D=Sky Horizon (Day)
+screen.SKYLIGHT_E=Sky Horizon (Evening)
+screen.SKYLIGHT_N=Sky Horizon (Night)
+screen.BASESKY_M=Sky (Morning)
+screen.BASESKY_D=Sky (Day)
+screen.BASESKY_E=Sky (Evening)
+screen.BASESKY_N=Sky (Night)
 screen.LIGHT_M=Light (Morning)
 screen.AMBIENT_M=Ambient (Morning)
 screen.LIGHT_D=Light (Day)
@@ -76,7 +80,7 @@ screen.BLOCKLIGHT_COLOR=Blocklight Color
 screen.SKY_DENSITY=Density
 screen.SKY_EXPOSURE=Exposure
 screen.SKY_COLOR=Sky Color
-screen.SKY_COLOR_DEFAULT=Base Sky Color
+screen.SKY_COLOR_BASE=Base Sky Color
 screen.FOG_TINT=Tint
 screen.WATER_COLOR=Water Color
 screen.WEATHER_COLOR=Weather Color
@@ -826,6 +830,26 @@ option.LIGHTSHAFT_WG=Green
 option.LIGHTSHAFT_WB=Blue
 option.LIGHTSHAFT_WI=Intensity
 
+option.BASESKY_MR=Red
+option.BASESKY_MG=Green
+option.BASESKY_MB=Blue
+option.BASESKY_MI=Intensity
+
+option.BASESKY_DR=Red
+option.BASESKY_DG=Green
+option.BASESKY_DB=Blue
+option.BASESKY_DI=Intensity
+
+option.BASESKY_ER=Red
+option.BASESKY_EG=Green
+option.BASESKY_EB=Blue
+option.BASESKY_EI=Intensity
+
+option.BASESKY_NR=Red
+option.BASESKY_NG=Green
+option.BASESKY_NB=Blue
+option.BASESKY_NI=Intensity
+
 option.SKYLIGHT_MR=Red
 option.SKYLIGHT_MG=Green
 option.SKYLIGHT_MB=Blue
@@ -923,11 +947,6 @@ option.TFSKYD_R=Twilight Forest - Red
 option.TFSKYD_G=Twilight Forest - Green
 option.TFSKYD_B=Twilight Forest - Blue
 option.TFSKYD_I=Twilight Forest - Intensity
-
-option.SKY_R=Red
-option.SKY_G=Green
-option.SKY_B=Blue
-option.SKY_I=Intensity
 
 option.CLOUDS_END_R=Red
 option.CLOUDS_END_G=Green

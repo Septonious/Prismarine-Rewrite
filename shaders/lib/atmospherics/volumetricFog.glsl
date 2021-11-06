@@ -37,12 +37,12 @@ float getHeightNoise(vec2 p) {
 #ifdef VOLUMETRIC_FOG
 #endif
 
-vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float dither, vec3 viewPos) {
+vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float dither, vec3 viewPos, float visibility) {
     dither = InterleavedGradientNoiseVL();
 	float maxDist = 512;
 	float depth0 = GetLinearDepth2(pixeldepth0);
 	float depth1 = GetLinearDepth2(pixeldepth1);
-    float visibility = (1 - timeBrightness) * (0 + sunVisibility) * (1 - rainStrength) * eBS * (1 - isEyeInWater);
+	if (isEyeInWater == 1) visibility = 0;
 
     #ifdef NETHER
     visibility = 1;
@@ -79,7 +79,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #ifdef NETHER
                 float noise = getFogSample(wpos.xyz, 100, 48, 1.25, 1.10);
                 #else
-                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, 16, 0.4, 2.00);
+                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, LIGHTSHAFT_VERTICAL_THICKNESS, 0.4, 2.00);
                 #endif
 
                 if (noise > 1e-3) {

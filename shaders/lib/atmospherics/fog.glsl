@@ -3,7 +3,7 @@ uniform vec3 fogColor;
 #endif
 
 #ifdef OVERWORLD
-uniform float playerMood;
+
 vec3 fogcolorMorning    = vec3(FOGCOLOR_MR,   FOGCOLOR_MG,   FOGCOLOR_MB)   * FOGCOLOR_MI / 255.0;
 vec3 fogcolorDay        = vec3(FOGCOLOR_DR,   FOGCOLOR_DG,   FOGCOLOR_DB)   * FOGCOLOR_DI / 255.0;
 vec3 fogcolorEvening    = vec3(FOGCOLOR_ER,   FOGCOLOR_EG,   FOGCOLOR_EB)   * FOGCOLOR_EI / 255.0;
@@ -56,15 +56,15 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
 	vec3 fog = vec3(0);
 
         #if FOG_COLOR_MODE == 1
-        fog = fogCol * baseGradient / (SKY_I * SKY_I);
+        fog = fogCol * baseGradient;
         #elif FOG_COLOR_MODE == 0
-        fog = GetSkyColor(viewPos, false) * baseGradient / (SKY_I * SKY_I);
+        fog = GetSkyColor(viewPos, false) * baseGradient;
         #elif FOG_COLOR_MODE == 2
-        fog = getBiomeColor(fogColorC * 2.0) * baseGradient / (SKY_I * SKY_I);
+        fog = getBiomeColor(fogColorC * 2.0) * baseGradient;
         #endif
 
 	#ifdef TF
-	fog = GetSkyColor(viewPos, false) * baseGradient / (SKY_I * SKY_I);
+	fog = GetSkyColor(viewPos, false) * baseGradient;
 	#endif
 
 	#ifdef COLORED_FOG
@@ -76,7 +76,7 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
 		fog *= baseGradient;
 	#endif
 	
-    fog = fog / sqrt(fog * fog + 1.0) * exposure * sunVisibility * (SKY_I * SKY_I);
+    fog = fog / sqrt(fog * fog + 1.0) * exposure * sunVisibility;
 
 	float sunMix = (VoL * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) *
                    pow(1.0 - timeBrightness * 0.6, 3.0);
@@ -143,7 +143,6 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 	#ifdef OVERWORLD
 	float densitySun = CalcFogDensity(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY);
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
-	density *= 1 - playerMood;
 	if (fogType == 0) density *= FIRST_LAYER_DENSITY;
 	if (fogType == 1) density *= SECOND_LAYER_DENSITY;
 
@@ -153,12 +152,12 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 	fog = 1.0 - exp(-2.0 * pow(fog, 0.15 * clearDay + 1.25));
 
 	if (isEyeInWater == 0){
-		vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000;
+		vec3 pos = worldPos.xyz + cameraPosition.xyz + 100;
 		float height;
 		if (fogType == 0){
-			height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
+			height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.01;
 		}else{
-			height = (pos.y - FOG_SECOND_LAYER_ALTITUDE) * 0.001;
+			height = (pos.y - FOG_SECOND_LAYER_ALTITUDE) * 0.01;
 		}
 			height = pow(height, 8);
 			height = clamp(height, 0, 1);

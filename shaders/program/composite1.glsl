@@ -12,7 +12,7 @@ https://bitslablab.com
 //Varyings//
 varying vec2 texCoord;
 
-varying vec3 sunVec, upVec, lightVec;
+varying vec3 sunVec, upVec;
 
 //Uniforms//
 uniform int isEyeInWater;
@@ -109,6 +109,12 @@ void main() {
 	vec3 aux9 = (auxA + auxB + auxC + auxD) * 0.5;
 	#endif
 
+	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
+		 viewPos /= viewPos.w;
+
+	#ifdef OVERWORLD
+
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
 	float lod = 2;
 
 	#ifndef MC_GL_RENDERER_GEFORCE
@@ -123,12 +129,8 @@ void main() {
 	vec3 vlSum = (vl1 + vl2 + vl3 + vl4) * 0.5;
 	vec3 vl = vlSum;
 	vl *= vl;
+	#endif
 
-	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
-		 viewPos /= viewPos.w;
-
-	#ifdef OVERWORLD
-	
 	#ifdef VOLUMETRIC_LIGHT
 	vec3 lightshaftMorning  = vec3(LIGHTSHAFT_MR, LIGHTSHAFT_MG, LIGHTSHAFT_MB) * LIGHTSHAFT_MI / 255.0;
 	vec3 lightshaftDay      = vec3(LIGHTSHAFT_DR, LIGHTSHAFT_DG, LIGHTSHAFT_DB) * LIGHTSHAFT_DI / 255.0;
@@ -159,10 +161,12 @@ void main() {
 
 	#endif
 
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
     vl *= LIGHT_SHAFT_STRENGTH * (1.0 - rainStrength * 0.875) * shadowFade *
 		  (1.0 - blindFactor);
 
 	color.rgb += vl;
+	#endif
 
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float dither = Bayer64(gl_FragCoord.xy);

@@ -127,7 +127,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 	noise = mix(noiseA, noiseB, WATER_DETAIL);
 	#endif
 
-    return noise * WATER_BUMP * (1 + isEyeInWater);
+    return noise * (WATER_BUMP + rainStrength + rainStrength);
 }
 
 vec3 GetParallaxWaves(vec3 worldPos, vec3 viewVector) {
@@ -543,6 +543,7 @@ void main() {
 
 		Fog(albedo.rgb, viewPos);
 
+		//absorption from comp, ty emin
 		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
 			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
 		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
@@ -555,15 +556,23 @@ void main() {
 
 			float difT = length(oViewPos - viewPos.xyz);
 					
-			vec3 absorbColor = (normalize(vec3(waterColor.r, waterColor.g * (0.50 + lightmap.y * lightmap.y * 0.75), waterColor.b)) * 2 * WATER_I) * terrainColor * terrainColor * (12 * (0.25 + sunVisibility * 0.75));
+			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * (12 * (0.25 + sunVisibility * 0.75) * (1.00 - rainStrength * 0.50));
 			float absorbDist = 1.0 - clamp(difT / (0.25 + sunVisibility * 7.25), 0.0, 1.0);
 			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
 			newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);
 
-			float fog2 = length(oViewPos) / far * 0.025 * (0.25 + sunVisibility * 0.75);
-			fog2 = 1.0 - (exp(-waterFogRange * pow(fog2 * 0.125, 4.0) * eBS));
+			float fog2 = length(oViewPos) / far * 0.035;
+			fog2 = 1.0 - (exp(-50.0 * pow(fog2 * 0.125, 4.0) * eBS));
 
-			albedo.rgb = mix(albedo.rgb, newAlbedo, (1.0 - albedo.a) * lightmap.y);
+			float fixAtmFog = max(1.0 - fog2, 0.0);
+				  fixAtmFog *= fixAtmFog;
+				  fixAtmFog *= fixAtmFog;
+				  fixAtmFog *= fixAtmFog;
+
+			float absorb = (1.0 - albedo.a) * fixAtmFog * lightmap.y;
+			absorb = sqrt(absorb * sunVisibility * (1 - rainStrength));
+
+			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}
 
 		#if ALPHA_BLEND == 0

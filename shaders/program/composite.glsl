@@ -16,7 +16,7 @@ uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest
 //Varyings//
 varying vec2 texCoord;
 
-varying vec3 sunVec, upVec, lightVec;
+varying vec3 sunVec, upVec;
 
 //Uniforms//
 uniform int frameCounter;
@@ -59,6 +59,8 @@ const bool colortex5Clear = false;
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
+
+vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
 #ifdef WORLD_TIME_ANIMATION
 float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
@@ -167,6 +169,21 @@ void main() {
 	float z1 = texture2D(depthtex1, texCoord).r;
 	vec4 vl = vec4(0.0);
 
+	float visibility = 0.0;
+
+	#ifdef OVERWORLD
+	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
+	visibility = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0) * (1.0 - rainStrength);
+	#endif
+	#ifdef VOLUMETRIC_LIGHT
+	if (isEyeInWater == 1) visibility = 1.0;
+	#endif
+	#else
+	#ifdef NETHER_SMOKE
+	visibility = 1.0;
+	#endif
+	#endif
+
 	vec4 screenPos = vec4(texCoord.x, texCoord.y, z0, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
@@ -195,19 +212,19 @@ void main() {
 
 	float dither = Bayer64(gl_FragCoord.xy);
 
+	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+	if (visibility > 0) vl += getVolumetricFog(z0, z1, translucent, dither, viewPos.xyz, visibility);
+	#endif
+
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_LIGHT
-	vl.rgb += GetLightShafts(z0, z1, translucent.rgb, dither);
-	#endif
-	#endif
-
-	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	vl += getVolumetricFog(z0, z1, translucent, dither, viewPos.xyz);
+	if (visibility > 0) vl.rgb += GetLightShafts(z0, z1, translucent.rgb, dither, visibility);
 	#endif
 
-	#if defined FIREFLIES && defined OVERWORLD
+	#if defined FIREFLIES
 	float visibility1 = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS) * (1 - isEyeInWater);
 	if (visibility1 > 0) vl.rgb = GetFireflies(z0, translucent.rgb, dither);
+	#endif
 	#endif
 
 	//REFRACTION & WATER TINT
@@ -224,7 +241,9 @@ void main() {
 	
     /*DRAWBUFFERS:01*/
 	gl_FragData[0] = color;
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
 	gl_FragData[1] = vl;
+	#endif
 	
     #ifdef REFLECTION_PREVIOUS
     /*DRAWBUFFERS:015*/
