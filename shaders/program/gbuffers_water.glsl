@@ -556,7 +556,7 @@ void main() {
 
 			float difT = length(oViewPos - viewPos.xyz);
 					
-			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * (12 * (0.25 + sunVisibility * 0.75) * (1.00 - rainStrength * 0.50));
+			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * (12 * timeBrightness * (1.00 - rainStrength * 0.50));
 			float absorbDist = 1.0 - clamp(difT / (0.25 + sunVisibility * 7.25), 0.0, 1.0);
 			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
 			newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);
@@ -564,13 +564,8 @@ void main() {
 			float fog2 = length(oViewPos) / far * 0.035;
 			fog2 = 1.0 - (exp(-50.0 * pow(fog2 * 0.125, 4.0) * eBS));
 
-			float fixAtmFog = max(1.0 - fog2, 0.0);
-				  fixAtmFog *= fixAtmFog;
-				  fixAtmFog *= fixAtmFog;
-				  fixAtmFog *= fixAtmFog;
-
-			float absorb = (1.0 - albedo.a) * fixAtmFog * lightmap.y;
-			absorb = sqrt(absorb * sunVisibility * (1 - rainStrength));
+			float absorb = (1.0 - albedo.a);
+			absorb = sqrt(absorb * timeBrightness * (1 - rainStrength));
 
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}

@@ -95,32 +95,9 @@ void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol) {
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
 
+#if defined PLANAR_CLOUDS || NIGHT_SKY_MODE == 1
 #include "/lib/atmospherics/clouds.glsl"
-
-/*
-vec3 skyColor = vec3(0.25, 0.5, 1.0);
-
-vec3 getSky(vec2 uv, vec3 viewPos){
-    vec3 nViewPos = normalize(viewPos);
-
-    float VoU = dot(nViewPos, upVec);
-    float VoL = dot(nViewPos, lightVec);
-
-	vec2 sunPos = vec2(1, VoL);
-    
-	float density = CalcTotalAmount(CalcDayAmount(0.7, 0.5, 0.7), 0.1);
-	float brightness = CalcTotalAmount(CalcDayAmount(0.2, 0.4, 0.2), 0.1);
-
-    float sunDistance = distance(uv, sunPos) / VoU;
-	
-	color = sunDistance * skyCol;
-		 color = mix(pow(color, 1 - color), color, VoU * 2);
-		 color = mix(color, vec3(0.0), underscatter);
-
-	return color * color;	
-}
-*/
-
+#endif
 
 //Program//
 void main() {
@@ -174,7 +151,7 @@ void main() {
 	albedo.rgb = mix(albedo.rgb, cloud.rgb, cloud.a);
 	#endif
 
-	SunGlare(albedo, viewPos.xyz, lightCol);
+	SunGlare(albedo, viewPos.xyz, skylightSun);
 
 	albedo.rgb *= 1 * (1.0 + nightVision);
 

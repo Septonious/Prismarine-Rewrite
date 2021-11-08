@@ -1,6 +1,6 @@
 /* 
 BSL Shaders v8 Series by Capt Tatsu 
-https://bitslablab.com 
+https://bitslablab.com
 */ 
 
 //Settings//
@@ -28,8 +28,6 @@ varying float dist;
 
 varying vec3 binormal, tangent;
 varying vec3 viewVector;
-
-varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
 //Uniforms//
@@ -60,9 +58,11 @@ uniform mat4 shadowModelView;
 
 uniform sampler2D texture, noisetex;
 
-#ifdef ADVANCED_MATERIALS
+#if defined ADVANCED_MATERIALS || defined NOISY_TEXTURES
 uniform ivec2 atlasSize;
+#endif
 
+#ifdef ADVANCED_MATERIALS
 uniform sampler2D specular;
 uniform sampler2D normals;
 
@@ -76,6 +76,11 @@ uniform mat4 gbufferModelView;
 #ifdef DYNAMIC_HANDLIGHT
 uniform int heldBlockLightValue;
 uniform int heldBlockLightValue2;
+#endif
+
+#ifdef NOISY_TEXTURES
+varying vec4 vTexCoord, vTexCoordAM;
+float atlasRatio = atlasSize.x / atlasSize.y;
 #endif
 
 //Common Variables//
@@ -211,16 +216,16 @@ void main() {
 
 		#ifdef INTEGRATED_EMISSION
 		float iEmissive = 0;
-        if (mat == 100.0) { // Emissive Ores
+        if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
             iEmissive = sqrt(ore) * GLOW_STRENGTH;
-        } else if (mat == 101.0){
+        } else if (mat > 100.9 && mat < 101.1){
 			iEmissive = (albedo.b - albedo.r) * albedo.r * 8.0 * GLOW_STRENGTH;
             iEmissive *= iEmissive * iEmissive;
             iEmissive = clamp(iEmissive, 0.05, 1.0);
             if (length(albedo.rgb) > 1.6 || albedo.r > albedo.b * 1.7) iEmissive = 1.0;
-		} else if (mat == 102.0){
+		} else if (mat > 101.9 && mat < 102.1){
             vec3 comPos = fract(worldPos.xyz + cameraPosition.xyz);
             comPos = abs(comPos - vec3(0.5));
             float comPosM = min(max(comPos.x, comPos.y), min(max(comPos.x, comPos.z), max(comPos.y, comPos.z)));
@@ -232,26 +237,26 @@ void main() {
                 iEmissive *= float(albedo.r > 0.44 || albedo.g > 0.29);
 				iEmissive *= 0.25;
             }
-		} else if (mat == 103.0){
+		} else if (mat > 102.9 && mat < 103.1){
             float core = float(albedo.r < 0.1);
             float edge = float(albedo.b > 0.35 && albedo.b < 0.401 && core == 0.0);
             iEmissive = (core * 0.195 + 0.035 * edge);
 			iEmissive *= 4 * GLOW_STRENGTH;
-		} else if (mat == 104.0){
+		} else if (mat > 103.9 && mat < 104.1){
             iEmissive = float(albedo.b < 0.16);
             iEmissive = min(pow(length(albedo.rgb) * length(albedo.rgb), 2) * iEmissive * GLOW_STRENGTH, 0.3);
 			iEmissive *= 4 * GLOW_STRENGTH;
-		} else if (mat == 105.0){ // Warped Nether Warts
+		} else if (mat > 104.9 && mat < 105.1){ // Warped Nether Warts
 			iEmissive = pow(float(albedo.g - albedo.b), 2) * GLOW_STRENGTH;
-		} else if (mat == 106.0){ // Warped Nylium
+		} else if (mat > 105.9 && mat < 106.1){ // Warped Nylium
 			if (albedo.g > albedo.b && albedo.g > albedo.r){
 				iEmissive = pow(float(albedo.g - albedo.b), 3) * GLOW_STRENGTH;
 			}
-		} else if (mat == 110.0){
+		} else if (mat > 109.9 && mat < 110.1){
 			emissive = float(length(albedo.rgb) > 0.975) * 0.1 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
-		if (isPlant == 1.0){ // Flowers
+		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
 			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
 		}
 		#endif
@@ -259,7 +264,7 @@ void main() {
 		#endif
 
 		#ifdef TEST01
-		if (mat == 109.0) albedo.a *= 0;
+		if (mat > 108.9 && mat < 109.1) albedo.a *= 0;
 		#endif
 
 		float metalness      = 0.0;
@@ -459,6 +464,18 @@ void main() {
 		albedo.rgb *= noiseMap;
 		*/
 
+		#ifdef NOISY_TEXTURES
+		if (mat > 110.9 && mat < 111.1){
+			vec2 noiseCoord = vTexCoord.xy + 0.0025;
+			noiseCoord = floor(noiseCoord.xy * 64.0 * vTexCoordAM.pq * 32.0 * vec2(2.0, 2.0 / atlasRatio)) / 5.25;
+			noiseCoord += 0.25 * (floor((worldPos.xz + cameraPosition.xz) + 0.001) + floor((worldPos.y + cameraPosition.y) + 0.001));
+			float noise = texture2D(noisetex, noiseCoord).r + 0.6;
+			float noiseFactor = NOISE_STRENGTH * (1.0 - 0.5 * metalness) * (1.0 - 0.25 * smoothness) * max(1.0 - emissive, 0.0);
+			noise = pow(noise, noiseFactor);
+			albedo.rgb *= noise;
+		}
+		#endif
+
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));
 		#endif
@@ -494,12 +511,14 @@ varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
 
-#ifdef ADVANCED_MATERIALS
+#if defined ADVANCED_MATERIALS || defined NOISY_TEXTURES
 varying float dist;
 
 varying vec3 binormal, tangent;
 varying vec3 viewVector;
+#endif
 
+#if defined ADVANCED_MATERIALS || defined NOISY_TEXTURES
 varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
@@ -523,7 +542,7 @@ uniform float viewWidth, viewHeight;
 attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
 
-#ifdef ADVANCED_MATERIALS
+#if defined ADVANCED_MATERIALS || defined NOISY_TEXTURES
 attribute vec4 at_tangent;
 #endif
 
@@ -554,7 +573,7 @@ void main() {
 
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 
-	#ifdef ADVANCED_MATERIALS
+	#if defined ADVANCED_MATERIALS || defined NOISY_TEXTURES
 	binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
 	tangent  = normalize(gl_NormalMatrix * at_tangent.xyz);
 	
@@ -616,6 +635,10 @@ void main() {
 	if (mc_Entity.x == 20007) mat = 109.0;
 	if (mc_Entity.x == 20008) mat = 110.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
+	#endif
+
+	#ifdef NOISY_TEXTURES
+	if (mc_Entity.x == 20009) mat = 111.0;
 	#endif
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));

@@ -50,7 +50,6 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
 
 	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
 	vec3 nViewPos = normalize(viewPos.xyz);
-    float VoU = dot(nViewPos, upVec);
 
 	vec4 vf = vec4(0.0);
     vec4 wpos = vec4(0.0);
@@ -79,7 +78,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #ifdef NETHER
                 float noise = getFogSample(wpos.xyz, 100, 48, 1.25, 1.10);
                 #else
-                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, LIGHTSHAFT_VERTICAL_THICKNESS, 0.4, 2.00);
+                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, LIGHTSHAFT_VERTICAL_THICKNESS, 0.4, LIGHTSHAFT_HORIZONTAL_THICKNESS);
                 #endif
 
                 if (noise > 1e-3) {
@@ -89,9 +88,6 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                     vec4 color0 = vec4(mix(fogColorC * 0.1, fogColorC * 0.2, noise), noise);
                     #endif
                     color0.rgb *= color0.w;
-
-                    VoU = clamp(VoU, 0, 1);
-                    color0.rgb *= 1 - VoU;
 
                     vf += color0 * (1.0 - vf.a);
                 }

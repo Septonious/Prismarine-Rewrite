@@ -50,10 +50,12 @@ float perlin(vec3 p) {
 float getFogSample(vec3 pos, float height, float verticalThickness, float samples, float amount){
 	float ymult = pow(abs(height - pos.y) / verticalThickness, LIGHTSHAFT_VERTICAL_THICKNESS);
 	vec3 wind = vec3(frametime * 0.25, 0, 0);
-	float noise = perlin(pos * samples * 1.000 - wind * 0.30) * 1 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-		  noise+= perlin(pos * samples * 0.500 - wind * 0.25) * 2 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-          noise+= perlin(pos * samples * 0.250 - wind * 0.20) * 3 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-          noise+= perlin(pos * samples * 0.125 - wind * 0.15) * 4 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	float noise = perlin(pos * samples * 1.00000 - wind * 0.30) * 1 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+		  noise+= perlin(pos * samples * 0.50000 - wind * 0.25) * 3 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+          noise+= perlin(pos * samples * 0.25000 - wind * 0.20) * 4 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+          noise+= perlin(pos * samples * 0.12500 - wind * 0.15) * 6 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+          noise+= perlin(pos * samples * 0.06250 - wind * 0.10) * 7 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+          noise+= perlin(pos * samples * 0.03125 - wind * 0.05) * 9 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
 	noise = clamp(noise * LIGHTSHAFT_AMOUNT * amount - (1.0 + ymult), 0.0, 1.0);
 	return noise;
 }

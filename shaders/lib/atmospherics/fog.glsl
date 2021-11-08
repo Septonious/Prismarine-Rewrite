@@ -53,7 +53,7 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
 
 	float baseGradient = exp(-(VoU * 0.5 + 0.5) * 0.5 / density);
 
-	vec3 fog = vec3(0);
+	vec3 fog = vec3(0.0);
 
         #if FOG_COLOR_MODE == 1
         fog = fogCol * baseGradient;
@@ -83,7 +83,7 @@ vec3 GetFogColor(vec3 viewPos, float fogType) {
     float horizonMix = pow(1.0 - abs(VoU), 2.5) * 0.125 * (1.0 - timeBrightness * 0.5);
     float lightMix = (1.0 - (1.0 - sunMix) * (1.0 - horizonMix)) * lViewPos;
 
-	vec3 lightFog = vec3(0);
+	vec3 lightFog = vec3(0.0);
 
         #if FOG_COLOR_MODE == 1
         lightFog = pow(fogcolorSun * vec3(FOG_R, FOG_G, FOG_B) * FOG_I, vec3(4.0 - sunVisibility)) * baseGradient;
@@ -152,14 +152,14 @@ void NormalFog(inout vec3 color, vec3 viewPos, float fogType) {
 	fog = 1.0 - exp(-2.0 * pow(fog, 0.15 * clearDay + 1.25));
 
 	if (isEyeInWater == 0){
-		vec3 pos = worldPos.xyz + cameraPosition.xyz + 100;
-		float height;
+		vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000;
+		float height = 0.0;
 		if (fogType == 0){
-			height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.01;
+			height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
 		}else{
-			height = (pos.y - FOG_SECOND_LAYER_ALTITUDE) * 0.01;
+			height = (pos.y - FOG_SECOND_LAYER_ALTITUDE) * 0.001;
 		}
-			height = pow(height, 8);
+			height = pow(height, 16);
 			height = clamp(height, 0, 1);
 		fog *= 1 - height;
 	} else {

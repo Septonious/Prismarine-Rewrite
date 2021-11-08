@@ -34,7 +34,6 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
 	vec3 nViewPos = normalize(viewPos.xyz);
 	float VoL = dot(nViewPos, lightVec);
-	float VoU = dot(nViewPos, upVec);
 
 	#ifdef OVERWORLD
 	float visfactor = 0.05 * (-0.1 * timeBrightness + 1.0) * (1.0 - rainStrength);
@@ -62,11 +61,6 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 		
 		for(int i = 0; i < LIGHTSHAFT_SAMPLES; i++) {
 			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE;
-
-			if (isEyeInWater == 1){
-				minDist = (exp2(i + dither) - 0.95) * 4;
-				maxDist = 16;
-			}
 
 			if (minDist >= maxDist) break;
 			if (depth1 < minDist || (depth0 < minDist && color == vec3(0.0))) break;
@@ -105,12 +99,9 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 					else break;
 					#endif
 
-					shadow *= getFogSample(npos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS, 0.5, 1.75);
+					shadow *= getFogSample(npos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS * 1.5, 0.50, LIGHTSHAFT_HORIZONTAL_THICKNESS);
 				}
 				#endif
-
-				VoU = clamp(VoU, 0, 1);
-				shadow *= 1 - VoU;
 
 				vl += shadow;
 			}

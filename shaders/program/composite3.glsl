@@ -22,6 +22,12 @@ uniform mat4 gbufferProjection, gbufferProjectionInverse, gbufferModelViewInvers
 uniform sampler2D colortex0;
 uniform sampler2D depthtex1, depthtex0;
 
+#ifdef FOG_BLUR
+uniform int rainStrength;
+uniform float timeBrightness;
+uniform vec3 cameraPosition;
+#endif
+
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
 
@@ -100,10 +106,25 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	float coc = max(abs(z - centerDepthSmooth) * DOF_STRENGTH - 0.01, 0.0);
 	coc = coc / sqrt(coc * coc + 0.1);
 	
-	#ifdef DISTANT_BLUR
+	#if defined DISTANT_BLUR || defined FOG_BLUR
 	vec3 worldPos = ToWorld(viewPos.xyz);
-	coc = min(length(worldPos) * DISTANT_BLUR_RANGE * 0.00025, DISTANT_BLUR_STRENGTH * 0.025) * DISTANT_BLUR_STRENGTH;
-	//coc = 1.0 - (far - (length(worldPos) + pow(DISTANT_BLUR_RANGE, 0.025))) * 5.0 / (DISTANT_BLUR_STRENGTH * far);
+	#endif
+
+	#if defined DISTANT_BLUR || defined FOG_BLUR
+	float range = DISTANT_BLUR_RANGE;
+	#ifdef FOG_BLUR
+	range = 10.0;
+	#endif
+	coc = min(length(worldPos) * range * 0.00025, DISTANT_BLUR_STRENGTH * 0.025) * DISTANT_BLUR_STRENGTH;
+	#endif
+
+	#ifdef FOG_BLUR
+	vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000;
+	float height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
+		  height = pow(height, 16);
+		  height = clamp(height, 0, 1);
+	coc *= FIRST_LAYER_DENSITY * FIRST_LAYER_DENSITY * FIRST_LAYER_DENSITY * (1.0 - timeBrightness * 0.50) * (1.0 + rainStrength * 0.50);
+	coc *= 1 - height;
 	#endif
 
 	if (coc > 0.0 && hand < 0.5) {
@@ -128,7 +149,7 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 void main() {
 	vec3 color = texture2DLod(colortex0, texCoord, 0.0).rgb;
 	
-	#if defined DOF || defined DISTANT_BLUR
+	#if defined DOF || defined DISTANT_BLUR || defined FOG_BLUR
 	float z = texture2D(depthtex1, texCoord.st).x;
 	float z0 = texture2D(depthtex0, texCoord.xy).r;
 
@@ -145,6 +166,9 @@ void main() {
 
 	#ifdef DOF
 	#endif //:crong:
+
+	#ifdef DISTANT_BLUR
+	#endif //:crongeis:
 	
     /*DRAWBUFFERS:0*/
 	gl_FragData[0] = vec4(color,1.0);

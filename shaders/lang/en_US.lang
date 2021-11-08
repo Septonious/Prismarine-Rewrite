@@ -80,7 +80,11 @@ screen.BLOCKLIGHT_COLOR=Blocklight Color
 screen.SKY_DENSITY=Density
 screen.SKY_EXPOSURE=Exposure
 screen.SKY_COLOR=Sky Color
-screen.SKY_COLOR_BASE=Base Sky Color
+screen.SKY_BASE_COLOR=Base Sky Color
+screen.SKY_M=Morning Sky
+screen.SKY_D=Day Sky
+screen.SKY_E=Evening Sky
+screen.SKY_N=Night Sky
 screen.FOG_TINT=Tint
 screen.WATER_COLOR=Water Color
 screen.WEATHER_COLOR=Weather Color
@@ -171,14 +175,11 @@ option.BLOCKLIGHT_FLICKERING=Blocklight Flickering
 option.BLOCKLIGHT_FLICKERING.comment=Enables flickering of blocklight.
 option.BLOCKLIGHT_FLICKERING_STRENGTH=Flickering Strength
 
-option.SHADING_REDUCTION_FACTOR=Shading Reduction
+option.NOISE_FACTOR=Noise Strength
 option.COLORED_SHADOW_OPACITY=Colored Shadows Opacity
 option.COLORED_SHADOW_BRIGHTNESS=Colored Shadows Brightness
-option.NOISEMAP_SHADOWS=Noisemap Shadows
-option.NOISEMAP_SHADOWS.comment=Random shadows on the world surface. First mode adds cloud shadows (not synced with clouds). Second mode adds small shadows to all blocks.
-value.NOISEMAP_SHADOWS.0=OFF
-value.NOISEMAP_SHADOWS.1=Cloud Shadows
-value.NOISEMAP_SHADOWS.2=Shading
+option.NOISY_TEXTURES=Noisy Textures
+option.NOISY_TEXTURES.comment=Adds some subtle noise to specific blocks. Inspired by Complementary Shaders' noisy textures option.
 
 option.shadowMapResolution=Shadowmap Quality
 option.shadowMapResolution.comment=Adjusts shadowmap size. §e[*]§rHigher resolution gives sharper shadows, but reduces performance.
@@ -634,6 +635,9 @@ option.DISTANT_BLUR_STRENGTH=Blur Strength
 option.DISTANT_BLUR_RANGE=Blur Range
 option.DISTANT_BLUR_RANGE.comment=Changes the distance of blur. Bigger values decrease the distance making the blur closer to you.
 
+option.FOG_BLUR=Fog Blur
+option.FOG_BLUR.comment=Blurs the first layer of exponential fog. Blur strength depends on the first layer density.
+
 option.MOTION_BLUR=Motion Blur
 option.MOTION_BLUR.comment=Enables camera motion based blurring.
 
@@ -649,7 +653,7 @@ option.BLOOM.comment=Allows bright areas to glow.
 
 option.BLOOM_STRENGTH=Bloom Strength
 option.BLOOM_STRENGTH.comment=Adjusts bloom intensity.
-value.BLOOM_STRENGTH.16=You should check BSL
+value.BLOOM_STRENGTH.8.00=BLS moment
 
 option.LENS_FLARE=Lens Flare
 option.LENS_FLARE.comment=Enables lens flare.

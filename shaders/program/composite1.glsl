@@ -139,15 +139,16 @@ void main() {
 	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 1, 1), 0);
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 0, 1), 0);
 	if (isEyeInWater == 1) visibility0 = 1;
 
 	if (visibility0 > 0){
 		vec3 lightshaftWater = vec3(LIGHTSHAFT_WR, LIGHTSHAFT_WG, LIGHTSHAFT_WB) * LIGHTSHAFT_WI / 255.0;
-		vl *= lightshaftCol * 0.25;
 
-		#ifdef PERBIOME_LIGHTSHAFTS
-		vl *= getBiomeColor(lightshaftCol);
+		#ifndef PERBIOME_LIGHTSHAFTS
+		vl *= lightshaftCol * lightshaftCol;
+		#else
+		vl *= getBiomeColor(lightshaftCol) * getBiomeColor(lightshaftCol);
 		#endif
 
 		if (isEyeInWater == 1) vl *= waterColor.rgb * lightshaftWater.rgb * lightCol.rgb * LIGHTSHAFT_WI;
@@ -173,9 +174,10 @@ void main() {
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
 	#endif
 
-	/* DRAWBUFFERS:089 */
+	/* DRAWBUFFERS:0 */
 	gl_FragData[0] = color;
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
+	/* DRAWBUFFERS:089 */
 	gl_FragData[1] = getVolumetricCloud(pixeldepth0, pixeldepth1, dither, aux8, aux9, 0);
 	gl_FragData[2] = getVolumetricCloud(pixeldepth0, pixeldepth1, dither, aux8, aux9, 1);
 	#endif
