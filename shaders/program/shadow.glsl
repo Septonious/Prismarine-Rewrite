@@ -17,8 +17,6 @@ varying vec2 texCoord;
 
 varying vec4 position0;
 
-varying vec4 color;
-
 //Uniforms//
 uniform int blockEntityId;
 uniform int isEyeInWater;
@@ -55,7 +53,6 @@ void main() {
 	#endif
 
     vec4 albedo = texture2D(tex, texCoord.xy);
-	albedo.rgb *= color.rgb;
 
     float premult = float(mat > 0.98 && mat < 1.02);
 	float disable = float(mat > 1.98 && mat < 2.02);
@@ -63,7 +60,7 @@ void main() {
 	if (disable > 0.5 || albedo.a < 0.01) discard;
 
     #ifdef SHADOW_COLOR
-	albedo.rgb = mix(vec3(1), albedo.rgb, pow(albedo.a, (1.0 - albedo.a) * 0.5) * COLORED_SHADOW_OPACITY * 2);
+	albedo.rgb = mix(vec3(1.0), albedo.rgb, pow(albedo.a, (1.0 - albedo.a) * 0.5) * COLORED_SHADOW_OPACITY * 2.0);
 	albedo.rgb *= 1.0 - pow(albedo.a, 128.0);
 	#else
 	if ((premult > 0.5 && albedo.a < 0.98)) albedo.a = 0.0;
@@ -89,7 +86,6 @@ varying float mat;
 
 varying vec2 texCoord;
 varying vec4 position0;
-varying vec4 color;
 
 //Uniforms//
 uniform int worldTime;
@@ -122,8 +118,6 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 //Program//
 void main() {
 	texCoord = gl_MultiTexCoord0.xy;
-
-	color = gl_Color;
 	
 	mat = 0;
 	if (mc_Entity.x == 10301 || mc_Entity.x == 10302) mat = 1;

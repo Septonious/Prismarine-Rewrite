@@ -541,6 +541,11 @@ void main() {
 			#endif
 		}
 
+		if ((translucent + glass) > 0.5){
+			albedo.a += albedo.a * 0.75;
+			albedo.a = clamp(albedo.a, 0.5, 0.95);
+		} 
+
 		Fog(albedo.rgb, viewPos);
 
 		//absorption from comp, ty emin
@@ -556,7 +561,7 @@ void main() {
 
 			float difT = length(oViewPos - viewPos.xyz);
 					
-			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * (12 * timeBrightness * (1.00 - rainStrength * 0.50));
+			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * (8 * timeBrightness * (1.00 - rainStrength * 0.50));
 			float absorbDist = 1.0 - clamp(difT / (0.25 + sunVisibility * 7.25), 0.0, 1.0);
 			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
 			newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);

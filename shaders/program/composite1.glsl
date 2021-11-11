@@ -88,47 +88,13 @@ void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 	
-	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	float lod0 = 2;
-
-	#ifndef MC_GL_RENDERER_GEFORCE
-		if (fract(viewHeight / 2.0) > 0.25 || fract(viewWidth / 2.0) > 0.25) 
-			lod0 = 0.0;
-	#endif
-
-	vec3 aux1 = texture2DLod(colortex8, texCoord.xy + vec2( 0.0,  1 / viewHeight), lod0).rgb;
-	vec3 aux2 = texture2DLod(colortex8, texCoord.xy + vec2( 0.0, -1 / viewHeight), lod0).rgb;
-	vec3 aux3 = texture2DLod(colortex8, texCoord.xy + vec2( 1 / viewWidth,   0.0), lod0).rgb;
-	vec3 aux4 = texture2DLod(colortex8, texCoord.xy + vec2(-1 / viewWidth,   0.0), lod0).rgb;
-	vec3 aux8 = (aux1 + aux2 + aux3 + aux4) * 0.5;
-
-	vec3 auxA = texture2DLod(colortex9, texCoord.xy + vec2( 0.0,  1 / viewHeight), lod0).rgb;
-	vec3 auxB = texture2DLod(colortex9, texCoord.xy + vec2( 0.0, -1 / viewHeight), lod0).rgb;
-	vec3 auxC = texture2DLod(colortex9, texCoord.xy + vec2( 1 / viewWidth,   0.0), lod0).rgb;
-	vec3 auxD = texture2DLod(colortex9, texCoord.xy + vec2(-1 / viewWidth,   0.0), lod0).rgb;
-	vec3 aux9 = (auxA + auxB + auxC + auxD) * 0.5;
-	#endif
-
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;
 
 	#ifdef OVERWORLD
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	float lod = 2;
-
-	#ifndef MC_GL_RENDERER_GEFORCE
-		if (fract(viewHeight / 2.0) > 0.25 || fract(viewWidth / 2.0) > 0.25) 
-			lod = 0.0;
-	#endif
-
-	vec3 vl1 = texture2DLod(colortex1, texCoord.xy + vec2( 0.0,  1 / viewHeight), lod).rgb;
-	vec3 vl2 = texture2DLod(colortex1, texCoord.xy + vec2( 0.0, -1 / viewHeight), lod).rgb;
-	vec3 vl3 = texture2DLod(colortex1, texCoord.xy + vec2( 1 / viewWidth,   0.0), lod).rgb;
-	vec3 vl4 = texture2DLod(colortex1, texCoord.xy + vec2(-1 / viewWidth,   0.0), lod).rgb;
-	vec3 vlSum = (vl1 + vl2 + vl3 + vl4) * 0.5;
-	vec3 vl = vlSum;
-	vl *= vl;
+	vec3 vl = texture2D(colortex1, texCoord.xy).rgb;
 	#endif
 
 	#ifdef VOLUMETRIC_LIGHT
@@ -174,13 +140,13 @@ void main() {
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
 	#endif
 
+	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
+	vec4 cloud = getVolumetricCloud(pixeldepth1, dither, color.rgb, sunVec, viewPos.xyz);
+	color.rgb = mix(color.rgb, cloud.rgb, cloud.a);
+	#endif
+
 	/* DRAWBUFFERS:0 */
 	gl_FragData[0] = color;
-	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	/* DRAWBUFFERS:089 */
-	gl_FragData[1] = getVolumetricCloud(pixeldepth0, pixeldepth1, dither, aux8, aux9, 0);
-	gl_FragData[2] = getVolumetricCloud(pixeldepth0, pixeldepth1, dither, aux8, aux9, 1);
-	#endif
 }
 
 #endif

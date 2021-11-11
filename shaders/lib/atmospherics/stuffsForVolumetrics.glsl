@@ -26,23 +26,23 @@ float rand(vec3 p) {
     return fract(sin(dot(p, vec3(12.345, 67.89, 412.12))) * 42123.45) * 2.0 - 1.0;
 }
 
-float perlin(vec3 p) {
-    vec3 u = floor(p);
-    vec3 v = fract(p);
-    vec3 s = smoothstep(0.0, 1.0, v);
-    
-    float a = rand(u);
-    float b = rand(u + vec3(1.0, 0.0, 0.0));
-    float c = rand(u + vec3(0.0, 1.0, 0.0));
-    float d = rand(u + vec3(1.0, 1.0, 0.0));
-    float e = rand(u + vec3(0.0, 0.0, 1.0));
-    float f = rand(u + vec3(1.0, 0.0, 1.0));
-    float g = rand(u + vec3(0.0, 1.0, 1.0));
-    float h = rand(u + vec3(1.0, 1.0, 1.0));
-    
-    return mix(mix(mix(a, b, s.x), mix(c, d, s.x), s.y),
-               mix(mix(e, f, s.x), mix(g, h, s.x), s.y),
-               s.z);
+float getCloudNoise(vec3 pos) {
+	pos /= 8.0;
+	pos.xz *= 0.50;
+
+	vec3 u = floor(pos);
+	vec3 v = fract(pos);
+
+	v = (v * v) * (3.0 - 2.0 * v);
+	vec2 uv = u.xz + v.xz + u.y * 16.0;
+
+	vec2 coord1 = uv / 64.0;
+	vec2 coord2 = uv / 64.0 + 16.0 / 64.0;
+		
+	float a = texture2D(noisetex, coord1).x * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	float b = texture2D(noisetex, coord2).x * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+		
+	return mix(a, b, v.y);
 }
 #endif
 
@@ -50,12 +50,11 @@ float perlin(vec3 p) {
 float getFogSample(vec3 pos, float height, float verticalThickness, float samples, float amount){
 	float ymult = pow(abs(height - pos.y) / verticalThickness, LIGHTSHAFT_VERTICAL_THICKNESS);
 	vec3 wind = vec3(frametime * 0.25, 0, 0);
-	float noise = perlin(pos * samples * 1.00000 - wind * 0.30) * 1 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-		  noise+= perlin(pos * samples * 0.50000 - wind * 0.25) * 3 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-          noise+= perlin(pos * samples * 0.25000 - wind * 0.20) * 4 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-          noise+= perlin(pos * samples * 0.12500 - wind * 0.15) * 6 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-          noise+= perlin(pos * samples * 0.06250 - wind * 0.10) * 7 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-          noise+= perlin(pos * samples * 0.03125 - wind * 0.05) * 9 * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	float noise = getCloudNoise(pos * samples * 1.00000 - wind * 0.30);
+		  noise+= getCloudNoise(pos * samples * 0.50000 + wind * 0.25);
+          noise+= getCloudNoise(pos * samples * 0.25000 - wind * 0.20);
+          noise+= getCloudNoise(pos * samples * 0.12500 + wind * 0.15);
+          noise+= getCloudNoise(pos * samples * 0.06250 - wind * 0.10);
 	noise = clamp(noise * LIGHTSHAFT_AMOUNT * amount - (1.0 + ymult), 0.0, 1.0);
 	return noise;
 }

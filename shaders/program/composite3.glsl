@@ -23,9 +23,11 @@ uniform sampler2D colortex0;
 uniform sampler2D depthtex1, depthtex0;
 
 #ifdef FOG_BLUR
+varying vec3 sunVec, upVec;
 uniform int rainStrength;
-uniform float timeBrightness;
+uniform float timeBrightness, timeAngle;
 uniform vec3 cameraPosition;
+float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #endif
 
 //Optifine Constants//
@@ -97,6 +99,9 @@ vec2 dofOffsets[60] = vec2[60](
 
 //Common Functions//
 #include "/lib/util/spaceConversion.glsl"
+#ifdef FOG_BLUR
+#include "/lib/prismarine/timeCalculations.glsl"
+#endif
 
 vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	vec3 dof = vec3(0.0);
@@ -123,7 +128,7 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	float height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
 		  height = pow(height, 16);
 		  height = clamp(height, 0, 1);
-	coc *= FIRST_LAYER_DENSITY * FIRST_LAYER_DENSITY * FIRST_LAYER_DENSITY * (1.0 - timeBrightness * 0.50) * (1.0 + rainStrength * 0.50);
+	coc *= FIRST_LAYER_DENSITY * CalcTotalAmount(CalcDayAmount(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY), NIGHT_FOG_DENSITY) * (0.50 + rainStrength * 0.50);
 	coc *= 1 - height;
 	#endif
 
@@ -182,11 +187,26 @@ void main() {
 //Varyings//
 varying vec2 texCoord;
 
+#ifdef FOG_BLUR
+uniform mat4 gbufferModelView;
+varying vec3 sunVec, upVec;
+uniform float timeAngle;
+#endif
+
 //Program//
 void main() {
 	texCoord = gl_MultiTexCoord0.xy;
 	
 	gl_Position = ftransform();
+
+	#ifdef FOG_BLUR
+	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
+	float ang = fract(timeAngle - 0.25);
+	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
+	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
+
+	upVec = normalize(gbufferModelView[1].xyz);
+	#endif
 }
 
 #endif

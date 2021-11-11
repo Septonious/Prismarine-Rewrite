@@ -50,12 +50,12 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     blocklightCol *= lightMapBrightnessFactor;
     blocklightCol *= 1.25 - lightmap.y;
 
-    #ifdef FAKE_GI
+    #ifdef ADVANCED_ILLUMINATION
     newLightmap = clamp(pow(lightmap.x, 6.00) + lightmap.x * 0.75, 0, 0.40);
     newLightmap *= (lightmapBrightness * 0.30);
     #endif
 
-    #ifdef FAKE_GI
+    #ifdef ADVANCED_ILLUMINATION
     float sunlightmap = pow(lightmap.y, 8.0) * timeBrightness * lightmap.y * 0.75;
     vec3 sunlight = vec3(SUN_R, SUN_G, SUN_B) / 255 * SUN_I * color.rgb * sunlightmap * sunlightmap;
     #endif
@@ -129,7 +129,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #endif
 
     //albedo = vec3(0.5);
-    #ifdef FAKE_GI
+    #ifdef ADVANCED_ILLUMINATION
     albedo *= sceneLighting + blockLighting + emissiveLighting + nightVisionLighting + minLighting + sunlight;
     #else
     albedo *= sceneLighting + blockLighting + emissiveLighting + nightVisionLighting + minLighting;

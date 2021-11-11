@@ -95,7 +95,7 @@ void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol) {
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
 
-#if defined PLANAR_CLOUDS || NIGHT_SKY_MODE == 1
+#if defined PLANAR_CLOUDS || NIGHT_SKY_MODE == 1 || defined AURORA
 #include "/lib/atmospherics/clouds.glsl"
 #endif
 
@@ -151,7 +151,7 @@ void main() {
 	albedo.rgb = mix(albedo.rgb, cloud.rgb, cloud.a);
 	#endif
 
-	SunGlare(albedo, viewPos.xyz, skylightSun);
+	SunGlare(albedo, viewPos.xyz, CalcLightColor(skylightSun, skylightNight, weatherCol.rgb));
 
 	albedo.rgb *= 1 * (1.0 + nightVision);
 

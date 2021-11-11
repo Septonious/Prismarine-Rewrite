@@ -16,18 +16,6 @@ varying vec2 texCoord;
 uniform float viewWidth, viewHeight, aspectRatio;
 uniform int frameCounter;
 
-#ifdef VOLUMETRIC_CLOUDS
-#if defined PERBIOME_CLOUDS_COLOR || defined WEATHER_PERBIOME
-uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
-#endif
-uniform int worldTime;
-uniform float frameTimeCounter;
-uniform float rainStrength;
-uniform float timeAngle, timeBrightness;
-varying vec3 sunVec, upVec;
-uniform int isEyeInWater;
-#endif
-
 uniform vec3 cameraPosition, previousCameraPosition;
 
 uniform mat4 gbufferPreviousProjection, gbufferProjectionInverse;
@@ -35,21 +23,6 @@ uniform mat4 gbufferModelView, gbufferPreviousModelView, gbufferModelViewInverse
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex1;
-
-#ifdef VOLUMETRIC_CLOUDS
-uniform sampler2D colortex8, colortex9;
-const bool colortex8MipmapEnabled = true;
-const bool colortex9MipmapEnabled = true;
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime)/20.0*ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter*ANIMATION_SPEED;
-#endif
-
-float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
-float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-#endif
 
 //Common Functions//
 vec3 MotionBlur(vec3 color, float z, float dither) {
@@ -100,15 +73,6 @@ vec3 MotionBlur(vec3 color, float z, float dither) {
 #include "/lib/util/outlineDepth.glsl"
 #endif
 
-#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-#include "/lib/prismarine/timeCalculations.glsl"
-#include "/lib/color/dimensionColor.glsl"
-#include "/lib/color/waterColor.glsl"
-#ifdef PERBIOME_CLOUDS_COLOR
-#include "/lib/prismarine/biomeColor.glsl"
-#endif
-#endif
-
 //Program//
 void main() {
     vec3 color = texture2DLod(colortex0, texCoord, 0.0).rgb;
@@ -122,35 +86,6 @@ void main() {
 	#endif
 
 	color = MotionBlur(color, z, dither);
-	#endif
-	
-	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	vec3 vcMorning    = vec3(VCLOUD_MR,   VCLOUD_MG,   VCLOUD_MB)   * VCLOUD_MI / 255;
-	vec3 vcDay        = vec3(VCLOUD_DR,   VCLOUD_DG,   VCLOUD_DB)   * VCLOUD_DI / 255;
-	vec3 vcEvening    = vec3(VCLOUD_ER,   VCLOUD_EG,   VCLOUD_EB)   * VCLOUD_EI / 255;
-	vec3 vcNight      = vec3(VCLOUD_NR,   VCLOUD_NG,   VCLOUD_NB)   * VCLOUD_NI * 0.3 / 255;
-
-	vec3 vcDownMorning    = vec3(VCLOUDDOWN_MR,   VCLOUDDOWN_MG,   VCLOUDDOWN_MB)   * VCLOUDDOWN_MI / 255;
-	vec3 vcDownDay        = vec3(VCLOUDDOWN_DR,   VCLOUDDOWN_DG,   VCLOUDDOWN_DB)   * VCLOUDDOWN_DI / 255;
-	vec3 vcDownEvening    = vec3(VCLOUDDOWN_ER,   VCLOUDDOWN_EG,   VCLOUDDOWN_EB)   * VCLOUDDOWN_EI / 255;
-	vec3 vcDownNight      = vec3(VCLOUDDOWN_NR,   VCLOUDDOWN_NG,   VCLOUDDOWN_NB)   * VCLOUDDOWN_NI * 0.3 / 255;
-
-	#ifndef PERBIOME_CLOUDS_COLOR
-	vec3 vcSun = CalcSunColor(vcMorning, vcDay , vcEvening);
-	vec3 vcDownSun = CalcSunColor(vcDownMorning, vcDownDay, vcDownEvening);
-	#else
-	vec3 vcSun = CalcSunColor(vcMorning, vcDay * getBiomeColor(vcDownDay), vcEvening);
-	vec3 vcDownSun = CalcSunColor(vcDownMorning, vcDownDay * getBiomeColor(vcDownDay), vcDownEvening);
-	#endif
-
-	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
-	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
-
-	float lod0 = 2.0;
-
-	vec2 vc = vec2(texture2DLod(colortex8, texCoord.xy, lod0).a, texture2DLod(colortex9, texCoord.xy, lod0).a);
-	if (isEyeInWater == 1) vc.y *= cameraPosition.y * 0.001;
-	color = mix(color, mix(vcloudsDownCol * 2.00, vcloudsCol, vc.x) * 1.50 * (1.00 - rainStrength * 0.25), vc.y);
 	#endif
 
 	/*DRAWBUFFERS:0*/

@@ -223,7 +223,7 @@ float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 	noise *= NEBULA_AMOUNT;
 
 	#ifdef OVERWORLD
-	noise *= 3.10;
+	noise *= 3.20;
 	#endif
 	
 	noise = max(1.0 - 2.0 * (0.5 * VoU + 0.5) * abs(noise - 3.5), 0.0);
