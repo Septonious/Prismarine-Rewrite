@@ -79,14 +79,14 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 				vec3 shadowCol = vec3(0.0);
 				#ifdef SHADOW_COLOR
 				if (shadow0 < 1.0) {
-					float shadow1 = shadow2D(shadowtex1, shadowposition.xyz).z;
+					float shadow1 = shadow2D(shadowtex1, shadowposition.xyz).z * 8.0 * COLORED_SHADOW_BRIGHTNESS;
 					if (shadow1 > 0.0) {
 						shadowCol = texture2D(shadowcolor0, shadowposition.xy).rgb;
 						shadowCol *= shadowCol * shadow1;
 					}
 				}
 				#endif
-				vec3 shadow = clamp(shadowCol * (1.0 - shadow0) + shadow0, vec3(0.0), vec3(1.0));
+				vec3 shadow = shadowCol * (1.0 - shadow0) + shadow0;
 
 				if (depth0 < minDist) shadow *= color;
 				else if (isEyeInWater == 1.0) shadow *= watercol * 64;
@@ -94,12 +94,14 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 				#if defined LIGHTSHAFT_CLOUDY_NOISE && defined OVERWORLD
 				if (isEyeInWater != 1){
 					vec3 npos = worldposition.xyz + cameraPosition.xyz;
+
 					#ifdef WORLD_CURVATURE
 					if (length(worldposition.xz) < WORLD_CURVATURE_SIZE) worldposition.y += length(worldposition.xz) * length(worldposition.xyz) / WORLD_CURVATURE_SIZE;
 					else break;
 					#endif
 
-					shadow *= getFogSample(npos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS * 1.5, 0.50, LIGHTSHAFT_HORIZONTAL_THICKNESS);
+					float noise = getFogSample(npos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS * (4.0 - eBS - eBS), 0.50, LIGHTSHAFT_HORIZONTAL_THICKNESS * (2.0 - eBS));
+					shadow *= noise;
 				}
 				#endif
 

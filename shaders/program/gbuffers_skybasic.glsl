@@ -59,7 +59,7 @@ float GetLuminance(vec3 color) {
 }
 
 void RoundSunMoon(inout vec3 color, vec3 viewPos, vec3 sunColor, vec3 moonColor) {
-	float VoL = dot(normalize(viewPos),sunVec);
+	float VoL = dot(normalize(viewPos), sunVec);
 	float isMoon = float(VoL < 0.0);
 	float sun = pow(abs(VoL), 800.0 * isMoon + 800.0) * (1.0 - sqrt(rainStrength));
 
@@ -79,7 +79,7 @@ void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol) {
 	visibility *= shadowFade * (1.25 - timeBrightness);
 
 	#ifdef SUN_GLARE
-	color += lightCol * visibility * (1.0 + 0.25 * isEyeInWater) * 0.1;
+	color += lightCol * visibility * (1.0 + 0.25 * isEyeInWater) * 0.25;
 	#endif
 }
 

@@ -83,20 +83,21 @@ float GetLuminance(vec3 color) {
 #include "/lib/prismarine/volumetricClouds.glsl"
 #endif
 
+float InterleavedGradientNoiseVL() {
+	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
+	return fract(n + frameCounter / 6.0);
+}
+
 //Program//
 void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
+	vec3 vl = texture2DLod(colortex1, texCoord.xy, 1.0).rgb;
 	
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;
 
 	#ifdef OVERWORLD
-
-	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	vec3 vl = texture2D(colortex1, texCoord.xy).rgb;
-	#endif
-
 	#ifdef VOLUMETRIC_LIGHT
 	vec3 lightshaftMorning  = vec3(LIGHTSHAFT_MR, LIGHTSHAFT_MG, LIGHTSHAFT_MB) * LIGHTSHAFT_MI / 255.0;
 	vec3 lightshaftDay      = vec3(LIGHTSHAFT_DR, LIGHTSHAFT_DG, LIGHTSHAFT_DB) * LIGHTSHAFT_DI / 255.0;
@@ -105,7 +106,7 @@ void main() {
 	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 0, 1), 0);
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0);
 	if (isEyeInWater == 1) visibility0 = 1;
 
 	if (visibility0 > 0){
@@ -136,12 +137,8 @@ void main() {
 	#endif
 
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	float dither = Bayer64(gl_FragCoord.xy);
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
-	#endif
-
-	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	vec4 cloud = getVolumetricCloud(pixeldepth1, dither, color.rgb, sunVec, viewPos.xyz);
+	vec4 cloud = getVolumetricCloud(pixeldepth1, InterleavedGradientNoiseVL(), color.rgb, sunVec, viewPos.xyz);
 	color.rgb = mix(color.rgb, cloud.rgb, cloud.a);
 	#endif
 
@@ -150,7 +147,7 @@ void main() {
 }
 
 #endif
-
+ 
 //Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
 #ifdef VSH
 

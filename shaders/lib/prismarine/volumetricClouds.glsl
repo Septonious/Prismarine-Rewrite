@@ -1,3 +1,6 @@
+
+
+
 #ifdef VOLUMETRIC_CLOUDS
 #endif
 
@@ -26,7 +29,6 @@ float rand2D(vec2 pos){
 float getHeightNoise(vec2 pos){
 	vec2 flr = floor(pos);
 	vec2 frc = fract(pos);
-	frc = frc * frc * (3 - 2 * frc);
 	
 	float noisedl = rand2D(flr);
 	float noisedr = rand2D(flr + vec2(1.0, 0.0));
@@ -38,37 +40,38 @@ float getHeightNoise(vec2 pos){
 }
 
 float getCloudNoise(vec3 pos) {
-	pos /= 8.0;
-	pos.xz *= 0.50;
+	pos /= 16.0;
+	pos.xz *= 0.3;
 
 	vec3 u = floor(pos);
 	vec3 v = fract(pos);
 
-	v = (v * v) * (3.0 - 2.0 * v);
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
 
 	vec2 coord1 = uv / 64.0;
-	vec2 coord2 = uv / 64.0 + 16.0 / 64.0;
+	vec2 coord2 = uv / 64.0 + 0.25;
 		
 	float a = texture2D(noisetex, coord1).x;
 	float b = texture2D(noisetex, coord2).x;
-		
+
 	return mix(a, b, v.y);
 }
 
-float getCloudSample(vec3 pos, float height, float verticalThickness, float detail){
-	float ymult = pow(abs(height - pos.y) / verticalThickness, VCLOUDS_VERTICAL_THICKNESS);
+float getCloudSample(vec3 pos){
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
-	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (1.00 + rainStrength * 0.25);
 
-	float noise = getCloudNoise(pos * detail * 0.500000 - wind * 0.5) * 2.0 * VCLOUDS_HORIZONTAL_THICKNESS;
-		  noise+= getCloudNoise(pos * detail * 0.250000 + wind * 0.4) * 3.0 * VCLOUDS_HORIZONTAL_THICKNESS;
-		  noise+= getCloudNoise(pos * detail * 0.125000 - wind * 0.3) * 5.0 * VCLOUDS_HORIZONTAL_THICKNESS;
-		  noise+= getCloudNoise(pos * detail * 0.062500 + wind * 0.2) * 6.0 * VCLOUDS_HORIZONTAL_THICKNESS;
-		  noise+= getCloudNoise(pos * detail * 0.031250 - wind * 0.1) * 8.0 * VCLOUDS_HORIZONTAL_THICKNESS;
-		  noise+= getCloudNoise(pos * detail * 0.016125) * 9.0 * VCLOUDS_HORIZONTAL_THICKNESS;
+    float noise  = 0.50000 * getCloudNoise(pos * 0.50000 * VCLOUDS_SAMPLES);
+		  noise += 0.25000 * getCloudNoise(pos * 0.25000 * VCLOUDS_SAMPLES);
+		  noise += 0.12500 * getCloudNoise(pos * 0.12500 * VCLOUDS_SAMPLES);
+		  noise += 0.06250 * getCloudNoise(pos * 0.06250 * VCLOUDS_SAMPLES);
+		  noise += 0.03125 * getCloudNoise(pos * 0.03125 * VCLOUDS_SAMPLES);
+	
+	float ymult = pow(abs(VCLOUDS_HEIGHT - pos.y) / VCLOUDS_VERTICAL_THICKNESS, VCLOUDS_VERTICAL_THICKNESS);
+	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.1) * 24;
 
-	noise = clamp(noise * amount - (10.0 + 5.0 * ymult), 0.0, 1.0);
+	noise *= 1.0 - exp(-VCLOUDS_VERTICAL_THICKNESS * noise);
+	noise = clamp(noise * amount - (8.0 + 4.0 * ymult), 0.0, 1.0);
+
 	return noise;
 }
 
@@ -99,18 +102,18 @@ vec4 getVolumetricCloud(float pixeldepth1, float dither, vec3 color, vec3 sunVec
 
 	//Here we begin to march
 	vec4 wpos = vec4(0.0);
+	vec4 finalColor = vec4(0.0);
 	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
-	vec3 cloudColor = vec3(0.0);
-	
-	float depth = GetLinearDepth2(pixeldepth1);
-	float cloudLighting = 0.0, cloud = 0.0;
-	
-	float VoL = dot(normalize(viewPos), lightVec);
-	float maxDist = 256.0 * VCLOUDS_RANGE;
-	float minDist = 0.01 + (dither * 8.0);
 
-	for (minDist; minDist < maxDist; minDist += 8.0) {
-		if (depth < minDist){
+	float depth = GetLinearDepth2(pixeldepth1);
+	float maxDist = 256.0 * VCLOUDS_RANGE;
+	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
+
+	float VoL = dot(normalize(viewPos), lightVec);
+	float scattering = pow(VoL * 0.75 * (2.0 * sunVisibility - 1.0) + 0.25, 4.0);
+
+	for (minDist; minDist < maxDist; minDist += VCLOUDS_QUALITY) {
+		if (depth < minDist || finalColor.a > 0.999){
 			break;
 		}
 
@@ -122,36 +125,45 @@ vec4 getVolumetricCloud(float pixeldepth1, float dither, vec3 color, vec3 sunVec
 			else break;
 			#endif
 
-			float offset = 48.0;
+			float vh = getHeightNoise((wpos.xz + cameraPosition.xz + vec2(frametime * VCLOUDS_SPEED, 0.0)) * 0.01);
+			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -vh * 24.0, 0.0);
 
-			float vh = getHeightNoise((wpos.xz + cameraPosition.xz + vec2(frametime * 0.25, 0.0)) * 0.005);
-			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -vh * offset, 0.0);
+			float noise = getCloudSample(wpos.xyz);
+			noise = clamp(noise, noise, noise * 0.9);
 
-			float height = VCLOUDS_HEIGHT + (VCLOUDS_HEIGHT_ADJ_FACTOR * timeBrightness);
-			float vertThickness = VCLOUDS_VERTICAL_THICKNESS * 2.5 + timeBrightness;
+			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 + scattering), vcloudsDownCol, noise), noise);
+			cloudsColor.w = clamp(cloudsColor.w, 0.75, cloudsColor.w);
+			cloudsColor.rgb *= cloudsColor.a;
 
-			float noise = getCloudSample(wpos.xyz, height, vertThickness, VCLOUDS_SAMPLES);
-			float densityFactor = smoothstep(height - vertThickness * noise, height + vertThickness * noise, wpos.y);
-			cloud = max(noise, cloud);
-
-			float halfVoL = VoL * shadowFade * 0.5 + 0.5;
-			float halfVoLSqr = halfVoL * halfVoL;
-			float noiseLightFactor = (2.0 - 1.5 * VoL * shadowFade) * VCLOUDS_VERTICAL_THICKNESS;
-			float sampleLighting = pow(cloud, 1.125 * halfVoLSqr + 0.875) * 0.8 + 0.2;
-			sampleLighting *= 1.0 - pow(cloud, noiseLightFactor);
-
-			cloudLighting = clamp(mix(cloudLighting, sampleLighting, densityFactor * (1.0 - cloud * cloud)), 0.1, 1.0);
+			finalColor += cloudsColor * (1.0 - finalColor.a);
 		}
 	}
-	if (isEyeInWater == 1) cloud *= cameraPosition.y * 0.0075;
-	float scattering = pow(VoL * 0.75 * (2.0 * sunVisibility - 1.0) + 0.25, 8.0);
-	cloudColor = mix(
-		vcloudsDownCol,
-		vcloudsCol * (0.75 + scattering),
-		cloudLighting
-	);
 
-	cloudColor = mix(vec3(0.0), cloudColor, cloud * cloud);
-
-	return vec4(cloudColor, cloud * cloud);
+	return finalColor;
 }
+
+/* this noise is from bsl 6.2, dont wanna use it because it looks kinda crong
+float getnoise(vec2 pos){
+	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
+}
+
+float getCloudNoise(vec3 pos){
+	pos /= 16.0;
+	pos.xz *= 0.5;
+	vec3 flr = floor(pos);
+	vec3 frc = fract(pos);
+	float yadd = 32.0;
+	frc = frc*frc*(3.0-2.0*frc);
+	
+	float noisebdl = getnoise(flr.xz+flr.y*yadd);
+	float noisebdr = getnoise(flr.xz+flr.y*yadd+vec2(1.0,0.0));
+	float noisebul = getnoise(flr.xz+flr.y*yadd+vec2(0.0,1.0));
+	float noisebur = getnoise(flr.xz+flr.y*yadd+vec2(1.0,1.0));
+	float noisetdl = getnoise(flr.xz+flr.y*yadd+yadd);
+	float noisetdr = getnoise(flr.xz+flr.y*yadd+yadd+vec2(1.0,0.0));
+	float noisetul = getnoise(flr.xz+flr.y*yadd+yadd+vec2(0.0,1.0));
+	float noisetur = getnoise(flr.xz+flr.y*yadd+yadd+vec2(1.0,1.0));
+	float noise= mix(mix(mix(noisebdl,noisebdr,frc.x),mix(noisebul,noisebur,frc.x),frc.z),mix(mix(noisetdl,noisetdr,frc.x),mix(noisetul,noisetur,frc.x),frc.z),frc.y);
+	return noise;
+}
+*/

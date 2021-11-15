@@ -160,7 +160,7 @@ screen.INFO.comment=By Septonious with contribution of mlgimposter.
 
 #Lighting
 option.ADVANCED_ILLUMINATION=Advanced Illumination
-option.ADVANCED_ILLUMINATION=Modified sunlight and blocklight.
+option.ADVANCED_ILLUMINATION.comment=Modified sunlight and blocklight.
 option.RANDOM_COLORED_LIGHTING=Random Colored Lighting
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
 option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
@@ -520,10 +520,6 @@ option.SKYBOX_BRIGHTNESS=Skybox Brightness
 option.SKYBOX_BRIGHTNESS.comment=Adjusts skybox brightness. §e[*]§rSet to 1.00 when subtractive skybox exists.
 
 #Cloud Config
-option.VCLOUDS_NOISE_QUALITY=Noise Quality
-value.VCLOUDS_NOISE_QUALITY.0=Low
-value.VCLOUDS_NOISE_QUALITY.1=Medium
-value.VCLOUDS_NOISE_QUALITY.2=High
 option.VCLOUDS_AMOUNT=Amount
 option.VCLOUDS_RANGE=Range
 option.VCLOUDS_RANGE.comment=Changes the maximum render distance
@@ -533,10 +529,7 @@ option.VCLOUDS_HEIGHT=Height
 option.VCLOUDS_VERTICAL_THICKNESS=Vertical Thickness
 option.VCLOUDS_HORIZONTAL_THICKNESS=Horizontal Thickness
 option.VCLOUDS_SAMPLES=Detail
-option.VCLOUDS_HEIGHT_ADJ_FACTOR=Height Adj. Factor
-option.VCLOUDS_HEIGHT_ADJ_FACTOR.comment=Adjusts cloud height at noon, then lowers it.
-option.VCLOUDS_AMOUNT_FACTOR=Amount Adj. Factor
-option.VCLOUDS_AMOUNT_FACTOR.comment=Adjusts cloud amount at noon, then lowers it
+option.VCLOUDS_QUALITY=Quality
 option.VCLOUDS_AMOUNT_DAY=Day Amount
 option.VCLOUDS_AMOUNT_NIGHT=Night Amount
 option.VCLOUDS_AMOUNT_MORNING=Morning Amount

@@ -546,8 +546,6 @@ void main() {
 			albedo.a = clamp(albedo.a, 0.5, 0.95);
 		} 
 
-		Fog(albedo.rgb, viewPos);
-
 		//absorption from comp, ty emin
 		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
 			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
@@ -561,19 +559,18 @@ void main() {
 
 			float difT = length(oViewPos - viewPos.xyz);
 					
-			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * (8 * timeBrightness * (1.00 - rainStrength * 0.50));
-			float absorbDist = 1.0 - clamp(difT / (0.25 + sunVisibility * 7.25), 0.0, 1.0);
+			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * 14.0 * (1.00 - rainStrength * 0.50) * clamp(timeBrightness, 0.1, 1.0);
+			float absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
 			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
-			newAlbedo *= newAlbedo * (0.75 - rainStrength * 0.25);
-
-			float fog2 = length(oViewPos) / far * 0.035;
-			fog2 = 1.0 - (exp(-50.0 * pow(fog2 * 0.125, 4.0) * eBS));
+			newAlbedo *= newAlbedo;
 
 			float absorb = (1.0 - albedo.a);
-			absorb = sqrt(absorb * timeBrightness * (1 - rainStrength));
+			absorb = sqrt(absorb * (1.0 - rainStrength) * clamp(timeBrightness, 0.1, 1.0)) * lightmap.y;
 
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}
+
+		Fog(albedo.rgb, viewPos);
 
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));

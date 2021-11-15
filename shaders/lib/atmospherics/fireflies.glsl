@@ -3,7 +3,7 @@ float getFireflyNoise(vec3 pos, float height){
 	float ymult = pow(abs(height - pos.y) / 32, 32);
 	
 	if (ymult < 2.0){
-		noise+= getNoise1(pos) * 10.05;
+		noise+= rand(pos) * 10.05;
 	}
     
 	noise = clamp(noise - (10.0 + 5.0 * ymult), 0.0, 1.0);
