@@ -519,7 +519,7 @@ https://bitslablab.com
   #define DISTANT_BLUR_RANGE 1 //[1 2 3 4 5 6 7 8]
 //#define DOF
   #define DOF_STRENGTH 8.0 //[1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 384.0 512.0]
-  #define MOTION_BLUR
+//#define MOTION_BLUR
   #define MOTION_BLUR_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define BLOOM
   #define BLOOM_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00 8.00]

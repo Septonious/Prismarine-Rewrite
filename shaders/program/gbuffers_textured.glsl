@@ -93,7 +93,9 @@ float GetLinearDepth(float depth) {
 #if FOG_COLOR_MODE == 2
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
+#ifdef EXP_FOG
 #include "/lib/atmospherics/fog.glsl"
+#endif
 #include "/lib/lighting/forwardLighting.glsl"
 
 #ifdef TAA
@@ -168,7 +170,7 @@ void main() {
 	#endif
 
 	#ifdef TEST03
-	albedo *= 2;
+	albedo *= 2.0;
 	#endif
 	
     /* DRAWBUFFERS:0 */
