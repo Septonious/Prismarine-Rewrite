@@ -570,7 +570,9 @@ void main() {
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}
 
+		#ifdef EXP_FOG
 		Fog(albedo.rgb, viewPos);
+		#endif
 
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));

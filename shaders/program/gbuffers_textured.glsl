@@ -144,7 +144,7 @@ void main() {
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NoL, 1.0,
 				    1.0, 0.0, 0.0);
 
-		#if defined FOG && MC_VERSION >= 11500
+		#ifdef EXP_FOG
 		Fog(albedo.rgb, viewPos);
 		#endif
 

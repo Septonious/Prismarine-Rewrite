@@ -81,7 +81,7 @@ void main() {
 		albedo.rgb *= 0.525;
 		#endif
 		
-		#if defined FOG && MC_VERSION < 11500
+		#ifdef EXP_FOG
 		if (gl_FragCoord.z > 0.991) Defog(albedo.rgb);
 		#endif
 
