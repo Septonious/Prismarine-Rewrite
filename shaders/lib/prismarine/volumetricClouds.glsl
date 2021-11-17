@@ -128,7 +128,6 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -vh * 24.0, 0.0);
 
 			float noise = getCloudSample(wpos.xyz);
-				  noise = clamp(noise, 1.00, noise * 2.00);
 
 			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * 2.0, vcloudsDownCol, noise), noise);
 			cloudsColor.rgb *= cloudsColor.a;
