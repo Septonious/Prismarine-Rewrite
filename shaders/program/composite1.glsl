@@ -45,10 +45,6 @@ uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
-#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-uniform sampler2D colortex8;
-uniform sampler2D colortex9;
-#endif
 uniform sampler2D noisetex;
 
 //Optifine Constants//
