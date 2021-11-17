@@ -231,7 +231,17 @@ float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 	return noise;
 }
 
+#ifdef END
+float InterleavedGradientNoiseVL() {
+	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
+	return fract(n + frameCounter / 6.0);
+}
+#endif
+
 vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
+	#ifdef END
+	dither = InterleavedGradientNoiseVL();
+	#endif
 	dither *= NEBULA_DITHERING_STRENGTH;
 
 	float auroraVisibility = 0.0;

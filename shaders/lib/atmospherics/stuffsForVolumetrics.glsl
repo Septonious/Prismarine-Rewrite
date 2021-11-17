@@ -50,11 +50,17 @@ float getCloudNoise(vec3 pos) {
 float getFogSample(vec3 pos, float height, float verticalThickness, float samples, float amount){
 	float ymult = pow(abs(height - pos.y) / verticalThickness, LIGHTSHAFT_VERTICAL_THICKNESS);
 	vec3 wind = vec3(frametime * 0.25, 0, 0);
+	#ifdef NETHER
+	pos *= 3.0;
+	#endif
 	float noise = getCloudNoise(pos * samples * 1.00000 - wind * 0.30);
 		  noise+= getCloudNoise(pos * samples * 0.50000 + wind * 0.25);
           noise+= getCloudNoise(pos * samples * 0.25000 - wind * 0.20);
           noise+= getCloudNoise(pos * samples * 0.12500 + wind * 0.15);
           noise+= getCloudNoise(pos * samples * 0.06250 - wind * 0.10);
+	#ifdef NETHER
+	noise *= 0.55;
+	#endif
 	noise = clamp(noise * LIGHTSHAFT_AMOUNT * amount - (1.0 + ymult), 0.0, 1.0);
 	return noise;
 }

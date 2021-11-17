@@ -173,7 +173,7 @@ void main() {
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
-	visibility = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0) * (1.0 - rainStrength);
+	visibility = CalcTotalAmount(CalcDayAmount(1.0, 1.0 - eBS, 1.0), 0.0) * (1.0 - rainStrength);
 	#endif
 	#ifdef VOLUMETRIC_LIGHT
 	if (isEyeInWater == 1) visibility = 1.0;

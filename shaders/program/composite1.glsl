@@ -106,8 +106,8 @@ void main() {
 	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1, 1 - eBS, 1), 0);
-	if (isEyeInWater == 1) visibility0 = 1;
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 1.0 - eBS, 1.0), 0.0);
+	if (isEyeInWater == 1) visibility0 = 1.0;
 
 	if (visibility0 > 0){
 		vec3 lightshaftWater = vec3(LIGHTSHAFT_WR, LIGHTSHAFT_WG, LIGHTSHAFT_WB) * LIGHTSHAFT_WI / 255.0;
@@ -123,8 +123,8 @@ void main() {
 	#endif
 
 	#ifdef FIREFLIES
-	float visibility1 = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS) * (1 - isEyeInWater);
-	if (visibility1 > 0) vl *= vec3(100, 255, 180) * FIREFLIES_I * 16;	
+	float visibility1 = (1.0 - sunVisibility) * (1.0 - rainStrength) * (0.0 + eBS) * (1.0 - isEyeInWater);
+	if (visibility1 > 0) vl *= vec3(100.0, 255.0, 180.0) * FIREFLIES_I * 16.0;	
 	#endif
 
 	#endif
@@ -138,8 +138,7 @@ void main() {
 
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
-	vec4 cloud = getVolumetricCloud(pixeldepth1, InterleavedGradientNoiseVL(), color.rgb, sunVec, viewPos.xyz);
-	color.rgb = mix(color.rgb, cloud.rgb, cloud.a);
+	getVolumetricCloud(pixeldepth1, InterleavedGradientNoiseVL(), color.rgb);
 	#endif
 
 	/* DRAWBUFFERS:0 */
