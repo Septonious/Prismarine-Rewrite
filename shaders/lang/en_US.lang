@@ -148,7 +148,7 @@ screen.BLOCKLIGHT_END=End Blocklight Col
 screen.ADDITIONAL_BLOCKLIGHT_COLORS=Additional Colors
 screen.CA_CONFIG=Ch. Aberration Config
 screen.BLOCKLIGHT_CONFIG=Blocklight Config
-screen.SUNLIGHT_COLOR=Sun GI Color
+screen.SUNLIGHT_COLOR=Sun Illumination Color
 
 screen.WORLD=World
 screen.WAVING=Waving Blocks
@@ -176,7 +176,6 @@ option.BLOCKLIGHT_FLICKERING=Blocklight Flickering
 option.BLOCKLIGHT_FLICKERING.comment=Enables flickering of blocklight.
 option.BLOCKLIGHT_FLICKERING_STRENGTH=Flickering Strength
 
-option.NOISE_FACTOR=Noise Strength
 option.COLORED_SHADOW_OPACITY=Colored Shadows Opacity
 option.COLORED_SHADOW_BRIGHTNESS=Colored Shadows Brightness
 option.NOISY_TEXTURES=Noisy Textures
@@ -1109,6 +1108,11 @@ option.END_R=Red
 option.END_G=Green
 option.END_B=Blue
 option.END_I=Intensity
+
+option.ADVANCED_ILLUMINATION_R=Red
+option.ADVANCED_ILLUMINATION_G=Green
+option.ADVANCED_ILLUMINATION_B=Blue
+option.ADVANCED_ILLUMINATION_I=Intensity
 
 option.EMISSIVE_RECOLOR=Emissive Recolor
 option.EMISSIVE_RECOLOR.comment=Tints certain emissive blocks with blocklight color.

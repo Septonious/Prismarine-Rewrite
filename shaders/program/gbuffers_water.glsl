@@ -541,7 +541,7 @@ void main() {
 			#endif
 		}
 
-		if ((translucent + glass) > 0.5){
+		if (glass > 0.5){
 			albedo.a += albedo.a * 0.75;
 			albedo.a = clamp(albedo.a, 0.5, 0.95);
 		} 

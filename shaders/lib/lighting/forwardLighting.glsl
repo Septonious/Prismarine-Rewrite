@@ -55,7 +55,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     newLightmap *= (lightmapBrightness * 0.30);
 
     float sunlightmap = pow(lightmap.y, 8.0) * timeBrightness * lightmap.y * 0.75;
-    vec3 sunlight = vec3(SUN_R, SUN_G, SUN_B) / 255 * SUN_I * color.rgb * sunlightmap * sunlightmap;
+    vec3 sunlight = vec3(ADVANCED_ILLUMINATION_R, ADVANCED_ILLUMINATION_G, ADVANCED_ILLUMINATION_B) / 255 * ADVANCED_ILLUMINATION_I * color.rgb * sunlightmap * sunlightmap;
     #endif
 
     #ifdef LIGHTMAP_BRIGHTNESS_RECOLOR

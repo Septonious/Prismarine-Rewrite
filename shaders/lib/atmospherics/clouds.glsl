@@ -357,6 +357,9 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 				nebulaColor += star;
 				#endif
 
+				#ifdef NEBULA_STARS
+				#endif
+
 				nebula += noise * nebulaColor * exp2(-4.0 * i * sampleStep);
 			}
 			currentStep += sampleStep;
