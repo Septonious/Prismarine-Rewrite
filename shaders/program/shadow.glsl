@@ -56,7 +56,6 @@ void main() {
 
     float premult = float(mat > 0.98 && mat < 1.02);
 	float disable = float(mat > 1.98 && mat < 2.02);
-	float water = float (mat > 2.98);
 	if (disable > 0.5 || albedo.a < 0.01) discard;
 
     #ifdef SHADOW_COLOR
@@ -67,7 +66,7 @@ void main() {
 	#endif
 
 	#ifdef PROJECTED_CAUSTICS
-	if (water > 0.9){
+	if (mat > 2.98){
 		albedo.rgb = waterColor.rgb;
 		albedo.rgb = getCaustics(position0.xyz + cameraPosition.xyz) * albedo.rgb * WATER_CAUSTICS_STRENGTH * (0.25 + timeBrightness);
 	}
@@ -119,13 +118,13 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 void main() {
 	texCoord = gl_MultiTexCoord0.xy;
 	
-	mat = 0;
-	if (mc_Entity.x == 10301 || mc_Entity.x == 10302) mat = 1;
-	if (mc_Entity.x == 10300 || mc_Entity.x == 10204) mat = 2;
+	mat = 0.0;
+	if (mc_Entity.x == 10301 || mc_Entity.x == 10302) mat = 1.0;
+	if (mc_Entity.x == 10300 || mc_Entity.x == 10204) mat = 2.0;
 	#ifdef PROJECTED_CAUSTICS
-	if (mc_Entity.x == 10303) mat = 3;
+	if (mc_Entity.x == 10303) mat = 3.0;
 	#else
-	if (mc_Entity.x == 10303) mat = 2;
+	if (mc_Entity.x == 10303) mat = 2.0;
 	#endif
 	
 	position0 = shadowModelViewInverse * shadowProjectionInverse * ftransform();

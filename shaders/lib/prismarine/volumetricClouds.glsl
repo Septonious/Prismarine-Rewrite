@@ -39,41 +39,38 @@ float getHeightNoise(vec2 pos){
 	return noise;
 }
 
-
 float getCloudNoise(vec3 pos){
 	vec3 u = floor(pos);
 	vec3 v = fract(pos);
 
 	v = v * v * (3.0 - 2.0 * v);
 	
-	float noisebdl = rand2D(u.xz+u.y*32.0);
-	float noisebdr = rand2D(u.xz+u.y*32.0+vec2(1.0,0.0));
-	float noisebul = rand2D(u.xz+u.y*32.0+vec2(0.0,1.0));
-	float noisebur = rand2D(u.xz+u.y*32.0+vec2(1.0,1.0));
-	float noisetdl = rand2D(u.xz+u.y*32.0+32.0);
-	float noisetdr = rand2D(u.xz+u.y*32.0+32.0+vec2(1.0,0.0));
-	float noisetul = rand2D(u.xz+u.y*32.0+32.0+vec2(0.0,1.0));
-	float noisetur = rand2D(u.xz+u.y*32.0+32.0+vec2(1.0,1.0));
-	float noise= mix(mix(mix(noisebdl,noisebdr,v.x),mix(noisebul,noisebur,v.x),v.z),mix(mix(noisetdl,noisetdr,v.x),mix(noisetul,noisetur,v.x),v.z),v.y);
+	float noisebdl = rand2D(u.xz + u.y * 32.0);
+	float noisebdr = rand2D(u.xz + u.y * 32.0 + vec2(1.0, 0.0));
+	float noisebul = rand2D(u.xz + u.y * 32.0 + vec2(0.0, 1.0));
+	float noisebur = rand2D(u.xz + u.y * 32.0 + vec2(1.0, 1.0));
+	float noisetdl = rand2D(u.xz + u.y * 32.0 + 32.0);
+	float noisetdr = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 0.0));
+	float noisetul = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(0.0, 1.0));
+	float noisetur = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 1.0));
+	float noise= mix(mix(mix(noisebdl, noisebdr, v.x), mix(noisebul, noisebur, v.x), v.z), mix(mix(noisetdl, noisetdr, v.x), mix(noisetul, noisetur, v.x), v.z), v.y);
 	return noise;
 }
 
 float getCloudSample(vec3 pos){
-	float noise = 0.0;
-	float ymult = pow(abs(VCLOUDS_HEIGHT - pos.y)/VCLOUDS_VERTICAL_THICKNESS,2.0);
-	vec3 wind = vec3(frametime,0.0,0.0);
-	
-	if (ymult < 2.0){
-		noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5);
-		noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 2.0;
-		noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.125000 - wind * 0.3) * 3.0;
-		noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.062500 - wind * 0.2) * 4.0;
-		noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 5.0;
-		noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.016125) * 6.0;
-	}
+	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
-	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.1) * 2.0;
-	noise = clamp(noise * amount - (10.0 + 5.0 * ymult), 0.0, 1.0);
+	float sampleHeight = abs(VCLOUDS_HEIGHT - pos.y) / VCLOUDS_VERTICAL_THICKNESS;
+	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.3) * 2.0;
+	
+	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5);
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 2.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.125000 - wind * 0.3) * 3.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.062500 - wind * 0.2) * 4.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 5.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.016125) * 6.0;
+
+	noise = clamp(noise * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
 	return noise;
 }
 void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
@@ -86,7 +83,7 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 	vec3 vcDownMorning    = vec3(VCLOUDDOWN_MR,   VCLOUDDOWN_MG,   VCLOUDDOWN_MB)   * VCLOUDDOWN_MI / 255;
 	vec3 vcDownDay        = vec3(VCLOUDDOWN_DR,   VCLOUDDOWN_DG,   VCLOUDDOWN_DB)   * VCLOUDDOWN_DI / 255;
 	vec3 vcDownEvening    = vec3(VCLOUDDOWN_ER,   VCLOUDDOWN_EG,   VCLOUDDOWN_EB)   * VCLOUDDOWN_EI / 255;
-	vec3 vcDownNight      = vec3(VCLOUDDOWN_NR,   VCLOUDDOWN_NG,   VCLOUDDOWN_NB)   * VCLOUDDOWN_NI * 0.3 / 255;
+	vec3 vcDownNight      = vec3(VCLOUDDOWN_NR,   VCLOUDDOWN_NG,   VCLOUDDOWN_NB)   * VCLOUDDOWN_NI * 0.4 / 255;
 
 	#ifndef PERBIOME_CLOUDS_COLOR
 	vec3 vcSun = CalcSunColor(vcMorning, vcDay , vcEvening);
@@ -104,8 +101,6 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 	//Here we begin to march
 	vec4 wpos = vec4(0.0);
 	vec4 finalColor = vec4(0.0);
-
-	vec2 alpha = vec2(0.0);
 
 	float depth = GetLinearDepth2(pixeldepth1);
 	float maxDist = 256.0 * VCLOUDS_RANGE;

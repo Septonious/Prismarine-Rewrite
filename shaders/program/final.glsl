@@ -108,7 +108,7 @@ void main() {
 	vec3 color = texture2D(colortex1, texCoord).rgb;
 	#endif
 
-	#if Sharpen > 0 && !defined DOF && !defined TAA
+	#if Sharpen > 0 && !defined DOF && !defined TAA && !defined FOG_BLUR && !defined DISTANT_BLUR
 	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
 	color *= Sharpen * 0.1 + 1.0;
 	color -= texture2D(colortex1,texCoord.xy+vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
@@ -122,7 +122,7 @@ void main() {
 	#endif
 
 	#ifdef TEST04	
-	color *= 1 + playerMood;
+	color *= 1.0 + playerMood;
 	#endif
 
 	gl_FragColor = vec4(color, 1.0);
