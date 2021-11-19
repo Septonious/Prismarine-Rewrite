@@ -125,6 +125,7 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 			float noise = getCloudSample(wpos.xyz);
 
 			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * 2.0, vcloudsDownCol, noise), noise);
+			if (isEyeInWater == 1.0) cloudsColor.a *= WATER_I * 0.50;
 			cloudsColor.rgb *= cloudsColor.a;
 			finalColor += cloudsColor * (1.0 - finalColor.a);
 		}

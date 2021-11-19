@@ -24,7 +24,7 @@ uniform sampler2D depthtex1, depthtex0;
 
 #ifdef FOG_BLUR
 varying vec3 sunVec, upVec;
-uniform int rainStrength;
+uniform float rainStrength;
 uniform float timeBrightness, timeAngle;
 uniform vec3 cameraPosition;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
