@@ -3,7 +3,7 @@ vec3 skylightMorning    = vec3(SKYLIGHT_MR,   SKYLIGHT_MG,   SKYLIGHT_MB)   * SK
 vec3 skylightDay        = vec3(SKYLIGHT_DR,   SKYLIGHT_DG,   SKYLIGHT_DB)   * SKYLIGHT_DI / 255.0;
 vec3 skylightEvening    = vec3(SKYLIGHT_ER,   SKYLIGHT_EG,   SKYLIGHT_EB)   * SKYLIGHT_EI / 255.0;
 vec3 skylightNight      = vec3(SKYLIGHT_NR,   SKYLIGHT_NG,   SKYLIGHT_NB)   * SKYLIGHT_NI * 0.3 / 255.0;
-vec3 skylightSun       = CalcSunColor(skylightMorning, skylightDay * skylightDay, skylightEvening);
+vec3 skylightSun       = CalcSunColor(skylightMorning, skylightDay, skylightEvening);
 
 vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     vec3 nViewPos = normalize(viewPos);
@@ -57,15 +57,14 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
 
     sky = sky / sqrt(sky * sky + 1.0) * exposure * sunVisibility * (0.25 + timeBrightness * 0.75);
 
-    float sunMix = (VoL * 0.50 + 0.50) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) * HORIZON_VERTICAL_EXPONENT;
+    float sunMix = (VoL * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) * (HORIZON_VERTICAL_EXPONENT - timeBrightness * 0.25);
     
     #ifdef TF
-    sunMix = (VoU * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) *
-                   pow(1.0 - timeBrightness * 0.6, 3.0);   
+    sunMix = (VoU * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) * (1.0 + timeBrightness);   
     #endif
 
     float horizonMix = pow(1.0 - abs(VoU), 1.0) * HORIZON_EXPONENT * (1.0 - timeBrightness * 0.5);
-    float lightMix = (1.0 - (1.0 - sunMix) * (1.0 - horizonMix));
+    float lightMix = 1.0 - (1.0 - sunMix) * (1.0 - horizonMix);
 
     vec3 lightSky = pow(skylightSun, vec3(4.0 - sunVisibility)) * baseGradient;
 
@@ -77,7 +76,7 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
 
     sky = mix(
         sqrt(sky * (1.0 - lightMix)), 
-        sqrt(lightSky) * pow((1.0 - VoU), 2 + timeBrightness + timeBrightness), 
+        sqrt(lightSky) * pow((1.0 - VoU), 2 - timeBrightness), 
         lightMix
     );
 

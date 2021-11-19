@@ -185,12 +185,6 @@ void main() {
 			emissive = float(length(albedo.rgb) > 1.7);
 		} else if (entityId == 20002) { // Magma Cube
 			emissive = float(length(albedo.rgb) > 0.7);
-		} else if (entityId == 20003) { // Charged Creeper
-			if (albedo.b > albedo.g + 0.01) {
-				albedo.rgb = length(albedo.rgb) * vec3(1.0, 1.25, 1.5);
-				emissive = 0.1;
-				lightmap = vec2(0.0);
-			}
 		} else if (entityId == 20004) { // Ghast
 			emissive = float(albedo.r > albedo.g + albedo.b + 0.1);
 		} else if (entityId == 20005) { // Fireball, Dragon Fireball

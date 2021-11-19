@@ -90,7 +90,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
         #elif FOG_COLOR_MODE == 0
         lightFog = pow(GetSkyColor(viewPos, false), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
         #elif FOG_COLOR_MODE == 2
-        lightFog = pow(getBiomeColor(fogColorSun * 2.0), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
+        lightFog = pow(getBiomeColor(fogcolorSun * 2.0), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
         #endif
 	}
 	if (!layer){

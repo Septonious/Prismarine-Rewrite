@@ -82,7 +82,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #endif
 
                 #ifdef NETHER
-                vec4 fogColor = vec4(mix(netherCol.rgb * 0.025, netherCol.rgb * 0.075, noise), noise);
+                vec4 fogColor = vec4(mix(netherCol.rgb * 0.01, netherCol.rgb * 0.03, noise), noise);
                 #else
                 vec4 fogColor = vec4(mix(fogColorC * 0.1, fogColorC * 0.2, noise), noise);
                 #endif

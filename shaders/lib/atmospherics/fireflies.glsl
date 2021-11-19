@@ -3,7 +3,7 @@ float getFireflyNoise(vec3 pos, float height){
 	float ymult = pow(abs(height - pos.y) / 32, 32);
 	
 	if (ymult < 2.0){
-		noise+= rand(pos) * 10.05;
+		noise+= getVolumetricNoise0(pos) * 10.05;
 	}
     
 	noise = clamp(noise - (10.0 + 5.0 * ymult), 0.0, 1.0);
@@ -11,8 +11,10 @@ float getFireflyNoise(vec3 pos, float height){
 }
 
 vec3 GetFireflies(float pixeldepth0, vec3 color, float dither) {
+	dither *= 8.0;
+
 	vec3 ff = vec3(0.0);
-	dither *= 2;
+
 	float visibility = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS);
 
 	if (visibility > 0.0) {

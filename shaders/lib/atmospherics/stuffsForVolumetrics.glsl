@@ -22,9 +22,29 @@ vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
 }
 
 #if defined FIREFLIES || defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG
-float rand(vec3 p) {
-    return fract(sin(dot(p, vec3(12.345, 67.89, 412.12))) * 42123.45) * 2.0 - 1.0;
+#ifdef FIREFLIES
+float getNoise(vec2 pos){
+	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
 }
+
+float getVolumetricNoise0(vec3 pos){
+	vec3 flr = floor(pos);
+	vec3 frc = fract(pos);
+	frc = frc * frc * (3.0-2.0 * frc);
+	
+	float noisebdl = getNoise(flr.xz + (vec2(frametime, 0) * 0.00005) + flr.y * 32);
+	float noisebdr = getNoise(flr.xz - (vec2(frametime * 0.00015, 0) * 0.000075) + flr.y * 32 + vec2(1.0,0.0));
+	float noisebul = getNoise(flr.xz + (vec2(frametime * 0.00040, 0) * 0.000100) + flr.y * 32 + vec2(0.0,1.0));
+	float noisebur = getNoise(flr.xz - (vec2(frametime * 0.00055, 0) * 0.000150) + flr.y * 32 + vec2(1.0,1.0));
+	float noisetdl = getNoise(flr.xz + (vec2(frametime * 0.00040, 0) * 0.000175) + flr.y * 32 + 32);
+	float noisetdr = getNoise(flr.xz - (vec2(frametime * 0.00035, 0) * 0.000200) + flr.y * 32 + 32 + vec2(1.0,0.0));
+	float noisetul = getNoise(flr.xz + flr.y * 32 + 32 + vec2(0.0,1.0));
+	float noisetur = getNoise(flr.xz + flr.y * 32 + 32 + vec2(1.0,1.0));
+	float noise= mix(mix(mix(noisebdl, noisebdr, frc.x), mix(noisebul, noisebur, frc.x), frc.z),
+				 mix(mix(noisetdl, noisetdr, frc.x), mix(noisetul, noisetur, frc.x), frc.z), frc.y);
+	return noise;
+}
+#endif
 
 float getCloudNoise(vec3 pos) {
 	pos /= 8.0;
@@ -48,19 +68,23 @@ float getCloudNoise(vec3 pos) {
 
 #if ((defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
 float getFogSample(vec3 pos, float height, float verticalThickness, float samples, float amount){
-	float ymult = pow(abs(height - pos.y) / verticalThickness, LIGHTSHAFT_VERTICAL_THICKNESS);
+	float ymult = abs(height - pos.y) / verticalThickness;
 	vec3 wind = vec3(frametime * 0.25, 0, 0);
+	
 	#ifdef NETHER
 	pos *= 3.0;
 	#endif
+
 	float noise = getCloudNoise(pos * samples * 1.00000 - wind * 0.30);
 		  noise+= getCloudNoise(pos * samples * 0.50000 + wind * 0.25);
           noise+= getCloudNoise(pos * samples * 0.25000 - wind * 0.20);
           noise+= getCloudNoise(pos * samples * 0.12500 + wind * 0.15);
           noise+= getCloudNoise(pos * samples * 0.06250 - wind * 0.10);
+
 	#ifdef NETHER
 	noise *= 0.55;
 	#endif
+
 	noise = clamp(noise * LIGHTSHAFT_AMOUNT * amount - (1.0 + ymult), 0.0, 1.0);
 	return noise;
 }
