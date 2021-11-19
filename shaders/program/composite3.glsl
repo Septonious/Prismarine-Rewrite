@@ -126,10 +126,10 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	#if defined FOG_BLUR && defined OVERWORLD
 	vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000;
 	float height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
-		  height = pow(height, 16);
+		  height = pow(height, 16.0);
 		  height = clamp(height, 0, 1);
 	coc *= FIRST_LAYER_DENSITY * CalcTotalAmount(CalcDayAmount(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY), NIGHT_FOG_DENSITY) * (0.50 + rainStrength * 0.50);
-	coc *= 1 - height;
+	coc *= 1.0 - height;
 	#endif
 
 	if (coc > 0.0 && hand < 0.5) {
