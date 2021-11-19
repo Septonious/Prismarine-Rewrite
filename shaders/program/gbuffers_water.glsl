@@ -558,7 +558,7 @@ void main() {
 		 	#endif
 
 			float difT = length(oViewPos - viewPos.xyz);
-			float clampTimeBrightness = clamp(timeBrightness, 0.1, 1.0);
+			float clampTimeBrightness = clamp(timeBrightness, 0.01, 1.0);
 			vec3 absorbColor = (normalize(waterColor.rgb) * 2.0 * WATER_I) * terrainColor * terrainColor * 14.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
 			float absorbDist = 1.0 - clamp(difT / (8.0 * clampTimeBrightness), 0.0, 1.0);
 			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
