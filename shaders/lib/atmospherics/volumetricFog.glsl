@@ -1,11 +1,11 @@
 #ifdef OVERWORLD
-vec3 fogcolorMorning    = vec3(FOGCOLOR_MR,   FOGCOLOR_MG,   FOGCOLOR_MB)   * FOGCOLOR_MI / 255.0;
-vec3 fogcolorDay        = vec3(FOGCOLOR_DR,   FOGCOLOR_DG,   FOGCOLOR_DB)   * FOGCOLOR_DI / 255.0;
-vec3 fogcolorEvening    = vec3(FOGCOLOR_ER,   FOGCOLOR_EG,   FOGCOLOR_EB)   * FOGCOLOR_EI / 255.0;
-vec3 fogcolorNight      = vec3(FOGCOLOR_NR,   FOGCOLOR_NG,   FOGCOLOR_NB)   * FOGCOLOR_NI * 0.3 / 255.0;
+vec3 fogcolorMorning0    = vec3(FOGCOLOR_MR,   FOGCOLOR_MG,   FOGCOLOR_MB)   * FOGCOLOR_MI / 255.0;
+vec3 fogcolorDay0        = vec3(FOGCOLOR_DR,   FOGCOLOR_DG,   FOGCOLOR_DB)   * FOGCOLOR_DI / 255.0;
+vec3 fogcolorEvening0    = vec3(FOGCOLOR_ER,   FOGCOLOR_EG,   FOGCOLOR_EB)   * FOGCOLOR_EI / 255.0;
+vec3 fogcolorNight0      = vec3(FOGCOLOR_NR,   FOGCOLOR_NG,   FOGCOLOR_NB)   * FOGCOLOR_NI * 0.3 / 255.0;
 
-vec3 fogcolorSun    = CalcSunColor(fogcolorMorning, fogcolorDay, fogcolorEvening);
-vec3 fogColorC    	= CalcLightColor(fogcolorSun, fogcolorNight, weatherCol.rgb);
+vec3 fogcolorSun0    = CalcSunColor(fogcolorMorning0, fogcolorDay0, fogcolorEvening0);
+vec3 fogColorC0    	= CalcLightColor(fogcolorSun0, fogcolorNight0, weatherCol.rgb);
 #endif
 
 float rand2D(vec2 pos){
@@ -84,7 +84,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #ifdef NETHER
                 vec4 fogColor = vec4(mix(netherCol.rgb * 0.01, netherCol.rgb * 0.03, noise), noise);
                 #else
-                vec4 fogColor = vec4(mix(fogColorC * 0.1, fogColorC * 0.2, noise), noise);
+                vec4 fogColor = vec4(mix(fogColorC0 * 0.1, fogColorC0 * 0.2, noise), noise);
                 #endif
 
                 fogColor.rgb *= fogColor.a;

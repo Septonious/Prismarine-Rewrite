@@ -71,7 +71,7 @@ float GetLuminance(vec3 color) {
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/dither.glsl"
 
-#ifdef PERBIOME_LIGHTSHAFTS
+#if (defined PERBIOME_LIGHTSHAFTS || defined PERBIOME_CLOUDS_COLOR) && defined OVERWORLD
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
 
