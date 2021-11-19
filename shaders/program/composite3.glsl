@@ -22,7 +22,7 @@ uniform mat4 gbufferProjection, gbufferProjectionInverse, gbufferModelViewInvers
 uniform sampler2D colortex0;
 uniform sampler2D depthtex1, depthtex0;
 
-#ifdef FOG_BLUR
+#if defined FOG_BLUR && defined OVERWORLD
 varying vec3 sunVec, upVec;
 uniform float rainStrength;
 uniform float timeBrightness, timeAngle;
@@ -99,7 +99,7 @@ vec2 dofOffsets[60] = vec2[60](
 
 //Common Functions//
 #include "/lib/util/spaceConversion.glsl"
-#ifdef FOG_BLUR
+#if defined FOG_BLUR && defined OVERWORLD
 #include "/lib/prismarine/timeCalculations.glsl"
 #endif
 
@@ -111,19 +111,19 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	float coc = max(abs(z - centerDepthSmooth) * DOF_STRENGTH - 0.01, 0.0);
 	coc = coc / sqrt(coc * coc + 0.1);
 	
-	#if defined DISTANT_BLUR || defined FOG_BLUR
+	#if defined DISTANT_BLUR || (defined FOG_BLUR && defined OVERWORLD)
 	vec3 worldPos = ToWorld(viewPos.xyz);
 	#endif
 
-	#if defined DISTANT_BLUR || defined FOG_BLUR
+	#if defined DISTANT_BLUR || (defined FOG_BLUR && defined OVERWORLD)
 	float range = DISTANT_BLUR_RANGE;
-	#ifdef FOG_BLUR
+	#if defined FOG_BLUR && defined OVERWORLD
 	range = 10.0;
 	#endif
 	coc = min(length(worldPos) * range * 0.00025, DISTANT_BLUR_STRENGTH * 0.025) * DISTANT_BLUR_STRENGTH;
 	#endif
 
-	#ifdef FOG_BLUR
+	#if defined FOG_BLUR && defined OVERWORLD
 	vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000;
 	float height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
 		  height = pow(height, 16);
@@ -154,7 +154,7 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 void main() {
 	vec3 color = texture2DLod(colortex0, texCoord, 0.0).rgb;
 	
-	#if defined DOF || defined DISTANT_BLUR || defined FOG_BLUR
+	#if defined DOF || defined DISTANT_BLUR || (defined FOG_BLUR && defined OVERWORLD)
 	float z = texture2D(depthtex1, texCoord.st).x;
 	float z0 = texture2D(depthtex0, texCoord.xy).r;
 

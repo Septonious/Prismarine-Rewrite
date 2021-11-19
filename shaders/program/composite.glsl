@@ -227,11 +227,11 @@ void main() {
 	#endif
 	#endif
 
-	//REFRACTION & WATER TINT
+	//REFRACTION
 	#ifdef REFRACTION
 	vec3 worldPos = ToWorld(viewPos.xyz);
 
-	if (z0 < z1 && translucent.r < 0.25){
+	if (z0 < z1 && translucent.r < 0.25 && translucent.b > translucent.r){
 		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition, z0, z0);
 		color.rgb = texture2D(colortex0, refractionCoord).rgb;
 	}
