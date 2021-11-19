@@ -35,7 +35,7 @@ uniform sampler2D gaux1;
 
 #ifdef END
 uniform float frameTimeCounter;
-uniform int frameCounter;
+uniform int frameCounter, worldTime;
 
 uniform vec3 cameraPosition;
 

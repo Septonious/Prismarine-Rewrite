@@ -29,7 +29,7 @@ uniform float rainStrength;
 uniform float shadowFade;
 uniform float timeAngle, timeBrightness;
 uniform float viewWidth, viewHeight, aspectRatio;
-uniform float worldTime;
+uniform int worldTime;
 
 uniform ivec2 eyeBrightnessSmooth;
 
