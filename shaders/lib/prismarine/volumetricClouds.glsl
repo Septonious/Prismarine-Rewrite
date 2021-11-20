@@ -95,7 +95,10 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 		wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.xy);
 
-		if (depth0 < minDist) finalColor *= translucent;
+		if (depth0 < minDist){
+			finalColor.rgb *= 1.5;
+			finalColor *= translucent;
+		}
 
 		if (length(wpos.xz) < maxDist && depth1 > minDist){
 
