@@ -68,7 +68,7 @@ float getCloudNoise(vec3 pos) {
 
 #if ((defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
 float getFogSample(vec3 pos, float height, float verticalThickness, float samples, float amount){
-	float ymult = abs(height - pos.y) / verticalThickness;
+	float ymult = pow(abs(height - pos.y) / verticalThickness, 2.0);
 	vec3 wind = vec3(frametime * 0.25, 0, 0);
 	
 	#ifdef NETHER
