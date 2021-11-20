@@ -378,7 +378,9 @@ https://bitslablab.com
 
 //Atmospherics//
 //#define SKY_DESATURATION
-
+  #define AURORA
+  #define ROUND_SUN_MOON
+  #define WEATHER_PERBIOME
   #define DISTANT_FADE 3 //[0 1 2 3]
   #define DISTANT_FADE_STYLE 1 //[0 1]
   #define FOG_DENSITY 1.00 //[0.00 0.25 0.50 0.75 1.00 1.50 2.00 2.50 3.00 3.50 4.00]
@@ -425,7 +427,7 @@ https://bitslablab.com
   #define BLOOM_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00 8.00]
   #define BLOOM_CONTRAST 6 //[-6 -4 -2 0 2 4 6]
   #define BLOOM_RADIUS 1 //[1 2 3 4 5 6 7]
-
+  
 //#define LENS_FLARE
   #define LENS_FLARE_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 //#define FXAA
