@@ -107,15 +107,6 @@ void main() {
 	#else
 	vec3 color = texture2D(colortex1, texCoord).rgb;
 	#endif
-
-	#if Sharpen > 0 && !defined DOF && !defined TAA && !defined FOG_BLUR && !defined DISTANT_BLUR
-	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-	color *= Sharpen * 0.1 + 1.0;
-	color -= texture2D(colortex1,texCoord.xy+vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1,texCoord.xy+vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1,texCoord.xy+vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1,texCoord.xy+vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
-	#endif
 	
 	#ifdef TAA
 	SharpenFilter(color, newTexCoord);

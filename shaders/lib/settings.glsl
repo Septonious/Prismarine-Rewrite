@@ -6,11 +6,7 @@ https://bitslablab.com
 ////////////////////////////////////////////////////// PRISMARINE SETTINGS //////////////////////////////////////////////////////
 
   #define ABOUT 0
-  #define ADVANCED_ILLUMINATION
-  #define INTEGRATED_EMISSION
-  #define NOISY_TEXTURES
   #define NOISE_STRENGTH 1.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
-  #define SUN_GLARE
   #define NIGHT_SKY_MODE 1 //[0 1]
   #define END_SKY 1 //[0 1]
 
@@ -21,10 +17,7 @@ https://bitslablab.com
   #define NEBULA_OFFSET_FACTOR 0.60 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
   #define NEBULA_AMOUNT 0.55 //[0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
   #define NEBULA_SPEED 0.75 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
-  #define NEBULA_STARS
-  #define NEBULA_AURORA_CHECK
 
-//#define PLANAR_CLOUDS
   #define CLOUD_THICKNESS 16 //[1 2 4 8 16]
   #define CLOUD_AMOUNT 7 //[8 7 6 5 4]
   #define CLOUD_HEIGHT 6 //[2 3 4 5 6 7 8]
@@ -34,17 +27,10 @@ https://bitslablab.com
 
   #define SKY_COLOR_MODE 0 //[0 1]
   #define FOG_COLOR_MODE 2 //[0 1 2]
-  #define VOLUMETRIC_LIGHT
-//#define VOLUMETRIC_FOG
-  #define EXP_FOG
-//#define PERBIOME_CLOUDS_COLOR
 
   #define FOG_FIRST_LAYER_ALTITUDE 60 //[10 20 30 40 50 60 70 80 90 100]
   #define FOG_SECOND_LAYER_ALTITUDE 120 //[100 110 120 130 140 150 160 170 180 190 200]
 
-//#define PERBIOME_LIGHTSHAFTS
-  #define LIGHTSHAFT_CLOUDY_NOISE
-  #define LIGHTSHAFT_WATER
   #define LIGHTSHAFT_TIME_DECREASE_FACTOR 0.1 //[0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
   #define LIGHTSHAFT_SAMPLES 12 //[2 4 6 8 10 12]
   #define LIGHTSHAFT_MAX_DISTANCE 512.0 //[128.0 256.0 512.0 1024.0]
@@ -62,25 +48,14 @@ https://bitslablab.com
   #define HORIZON_EXPONENT 0.1 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
   #define HORIZON_VERTICAL_EXPONENT 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 
-  #define Sharpen 0 //[0 2 4 6 8 10]
-//#define CHROMATIC_ABERRATION
   #define CHROMATIC_ABERRATION_STRENGTH 2 //[2 4 6 8 10 12 14 16]
   #define CA_COLOR 0 //[0 1 2 3]
 
   #define GLOW_STRENGTH 4 //[1 2 3 4 5 6 7 8]
 
-  #define STARS
   #define STARS_AMOUNT 0.7 //[0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0]
-  #define BIG_STARS
-  #define SMALL_STARS
-//#define DAY_STARS
-  #define END_STARS
   #define STARS_BRIGHTNESS 4.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
-
-//#define FIREFLIES
   #define FIREFLIES_I 3.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
-
-  #define NETHER_SMOKE
 
   #define FIRST_LAYER_DENSITY 2.00 //[0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
   #define SECOND_LAYER_DENSITY 0.25 //[0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
@@ -95,8 +70,6 @@ https://bitslablab.com
   #define SKY_GROUND_I 2.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
   #define ROUND_SUN_MOON_SIZE 8 //[2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 512]
 
-//#define VANILLA_CLOUDS
-  #define VOLUMETRIC_CLOUDS
   #define VCLOUDS_QUALITY 16.0 //[24.0 22.0 20.0 18.0 16.0 14.0 12.0 10.0 8.0 6.0 4.0]
   #define VCLOUDS_HEIGHT 150 //[50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200]
   #define VCLOUDS_AMOUNT_MORNING 0.75 //[0.50 0.525 0.55 0.575 0.60 0.625 0.65 0.675 0.70 0.725 0.75 0.775 0.80 0.825 0.85 0.875 0.90 0.925 0.95 0.975 1.00]
@@ -112,8 +85,6 @@ https://bitslablab.com
 
   #define WATER_CAUSTICS_AMOUNT 128 //[1512 1024 512 256 128]
   #define WATER_CAUSTICS_STRENGTH 8 //[2 4 6 8 10 12 14 16]  
-  #define PROJECTED_CAUSTICS
-//#define REFRACTION
   #define REFRACTION_STRENGTH 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   
   #define COLORED_SHADOW_OPACITY 0.9 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -127,12 +98,7 @@ https://bitslablab.com
 //#define LIGHTMAP_DIM_CUTOFF
   #define DIM_CUTOFF_FACTOR 1.00 //[1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
 
-  #define BLOOM_BALANCING
-
-  #define BLOOM_FLICKERING
   #define BLOOM_FLICKERING_STRENGTH 0.1 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
-
-  #define BLOCKLIGHT_FLICKERING
   #define BLOCKLIGHT_FLICKERING_STRENGTH 0.2 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
 
   #define ADVANCED_ILLUMINATION_R 160 //[0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]
@@ -361,67 +327,6 @@ https://bitslablab.com
   #define TFSKYD_B 176 //[0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]
   #define TFSKYD_I 0.85 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00 2.05 2.10 2.15 2.20 2.25 2.30 2.35 2.40 2.45 2.50 2.55 2.60 2.65 2.70 2.75 2.80 2.85 2.90 2.95 3.00 3.05 3.10 3.15 3.20 3.25 3.30 3.35 3.40 3.45 3.50 3.55 3.60 3.65 3.70 3.75 3.80 3.85 3.90 3.95 4.00 4.05 4.10 4.15 4.20 4.25 4.30 4.35 4.40 4.45 4.50 4.55 4.60 4.65 4.70 4.75 4.80 4.85 4.90 4.95 5.00 5.05 5.10 5.15 5.20 5.25 5.30 5.35 5.40 5.45 5.50 5.55 5.60 5.65 5.70 5.75 5.80 5.85 5.90 5.95 6.00]
 
-////////////////////////////////////////////////////// MLGIMPOSTER'S DUMB SETTINGS //////////////////////////////////////////////////////
-
-  ///// Lens Flares Customization /////
-
-  // Base Lens (basically useless) //
-
-  #define BASELENS1
-  #define BASELENS2
-  #define BASELENS3
-  #define BASELENS4
-  #define BASELENS5
-  #define BASELENS6
-
-  // Overlap Lens //
-
-  #define OVERLAPLENS1
-  #define OVERLAPLENS2
-  #define OVERLAPLENS3
-  #define OVERLAPLENS4
-  #define OVERLAPLENS5
-
-  // Point Lens //
-
-  #define POINT1
-  #define POINT2
-  #define POINT3
-  #define POINT4
-  #define POINT5
-  #define POINT6
-  #define POINT7
-  #define POINT8
-  #define POINT9
-  #define POINT10
-  #define POINT11
-
-  // Rings (Not around sun) //
-
-  #define RING1
-  #define RING2
-  #define RING3
-  #define RING4
-  #define RING5
-  #define RING6
-  #define RING7
-  #define RING8
-  #define RING9
-  #define RING10
-  #define RING11
-  #define RING12
-  #define RING13
-  #define RING14
-
-  // Rings (Around Sun) //
-
-  #define RAINBOW1
-  #define RAINBOW2
-  #define RAINBOW3
-
-  // Other //
-
-  #define ANAMORPHICLENS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -429,15 +334,11 @@ https://bitslablab.com
   const int shadowMapResolution = 2048; //[512 1024 2048 3072 4096 8192]
   const float shadowDistance = 512.0; //[128.0 256.0 512.0 1024.0]
   const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
-  #define SHADOW_COLOR
-  #define SHADOW_FILTER
   const float sunPathRotation = -20.0; //[-60.0 -55.0 -50.0 -45.0 -40.0 -35.0 -30.0 -25.0 -20.0 -15.0 -10.0 -5.0 0.0 5.0 10.0 15.0 20.0 25.0 30.0 35.0 40.0 45.0 50.0 55.0 60.0]
   #define SHADOW_PIXEL 0 //[0 16 32 64 128]
-  #define AO
   #define AO_STRENGTH 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 //#define DESATURATION
   #define DESATURATION_FACTOR 1.0 //[2.0 1.5 1.0 0.5 0.0]
-  #define DYNAMIC_HANDLIGHT
 //#define TOON_LIGHTMAP
 //#define WHITE_WORLD
 
@@ -446,41 +347,24 @@ https://bitslablab.com
   #define MATERIAL_FORMAT 0 //[0 1]
 
   #define REFLECTION 2 //[0 1 2]
-  #define REFLECTION_TRANSLUCENT
-  #define REFLECTION_SPECULAR
-  #define REFLECTION_RAIN
-  #define REFLECTION_ROUGH
-//#define REFLECTION_PREVIOUS
-  #define SPECULAR_HIGHLIGHT_ROUGH
-//#define ALBEDO_METAL
 
-  #define PARALLAX
   #define PARALLAX_DEPTH 0.20 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50]
   #define PARALLAX_QUALITY 128 //[16 32 64 128 256 512]
   #define PARALLAX_DISTANCE 64 //[16 32 48 64 80 96 112 128]
-  #define SELF_SHADOW
   #define SELF_SHADOW_ANGLE 2.0 //[0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0]
   #define SELF_SHADOW_QUALITY 8 //[8 16 32]
-//#define DIRECTIONAL_LIGHTMAP
   #define DIRECTIONAL_LIGHTMAP_STRENGTH 1.0 //[2.0 1.4 1.0 0.7 0.5]
-  #define NORMAL_DAMPENING
-  #define NORMAL_PLANTS
 
   #define SSS 0 //[0 1 2]
   #define SSS_QUALITY 0 //[0 1]
   #define EMISSIVE 2 //[0 1 2]
-  #define ALBEDO_BALANCING
   #define ALPHA_BLEND 1 //[0 1]
 
 //Atmospherics//
 //#define SKY_DESATURATION
-  #define AURORA
-  #define ROUND_SUN_MOON
-  #define WEATHER_PERBIOME
   #define DISTANT_FADE 3 //[0 1 2 3]
   #define DISTANT_FADE_STYLE 1 //[0 1]
   #define FOG_DENSITY 1.00 //[0.00 0.25 0.50 0.75 1.00 1.50 2.00 2.50 3.00 3.50 4.00]
-  #define WEATHER
   #define WEATHER_OPACITY 2.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
 
   #define SKY_DENSITY_D 0.40 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
@@ -504,7 +388,6 @@ https://bitslablab.com
   #define WATER_ALPHA_MODE 1 //[0 1]
   #define WATER_FOG_DENSITY 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define WATER_NORMALS 2 //[0 1 2]
-  #define WATER_PARALLAX
   #define WATER_BUMP 1.25 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00]
   #define WATER_DETAIL 0.50 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50]
   #define WATER_SHARPNESS 0.5 //[0.8 0.5 0.2]
@@ -520,17 +403,12 @@ https://bitslablab.com
   #define DOF_STRENGTH 8.0 //[1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 384.0 512.0]
 //#define MOTION_BLUR
   #define MOTION_BLUR_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
-  #define BLOOM
   #define BLOOM_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00 8.00]
   #define BLOOM_CONTRAST 6 //[-6 -4 -2 0 2 4 6]
   #define BLOOM_RADIUS 1 //[1 2 3 4 5 6 7]
   
 //#define LENS_FLARE
   #define LENS_FLARE_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
-//#define FXAA
-  #define TAA
-  #define VIGNETTE
-//#define DIRTY_LENS
   #define OUTLINE 0 //[0 1 2 3 4]
 
 //Tonemap & Color Grading//
@@ -723,10 +601,6 @@ https://bitslablab.com
   #define ANIMATION_SPEED 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.50 3.00 3.50 4.00 5.00 6.00 7.00 8.00]
 
 //Waving//
-  #define WAVING_PLANT
-  #define WAVING_LEAF
-  #define WAVING_LIQUID
-  #define WAVING_EXTRA
   #define WAVING_AMPLITUDE 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 
 //Super Secret Options//
