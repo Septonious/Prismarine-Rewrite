@@ -426,7 +426,7 @@ https://bitslablab.com
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Lighting//
-  const int shadowMapResolution = 2048.0; //[512.0 1024.0 2048.0 3072.0 4096.0 8192.0]
+  const int shadowMapResolution = 2048; //[512 1024 2048 3072 4096 8192]
   const float shadowDistance = 512.0; //[128.0 256.0 512.0 1024.0]
   const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
   #define SHADOW_COLOR

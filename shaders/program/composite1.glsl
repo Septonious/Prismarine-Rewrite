@@ -72,6 +72,8 @@ float GetLuminance(vec3 color) {
 #include "/lib/util/dither.glsl"
 
 #if defined OVERWORLD && PERBIOME_LIGHTSHAFTS
+#include "/lib/prismarine/biomeColor.glsl"
+#endif
 
 float InterleavedGradientNoiseVL() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
