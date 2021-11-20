@@ -474,7 +474,7 @@ https://bitslablab.com
   #define SSS 0 //[0 1 2]
   #define SSS_QUALITY 0 //[0 1]
   #define EMISSIVE 2 //[0 1 2]
-
+  #define ALBEDO_BALANCING
   #define ALPHA_BLEND 1 //[0 1]
 
 //Atmospherics//
