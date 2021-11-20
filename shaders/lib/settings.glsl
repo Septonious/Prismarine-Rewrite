@@ -9,6 +9,8 @@ https://bitslablab.com
 //#define TAA
 //#define WATER_PARALLAX
 //
+
+  #define ABOUT 0
   #define ADVANCED_ILLUMINATION
   #define INTEGRATED_EMISSION
   #define NOISY_TEXTURES
