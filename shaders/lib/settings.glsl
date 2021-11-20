@@ -6,8 +6,8 @@ https://bitslablab.com
 ////////////////////////////////////////////////////// PRISMARINE SETTINGS //////////////////////////////////////////////////////
 
 //THESE OPTIONS CAUSE TEHC SUSSIES AND DIFFICULTIES :CRONG:
-  #define TAA
-  #define WATER_PARALLAX
+//#define TAA
+//#define WATER_PARALLAX
 //
 
   #define ABOUT 0
