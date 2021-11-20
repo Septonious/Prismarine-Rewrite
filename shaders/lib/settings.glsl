@@ -374,6 +374,7 @@ https://bitslablab.com
   #define SSS 0 //[0 1 2]
   #define SSS_QUALITY 0 //[0 1]
   #define EMISSIVE 2 //[0 1 2]
+  #define ALBEDO_BALANCING
   #define ALPHA_BLEND 1 //[0 1]
 
 //Atmospherics//
@@ -384,7 +385,7 @@ https://bitslablab.com
   #define DISTANT_FADE 3 //[0 1 2 3]
   #define DISTANT_FADE_STYLE 1 //[0 1]
   #define FOG_DENSITY 1.00 //[0.00 0.25 0.50 0.75 1.00 1.50 2.00 2.50 3.00 3.50 4.00]
-
+  #define WEATHER
   #define WEATHER_OPACITY 2.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
 
   #define SKY_DENSITY_D 0.40 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
