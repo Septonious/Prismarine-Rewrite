@@ -503,9 +503,14 @@ void main() {
 					skyReflection += DrawAurora(skyRefPos * 100.0, dither, 12);
 					#endif
 					
-					#if CLOUDS == 1
+					#ifdef PLANAR_CLOUDS
 					vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, ambientCol);
 					skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
+					#endif
+
+					#if NIGHT_SKY_MODE == 1
+					skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
+					skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
 					#endif
 
 					skyReflection = mix(
@@ -542,7 +547,7 @@ void main() {
 		}
 
 		if (glass > 0.5){
-			albedo.a += albedo.a * 0.75;
+			albedo.a += albedo.a * 0.50;
 			albedo.a = clamp(albedo.a, 0.5, 0.95);
 		} 
 

@@ -71,14 +71,6 @@ float GetLuminance(vec3 color) {
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/dither.glsl"
 
-#if (defined PERBIOME_LIGHTSHAFTS || defined PERBIOME_CLOUDS_COLOR) && defined OVERWORLD
-#include "/lib/prismarine/biomeColor.glsl"
-#endif
-
-#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-#include "/lib/prismarine/volumetricClouds.glsl"
-#endif
-
 float InterleavedGradientNoiseVL() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
 	return fract(n + frameCounter / 6.0);
@@ -130,11 +122,6 @@ void main() {
 		  (1.0 - blindFactor);
 
 	color.rgb += vl;
-	#endif
-
-	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	float pixeldepth1 = texture2D(depthtex1, texCoord.xy).x;
-	getVolumetricCloud(pixeldepth1, InterleavedGradientNoiseVL(), color.rgb);
 	#endif
 
 	/* DRAWBUFFERS:0 */

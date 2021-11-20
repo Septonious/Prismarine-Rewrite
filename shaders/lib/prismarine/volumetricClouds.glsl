@@ -4,24 +4,6 @@
 #ifdef VOLUMETRIC_CLOUDS
 #endif
 
-float GetLogarithmicDepth(float dist){
-	return (far * (dist - near)) / (dist * (far - near));
-}
-
-float GetLinearDepth2(float depth) {
-  return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
-}
-
-vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
-	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord, shadowdepth, 1.0) * 2.0 - 1.0);
-	viewPos /= viewPos.w;
-
-	vec4 wpos = gbufferModelViewInverse * viewPos;
-	wpos /= wpos.w;
-	
-	return wpos;
-}
-
 float rand2D(vec2 pos){
 	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
 }
@@ -100,18 +82,20 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 	vec4 wpos = vec4(0.0);
 	vec4 finalColor = vec4(0.0);
 
-	float depth = GetLinearDepth2(pixeldepth1);
+	float depth1 = GetLinearDepth2(pixeldepth1);
+
 	float maxDist = 256.0 * VCLOUDS_RANGE;
 	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
 
 	for (minDist; minDist < maxDist; minDist += VCLOUDS_QUALITY) {
-		if (depth < minDist){
+		if (depth1 < minDist){
 			break;
 		}
 
 		wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.xy);
 
-		if (length(wpos.xz) < maxDist && depth > minDist){
+		if (length(wpos.xz) < maxDist && depth1 > minDist){
+
 			#ifdef WORLD_CURVATURE
 			if (length(wpos.xz) < WORLD_CURVATURE_SIZE) wpos.y += length(wpos.xz) * length(wpos.xyz) / WORLD_CURVATURE_SIZE;
 			else break;
@@ -124,7 +108,7 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 
 			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.8;
-			cloudsColor.rgb *= cloudsColor.a;
+			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
 			finalColor += cloudsColor * (1.0 - finalColor.a);
 		}
 	}

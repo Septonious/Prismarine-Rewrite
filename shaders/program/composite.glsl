@@ -103,7 +103,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     return noise * WATER_BUMP;
 }
 
-vec2 getRefract(vec2 coord, vec3 waterPos, float z0, float z1){
+vec2 getRefract(vec2 coord, vec3 waterPos){
 	float normalOffset = WATER_SHARPNESS;
 	float h1 = GetWaterHeightMap(waterPos, vec2( normalOffset, 0.0));
 	float h2 = GetWaterHeightMap(waterPos, vec2(-normalOffset, 0.0));
@@ -115,7 +115,7 @@ vec2 getRefract(vec2 coord, vec3 waterPos, float z0, float z1){
 
 	vec2 noise = vec2(xDelta, yDelta);
 
-	vec2 waveN = noise * REFRACTION_STRENGTH * 0.025 * (1 - (z1 - z0));
+	vec2 waveN = noise * REFRACTION_STRENGTH * 0.025;
 
 	return coord + waveN;
 }
@@ -129,14 +129,15 @@ vec2 getRefract(vec2 coord, vec3 waterPos, float z0, float z1){
 #include "/lib/util/dither.glsl"
 #include "/lib/atmospherics/waterFog.glsl"
 
-#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined VOLUMETRIC_CLOUDS && defined OVERWORLD)
 #include "/lib/atmospherics/stuffsForVolumetrics.glsl"
 #endif
 
-#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-#if FOG_COLOR_MODE == 2 && defined OVERWORLD
+#if (defined PERBIOME_LIGHTSHAFTS || defined PERBIOME_CLOUDS_COLOR || FOG_COLOR_MODE == 2) && defined OVERWORLD
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
+
+#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
 #include "/lib/atmospherics/volumetricFog.glsl"
 #endif
 
@@ -150,6 +151,10 @@ vec2 getRefract(vec2 coord, vec3 waterPos, float z0, float z1){
 
 #ifdef REFRACTION
 #include "/lib/util/spaceConversion.glsl"
+#endif
+
+#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
+#include "/lib/prismarine/volumetricClouds.glsl"
 #endif
 
 #ifdef OUTLINE_ENABLED
@@ -227,14 +232,21 @@ void main() {
 	#endif
 	#endif
 
-	//REFRACTION
+	//Refraction
 	#ifdef REFRACTION
 	vec3 worldPos = ToWorld(viewPos.xyz);
 
 	if (z0 < z1 && translucent.r < 0.25 && translucent.b > translucent.r){
-		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition, z0, z0);
+		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition);
 		color.rgb = texture2D(colortex0, refractionCoord).rgb;
 	}
+	#endif
+
+	if (z0 < z1 && (translucent.g < translucent.r || translucent.b < translucent.g || translucent.b < translucent.g)) color *= translucent * translucent * 2.0;
+
+	//Volumetric Clouds
+	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
+	getVolumetricCloud(z1, InterleavedGradientNoiseVL(), color.rgb);
 	#endif
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;

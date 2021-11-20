@@ -46,7 +46,7 @@ float getVolumetricNoise0(vec3 pos){
 }
 #endif
 
-float getCloudNoise(vec3 pos) {
+float getFogNoise(vec3 pos) {
 	pos /= 8.0;
 	pos.xz *= 0.50;
 
@@ -75,11 +75,11 @@ float getFogSample(vec3 pos, float height, float verticalThickness, float sample
 	pos *= 3.0;
 	#endif
 
-	float noise = getCloudNoise(pos * samples * 1.00000 - wind * 0.30);
-		  noise+= getCloudNoise(pos * samples * 0.50000 + wind * 0.25);
-          noise+= getCloudNoise(pos * samples * 0.25000 - wind * 0.20);
-          noise+= getCloudNoise(pos * samples * 0.12500 + wind * 0.15);
-          noise+= getCloudNoise(pos * samples * 0.06250 - wind * 0.10);
+	float noise = getFogNoise(pos * samples * 1.00000 - wind * 0.30);
+		  noise+= getFogNoise(pos * samples * 0.50000 + wind * 0.25);
+          noise+= getFogNoise(pos * samples * 0.25000 - wind * 0.20);
+          noise+= getFogNoise(pos * samples * 0.12500 + wind * 0.15);
+          noise+= getFogNoise(pos * samples * 0.06250 - wind * 0.10);
 
 	#ifdef NETHER
 	noise *= 0.55;
