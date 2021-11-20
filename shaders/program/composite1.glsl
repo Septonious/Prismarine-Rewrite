@@ -71,8 +71,10 @@ float GetLuminance(vec3 color) {
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/dither.glsl"
 
-#if defined OVERWORLD && defined PERBIOME_LIGHTSHAFTS
+#ifdef OVERWORLD
+#ifdef PERBIOME_LIGHTSHAFTS
 #include "/lib/prismarine/biomeColor.glsl"
+#endif
 #endif
 
 float InterleavedGradientNoiseVL() {
