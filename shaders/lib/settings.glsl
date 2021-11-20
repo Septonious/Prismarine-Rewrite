@@ -459,7 +459,7 @@ https://bitslablab.com
   #define SPECULAR_HIGHLIGHT_ROUGH
 //#define ALBEDO_METAL
 
-  #define PARALLAX
+//#define PARALLAX
   #define PARALLAX_DEPTH 0.20 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50]
   #define PARALLAX_QUALITY 128 //[16 32 64 128 256 512]
   #define PARALLAX_DISTANCE 64 //[16 32 48 64 80 96 112 128]
