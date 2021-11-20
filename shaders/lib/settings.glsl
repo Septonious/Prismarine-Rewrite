@@ -621,7 +621,10 @@ https://bitslablab.com
   #define ANIMATION_SPEED 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.50 3.00 3.50 4.00 5.00 6.00 7.00 8.00]
 
 //Waving//
-
+  #define WAVING_PLANT
+  #define WAVING_LEAF
+  #define WAVING_LIQUID
+  #define WAVING_EXTRA
   #define WAVING_AMPLITUDE 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 
 //Super Secret Options//
