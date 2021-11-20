@@ -60,7 +60,7 @@ float getCloudNoise(vec3 pos){
 float getCloudSample(vec3 pos){
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
-	float sampleHeight = abs(VCLOUDS_HEIGHT - pos.y) / VCLOUDS_VERTICAL_THICKNESS;
+	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength * 0.5)) - pos.y) / VCLOUDS_VERTICAL_THICKNESS;
 	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.3) * 2.0;
 	
 	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5);
@@ -86,7 +86,7 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 	vec3 vcDownNight      = vec3(VCLOUDDOWN_NR,   VCLOUDDOWN_NG,   VCLOUDDOWN_NB)   * VCLOUDDOWN_NI * 0.4 / 255;
 
 	#ifndef PERBIOME_CLOUDS_COLOR
-	vec3 vcSun = CalcSunColor(vcMorning, vcDay , vcEvening);
+	vec3 vcSun = CalcSunColor(vcMorning, vcDay, vcEvening);
 	vec3 vcDownSun = CalcSunColor(vcDownMorning, vcDownDay, vcDownEvening);
 	#else
 	vec3 vcSun = CalcSunColor(vcMorning, vcDay * getBiomeColor(vcDownDay), vcEvening);
@@ -95,8 +95,6 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 
 	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
 	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
-
-
 
 	//Here we begin to march
 	vec4 wpos = vec4(0.0);
@@ -124,12 +122,12 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 
 			float noise = getCloudSample(wpos.xyz);
 
-			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * 2.0, vcloudsDownCol, noise), noise);
-			if (isEyeInWater == 1.0) cloudsColor.a *= WATER_I * 0.50;
+			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
+			cloudsColor.a *= 1.0 - isEyeInWater * 0.8;
 			cloudsColor.rgb *= cloudsColor.a;
 			finalColor += cloudsColor * (1.0 - finalColor.a);
 		}
 	}
 
-	color = mix(color, finalColor.rgb, finalColor.a);
+	color = mix(color, finalColor.rgb * (1.0 - rainStrength * 0.25), finalColor.a);
 }
