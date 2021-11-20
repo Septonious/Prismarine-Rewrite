@@ -33,7 +33,10 @@ https://bitslablab.com
 
   #define SKY_COLOR_MODE 0 //[0 1]
   #define FOG_COLOR_MODE 2 //[0 1 2]
-
+  #define VOLUMETRIC_LIGHT
+//#define VOLUMETRIC_FOG
+  #define EXP_FOG
+//#define PERBIOME_CLOUDS_COLOR
 
   #define FOG_FIRST_LAYER_ALTITUDE 60 //[10 20 30 40 50 60 70 80 90 100]
   #define FOG_SECOND_LAYER_ALTITUDE 120 //[100 110 120 130 140 150 160 170 180 190 200]
