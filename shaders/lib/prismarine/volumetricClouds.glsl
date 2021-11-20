@@ -55,7 +55,7 @@ float getCloudSample(vec3 pos){
 	noise = clamp(noise * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
 	return noise;
 }
-void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
+void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inout vec3 color, vec4 translucent){
 	//Here we set up the color of bottom and upper parts of the clouds
 	vec3 vcMorning    = vec3(VCLOUD_MR,   VCLOUD_MG,   VCLOUD_MB)   * VCLOUD_MI / 255;
 	vec3 vcDay        = vec3(VCLOUD_DR,   VCLOUD_DG,   VCLOUD_DB)   * VCLOUD_DI / 255;
@@ -82,6 +82,7 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 	vec4 wpos = vec4(0.0);
 	vec4 finalColor = vec4(0.0);
 
+	float depth0 = GetLinearDepth2(pixeldepth0);
 	float depth1 = GetLinearDepth2(pixeldepth1);
 
 	float maxDist = 256.0 * VCLOUDS_RANGE;
@@ -93,6 +94,8 @@ void getVolumetricCloud(float pixeldepth1, float dither, inout vec3 color){
 		}
 
 		wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.xy);
+
+		if (depth0 < minDist) finalColor *= translucent;
 
 		if (length(wpos.xz) < maxDist && depth1 > minDist){
 

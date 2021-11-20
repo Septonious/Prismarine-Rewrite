@@ -246,7 +246,7 @@ void main() {
 
 	//Volumetric Clouds
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	getVolumetricCloud(z1, InterleavedGradientNoiseVL(), color.rgb);
+	getVolumetricCloud(z1, z0, InterleavedGradientNoiseVL(), color.rgb, translucent);
 	#endif
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;
