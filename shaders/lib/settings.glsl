@@ -366,10 +366,13 @@ https://bitslablab.com
   #define PARALLAX_DEPTH 0.20 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50]
   #define PARALLAX_QUALITY 128 //[16 32 64 128 256 512]
   #define PARALLAX_DISTANCE 64 //[16 32 48 64 80 96 112 128]
+  #define SELF_SHADOW
   #define SELF_SHADOW_ANGLE 2.0 //[0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0]
   #define SELF_SHADOW_QUALITY 8 //[8 16 32]
 //#define DIRECTIONAL_LIGHTMAP
   #define DIRECTIONAL_LIGHTMAP_STRENGTH 1.0 //[2.0 1.4 1.0 0.7 0.5]
+  #define NORMAL_DAMPENING
+  #define NORMAL_PLANTS
 
   #define SSS 0 //[0 1 2]
   #define SSS_QUALITY 0 //[0 1]
