@@ -388,6 +388,7 @@ https://bitslablab.com
   #define WATER_ALPHA_MODE 1 //[0 1]
   #define WATER_FOG_DENSITY 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define WATER_NORMALS 2 //[0 1 2]
+  #define WATER_PARALLAX
   #define WATER_BUMP 1.25 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00]
   #define WATER_DETAIL 0.50 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50]
   #define WATER_SHARPNESS 0.5 //[0.8 0.5 0.2]
@@ -403,13 +404,17 @@ https://bitslablab.com
   #define DOF_STRENGTH 8.0 //[1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 384.0 512.0]
 //#define MOTION_BLUR
   #define MOTION_BLUR_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
+  #define BLOOM
   #define BLOOM_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00 8.00]
   #define BLOOM_CONTRAST 6 //[-6 -4 -2 0 2 4 6]
   #define BLOOM_RADIUS 1 //[1 2 3 4 5 6 7]
   
 //#define LENS_FLARE
   #define LENS_FLARE_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
+//#define FXAA
   #define TAA
+  #define VIGNETTE
+//#define DIRTY_LENS
   #define OUTLINE 0 //[0 1 2 3 4]
 
 //Tonemap & Color Grading//
