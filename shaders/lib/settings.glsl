@@ -345,6 +345,61 @@ https://bitslablab.com
 
   // Base Lens (basically useless) //
 
+  #define BASELENS1
+  #define BASELENS2
+  #define BASELENS3
+  #define BASELENS4
+  #define BASELENS5
+  #define BASELENS6
+
+  // Overlap Lens //
+
+  #define OVERLAPLENS1
+  #define OVERLAPLENS2
+  #define OVERLAPLENS3
+  #define OVERLAPLENS4
+  #define OVERLAPLENS5
+
+  // Point Lens //
+
+  #define POINT1
+  #define POINT2
+  #define POINT3
+  #define POINT4
+  #define POINT5
+  #define POINT6
+  #define POINT7
+  #define POINT8
+  #define POINT9
+  #define POINT10
+  #define POINT11
+
+  // Rings (Not around sun) //
+
+  #define RING1
+  #define RING2
+  #define RING3
+  #define RING4
+  #define RING5
+  #define RING6
+  #define RING7
+  #define RING8
+  #define RING9
+  #define RING10
+  #define RING11
+  #define RING12
+  #define RING13
+  #define RING14
+
+  // Rings (Around Sun) //
+
+  #define RAINBOW1
+  #define RAINBOW2
+  #define RAINBOW3
+
+  // Other //
+
+  #define ANAMORPHICLENS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
