@@ -551,30 +551,6 @@ void main() {
 			albedo.a = clamp(albedo.a, 0.5, 0.95);
 		} 
 
-		//absorption from comp, ty emin
-		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
-			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
-		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
-		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);
-		 	#ifdef TAA
-		 	vec3 oViewPos = ToNDC(vec3(TAAJitter(oScreenPos.xy, -0.5), oScreenPos.z));
-		 	#else
-		 	vec3 oViewPos = ToNDC(oScreenPos);
-		 	#endif
-
-			float difT = length(oViewPos - viewPos.xyz);
-			float clampTimeBrightness = clamp(timeBrightness, 0.01, 1.0);
-			vec3 absorbColor = (normalize(waterColor.rgb) * 2.0 * WATER_I) * terrainColor * terrainColor * 14.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
-			float absorbDist = 1.0 - clamp(difT / (8.0 * clampTimeBrightness), 0.0, 1.0);
-			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
-			newAlbedo *= newAlbedo;
-
-			float absorb = (1.0 - albedo.a);
-			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness) * lightmap.y;
-
-			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
-		}
-
 		#ifdef EXP_FOG
 		Fog(albedo.rgb, viewPos);
 		#endif

@@ -95,13 +95,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 		wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.xy);
 
-		if (depth0 < minDist){
-			finalColor.rgb *= 1.5;
-			finalColor *= translucent;
-		}
-
-		if (length(wpos.xz) < maxDist && depth1 > minDist){
-
+		if (length(wpos.xz) < maxDist){
 			#ifdef WORLD_CURVATURE
 			if (length(wpos.xz) < WORLD_CURVATURE_SIZE) wpos.y += length(wpos.xz) * length(wpos.xyz) / WORLD_CURVATURE_SIZE;
 			else break;
@@ -111,6 +105,11 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -vh * 24.0, 0.0);
 
 			float noise = getCloudSample(wpos.xyz);
+
+			if (depth1 > maxDist){
+				finalColor.rgb *= 1.25;
+				finalColor *= translucent;
+			}
 
 			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.8;
