@@ -54,7 +54,7 @@ uniform mat4 shadowModelView;
 
 uniform sampler2D texture;
 uniform sampler2D gaux2;
-uniform sampler2D depthtex1, depthtex0;
+uniform sampler2D depthtex1;
 uniform sampler2D depthtex2;
 uniform sampler2D noisetex;
 
@@ -116,18 +116,17 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 	float noiseA = texture2D(noisetex, (worldPos.xz - wind) / 256.0 + offset).g;
 	float noiseB = texture2D(noisetex, (worldPos.xz + wind) / 48.0 + offset).g;
 	#elif WATER_NORMALS == 2
-	offset /= 512.0;
+	offset /= 256.0;
 	float noiseA = texture2D(noisetex, (worldPos.xz - wind) / 256.0 + offset).r;
-	float noiseB = texture2D(noisetex, (worldPos.xz + wind - noiseA) / 96.0 + offset).r;
-	float noiseC = texture2D(noisetex, (worldPos.xz + wind + noiseB) / 194.0 + offset).r;
-	noiseA *= noiseA; noiseB *= noiseB; noiseC *= noiseC;
+	float noiseB = texture2D(noisetex, (worldPos.xz + wind) / 96.0 + offset).r;
+	noiseA *= noiseA; noiseB *= noiseB;
 	#endif
 	
 	#if WATER_NORMALS > 0
 	noise = mix(noiseA, noiseB, WATER_DETAIL);
 	#endif
 
-    return noise * (WATER_BUMP + rainStrength + rainStrength);
+    return noise * WATER_BUMP;
 }
 
 vec3 GetParallaxWaves(vec3 worldPos, vec3 viewVector) {
@@ -169,12 +168,13 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 }
 
 //Includes//
-#include "/lib/color/blocklightColor.glsl"
-#include "/lib/prismarine/timeCalculations.glsl"
-#include "/lib/color/dimensionColor.glsl"
-#if defined WEATHER_PERBIOME || defined PERBIOME_CLOUDS_COLOR || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1
+#if defined OVERWORLD && (defined WEATHER_PERBIOME || defined PERBIOME_CLOUDS_COLOR || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1)
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
+
+#include "/lib/prismarine/timeCalculations.glsl"
+#include "/lib/color/blocklightColor.glsl"
+#include "/lib/color/dimensionColor.glsl"
 #include "/lib/color/skyColor.glsl"
 #include "/lib/color/specularColor.glsl"
 #include "/lib/color/waterColor.glsl"
@@ -227,7 +227,6 @@ void main() {
 
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#define GB_WATER
 		
 		float water       = float(mat > 0.98 && mat < 1.02);
 		float glass 	  = float(mat > 1.98 && mat < 2.02);
@@ -304,17 +303,9 @@ void main() {
 			#elif WATER_MODE == 3
 			albedo.rgb = color.rgb * color.rgb * 0.35;
 			#endif
-
 			#if WATER_ALPHA_MODE == 0
 			albedo.a = waterAlpha;
 			#endif
-			
-			if (isEyeInWater == 1){
-				albedo.a *= 0.50;
-			} else {
-				albedo.a *= 0.8;
-			}
-
 			baseReflectance = vec3(0.02);
 		}
 
@@ -418,12 +409,6 @@ void main() {
 
 				#ifdef END
 				skyReflection = endCol.rgb * 0.01;
-
-				#if END_SKY == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
-				#endif
-
 				#endif
 
 				#if defined OVERWORLD || defined END
@@ -448,12 +433,7 @@ void main() {
 				skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
 				#endif
 
-				#if NIGHT_SKY_MODE == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
-				#endif
-
-				skyReflection *= eBS * lightmap.y;
+				skyReflection *= (4.0 - 3.0 * eBS) * lightmap.y;
 				#endif
 
 				skyReflection *= clamp(1.0 - isEyeInWater, 0.0, 1.0);
@@ -508,14 +488,9 @@ void main() {
 					skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
 					#endif
 
-					#if NIGHT_SKY_MODE == 1
-					skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-					skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
-					#endif
-
 					skyReflection = mix(
 						vanillaDiffuse * minLightCol,
-						skyReflection * eBS,
+						skyReflection * (4.0 - 3.0 * eBS),
 						skyOcclusion
 					);
 					#endif
@@ -546,14 +521,7 @@ void main() {
 			#endif
 		}
 
-		if (glass > 0.5){
-			albedo.a += albedo.a * 0.50;
-			albedo.a = clamp(albedo.a, 0.5, 0.95);
-		} 
-
-		#ifdef EXP_FOG
 		Fog(albedo.rgb, viewPos);
-		#endif
 
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));
