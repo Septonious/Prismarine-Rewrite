@@ -242,8 +242,6 @@ void main() {
 	}
 	#endif
 
-	//if (z0 < z1 && (translucent.g < translucent.r || translucent.b < translucent.g || translucent.b < translucent.g)) color *= translucent * translucent * 2.0;
-
 	//Volumetric Clouds
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	getVolumetricCloud(z1, z0, InterleavedGradientNoiseVL(), color.rgb, translucent);
