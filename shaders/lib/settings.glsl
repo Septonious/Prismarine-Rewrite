@@ -468,7 +468,8 @@ https://bitslablab.com
   #define SELF_SHADOW_QUALITY 8 //[8 16 32]
 //#define DIRECTIONAL_LIGHTMAP
   #define DIRECTIONAL_LIGHTMAP_STRENGTH 1.0 //[2.0 1.4 1.0 0.7 0.5]
-
+  #define NORMAL_DAMPENING
+  #define NORMAL_PLANTS
 
   #define SSS 0 //[0 1 2]
   #define SSS_QUALITY 0 //[0 1]
