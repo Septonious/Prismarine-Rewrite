@@ -434,15 +434,11 @@ https://bitslablab.com
   const int shadowMapResolution = 2048; //[512 1024 2048 3072 4096 8192]
   const float shadowDistance = 512.0; //[128.0 256.0 512.0 1024.0]
   const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
-  #define SHADOW_COLOR
-  #define SHADOW_FILTER
   const float sunPathRotation = -20.0; //[-60.0 -55.0 -50.0 -45.0 -40.0 -35.0 -30.0 -25.0 -20.0 -15.0 -10.0 -5.0 0.0 5.0 10.0 15.0 20.0 25.0 30.0 35.0 40.0 45.0 50.0 55.0 60.0]
   #define SHADOW_PIXEL 0 //[0 16 32 64 128]
-  #define AO
   #define AO_STRENGTH 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 //#define DESATURATION
   #define DESATURATION_FACTOR 1.0 //[2.0 1.5 1.0 0.5 0.0]
-  #define DYNAMIC_HANDLIGHT
 //#define TOON_LIGHTMAP
 //#define WHITE_WORLD
 
