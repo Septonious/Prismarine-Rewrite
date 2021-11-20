@@ -409,6 +409,10 @@ https://bitslablab.com
   
 //#define LENS_FLARE
   #define LENS_FLARE_STRENGTH 0.25 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
+//#define FXAA
+  #define TAA
+  #define VIGNETTE
+//#define DIRTY_LENS
   #define OUTLINE 0 //[0 1 2 3 4]
 
 //Tonemap & Color Grading//
