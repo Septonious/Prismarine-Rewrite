@@ -37,20 +37,33 @@ float GetLuminance(vec3 color) {
 }
 
 //Includes//
+#ifdef TAA
 #include "/lib/antialiasing/taa.glsl"
+#endif
+
+#ifdef FXAA
+#include "/lib/antialiasing/fxaa.glsl"
+#endif
 
 //Program//
 void main() {
 	vec3 color = texture2DLod(colortex1, texCoord, 0.0).rgb;
-    vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
 	
-	#ifdef TAA
-	prev = TemporalAA(color, prev.r);
-	#endif
+    #ifdef FXAA
+	color = FXAA311(color);
+    #endif
 
-    /*DRAWBUFFERS:12*/
+    #ifdef TAA
+    vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
+    TAA(color, prev);
+    #endif
+
+    /*DRAWBUFFERS:1*/
 	gl_FragData[0] = vec4(color, 1.0);
+	#ifdef TAA
+    /*DRAWBUFFERS:12*/
 	gl_FragData[1] = vec4(prev);
+	#endif
 }
 
 #endif
