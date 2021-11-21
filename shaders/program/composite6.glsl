@@ -42,7 +42,7 @@ float GetLuminance(vec3 color) {
 //Program//
 void main() {
 	vec3 color = texture2DLod(colortex1, texCoord, 0.0).rgb;
-    vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0).r, 0.0, 0.0, 0.0);
+    vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
 	
 	#ifdef TAA
 	prev = TemporalAA(color, prev.r);

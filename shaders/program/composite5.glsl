@@ -236,6 +236,7 @@ void main() {
 	#endif
 
 	vec3 temporalColor = vec3(0.0);
+	
 	#ifdef TAA
 	temporalColor = texture2D(colortex2, texCoord).gba;
 	#endif
