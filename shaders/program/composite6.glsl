@@ -55,14 +55,14 @@ void main() {
 
     #ifdef TAA
     vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
-    TAA(color, prev);
+    TemporalAA(color, prev);
     #endif
 
     /*DRAWBUFFERS:1*/
 	gl_FragData[0] = vec4(color, 1.0);
 	#ifdef TAA
     /*DRAWBUFFERS:12*/
-	gl_FragData[1] = vec4(prev);
+	gl_FragData[1] = prev;
 	#endif
 }
 
