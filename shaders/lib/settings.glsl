@@ -12,7 +12,7 @@ https://bitslablab.com
 
 //!!! THESE OPTIONS CAUSE TEHC SUSSIES AND DIFFICULTIES :CRONG: !!!
   #define TAA
-  #define WATER_PARALLAX
+//#define WATER_PARALLAX
 //
 
 
