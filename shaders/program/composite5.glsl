@@ -293,7 +293,7 @@ void main() {
 	
 	/* DRAWBUFFERS:12 */
 	gl_FragData[0] = vec4(color, 1.0);
-	gl_FragData[1] = vec4(temporalData,temporalColor);
+	gl_FragData[1] = vec4(temporalData, temporalColor);
 }
 
 #endif

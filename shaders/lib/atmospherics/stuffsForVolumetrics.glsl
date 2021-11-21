@@ -21,25 +21,38 @@ vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
 	return wpos;
 }
 
-#if defined FIREFLIES || defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG
-#ifdef FIREFLIES
-float getNoise(vec2 pos){
+float rand2D(vec2 pos){
 	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
+float getHeightNoise(vec2 pos){
+	vec2 u = floor(pos);
+	vec2 v = fract(pos);
+	
+	float noisedl = rand2D(u);
+	float noisedr = rand2D(u + vec2(1.0, 0.0));
+	float noiseul = rand2D(u + vec2(0.0, 1.0));
+	float noiseur = rand2D(u + vec2(1.0, 1.0));
+	float noise = mix(mix(noisedl, noisedr, v.x),
+			          mix(noiseul, noiseur, v.x), v.y);
+	return noise;
+}
+
+#if defined FIREFLIES || defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG
+#ifdef FIREFLIES
 float getVolumetricNoise0(vec3 pos){
 	vec3 flr = floor(pos);
 	vec3 frc = fract(pos);
 	frc = frc * frc * (3.0-2.0 * frc);
 	
-	float noisebdl = getNoise(flr.xz + (vec2(frametime, 0) * 0.00005) + flr.y * 32);
-	float noisebdr = getNoise(flr.xz - (vec2(frametime * 0.00015, 0) * 0.000075) + flr.y * 32 + vec2(1.0,0.0));
-	float noisebul = getNoise(flr.xz + (vec2(frametime * 0.00040, 0) * 0.000100) + flr.y * 32 + vec2(0.0,1.0));
-	float noisebur = getNoise(flr.xz - (vec2(frametime * 0.00055, 0) * 0.000150) + flr.y * 32 + vec2(1.0,1.0));
-	float noisetdl = getNoise(flr.xz + (vec2(frametime * 0.00040, 0) * 0.000175) + flr.y * 32 + 32);
-	float noisetdr = getNoise(flr.xz - (vec2(frametime * 0.00035, 0) * 0.000200) + flr.y * 32 + 32 + vec2(1.0,0.0));
-	float noisetul = getNoise(flr.xz + flr.y * 32 + 32 + vec2(0.0,1.0));
-	float noisetur = getNoise(flr.xz + flr.y * 32 + 32 + vec2(1.0,1.0));
+	float noisebdl = rand2D(flr.xz + (vec2(frametime, 0) * 0.00005) + flr.y * 32);
+	float noisebdr = rand2D(flr.xz - (vec2(frametime * 0.00015, 0) * 0.000075) + flr.y * 32 + vec2(1.0,0.0));
+	float noisebul = rand2D(flr.xz + (vec2(frametime * 0.00040, 0) * 0.000100) + flr.y * 32 + vec2(0.0,1.0));
+	float noisebur = rand2D(flr.xz - (vec2(frametime * 0.00055, 0) * 0.000150) + flr.y * 32 + vec2(1.0,1.0));
+	float noisetdl = rand2D(flr.xz + (vec2(frametime * 0.00040, 0) * 0.000175) + flr.y * 32 + 32);
+	float noisetdr = rand2D(flr.xz - (vec2(frametime * 0.00035, 0) * 0.000200) + flr.y * 32 + 32 + vec2(1.0,0.0));
+	float noisetul = rand2D(flr.xz + flr.y * 32 + 32 + vec2(0.0,1.0));
+	float noisetur = rand2D(flr.xz + flr.y * 32 + 32 + vec2(1.0,1.0));
 	float noise= mix(mix(mix(noisebdl, noisebdr, frc.x), mix(noisebul, noisebur, frc.x), frc.z),
 				 mix(mix(noisetdl, noisetdr, frc.x), mix(noisetul, noisetur, frc.x), frc.z), frc.y);
 	return noise;

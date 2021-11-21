@@ -4,23 +4,6 @@
 #ifdef VOLUMETRIC_CLOUDS
 #endif
 
-float rand2D(vec2 pos){
-	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
-}
-
-float getHeightNoise(vec2 pos){
-	vec2 u = floor(pos);
-	vec2 v = fract(pos);
-	
-	float noisedl = rand2D(u);
-	float noisedr = rand2D(u + vec2(1.0, 0.0));
-	float noiseul = rand2D(u + vec2(0.0, 1.0));
-	float noiseur = rand2D(u + vec2(1.0, 1.0));
-	float noise = mix(mix(noisedl, noisedr, v.x),
-			          mix(noiseul, noiseur, v.x), v.y);
-	return noise;
-}
-
 float getCloudNoise(vec3 pos){
 	vec3 u = floor(pos);
 	vec3 v = fract(pos);
@@ -55,6 +38,7 @@ float getCloudSample(vec3 pos){
 	noise = clamp(noise * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
 	return noise;
 }
+
 void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inout vec3 color, vec4 translucent){
 	//Here we set up the color of bottom and upper parts of the clouds
 	vec3 vcMorning    = vec3(VCLOUD_MR,   VCLOUD_MG,   VCLOUD_MB)   * VCLOUD_MI / 255;

@@ -129,25 +129,11 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     return noise * WATER_BUMP;
 }
 
-vec3 GetParallaxWaves(vec3 worldPos, vec3 viewVector) {
-	vec3 parallaxPos = worldPos;
-	
-	for(int i = 0; i < 4; i++) {
-		float height = -1.25 * GetWaterHeightMap(parallaxPos, vec2(0.0)) + 0.25;
-		parallaxPos.xz += height * viewVector.xy / dist;
-	}
-	return parallaxPos;
-}
-
 vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 	vec3 waterPos = worldPos + cameraPosition;
 
 	#if WATER_PIXEL > 0
 	waterPos = floor(waterPos * WATER_PIXEL) / WATER_PIXEL;
-	#endif
-
-	#ifdef WATER_PARALLAX
-	waterPos = GetParallaxWaves(waterPos, viewVector);
 	#endif
 
 	float normalOffset = WATER_SHARPNESS;
@@ -309,6 +295,11 @@ void main() {
 			baseReflectance = vec3(0.02);
 		}
 
+		if (glass > 0.5){
+			albedo.a += albedo.a * 0.75;
+			albedo.a = clamp(albedo.a, 0.5, 0.95);
+		} 
+
 		vlAlbedo = mix(vec3(1.0), albedo.rgb, sqrt(albedo.a)) * (1.0 - pow(albedo.a, 64.0));
 		
 		float NoL = clamp(dot(newNormal, lightVec), 0.0, 1.0);
@@ -409,6 +400,12 @@ void main() {
 
 				#ifdef END
 				skyReflection = endCol.rgb * 0.01;
+
+				#if END_SKY == 1
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
+				#endif
+
 				#endif
 
 				#if defined OVERWORLD || defined END
@@ -431,6 +428,11 @@ void main() {
 				#ifdef PLANAR_CLOUDS
 				vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, ambientCol);
 				skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
+				#endif
+
+				#if NIGHT_SKY == 1
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
 				#endif
 
 				skyReflection *= (4.0 - 3.0 * eBS) * lightmap.y;

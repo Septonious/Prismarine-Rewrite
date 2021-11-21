@@ -96,6 +96,28 @@ void SharpenFilter(inout vec3 color, vec2 coord) {
 		color -= texture2D(colortex1, coord + offset).rgb * mult;
 	}
 }
+/*
+vec3 ImageSharpen(vec2 texCoord){
+	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
+
+    vec3 c   = texture2D(colortex1, texCoord).xyz;
+    vec3 c_n = texture2D(colortex1, texCoord.xy + vec2(1.0, 0.0) * view).xyz * Sharpen * 0.025;
+    vec3 c_s = texture2D(colortex1, texCoord.xy + vec2(0.0, 1.0) * view).xyz * Sharpen * 0.025;
+    vec3 c_e = texture2D(colortex1, texCoord.xy + vec2(-1.0, 0.0) * view).xyz * Sharpen * 0.025;
+    vec3 c_w = texture2D(colortex1, texCoord.xy + vec2(0.0, -1.0) * view).xyz * Sharpen * 0.025;
+
+    vec3 max_edges = max(max(c_n, c_s), max(c_e, c_w));
+    vec3 min_edges = min(min(c_n, c_s), min(c_e, c_w));
+    vec3 sum_edges = c_n + c_e + c_s + c_w;
+    vec3 edge = -0.25 * min(min_edges / max_edges, (1.0 - max_edges) / (1.0 - min_edges));
+    float edges = max(-0.1875, min(0.0, max(edge.r, max(edge.g, edge.b))));
+    float w = edges * exp(-Sharpen);
+
+    vec3 col = (c + sum_edges * w) / (w * 4.0 + 1.0);
+    
+    return col;
+}
+*/
 #endif
 
 //Program//
@@ -110,6 +132,15 @@ void main() {
 	
 	#ifdef TAA
 	SharpenFilter(color, newTexCoord);
+	#endif
+
+	#if Sharpen > 0 && !defined DOF && !defined TAA
+	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
+	color *= Sharpen * 0.1 + 1.0;
+	color -= texture2D(colortex1,texCoord.xy+vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1,texCoord.xy+vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1,texCoord.xy+vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1,texCoord.xy+vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
 	#endif
 
 	#ifdef TEST04	

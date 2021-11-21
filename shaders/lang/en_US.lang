@@ -568,9 +568,6 @@ value.WATER_NORMALS.1=Worley
 value.WATER_NORMALS.2=Perlin
 value.WATER_NORMALS.3=Custom
 
-option.WATER_PARALLAX=Parallax
-option.WATER_PARALLAX.comment=Enables water displacement.
-
 option.WATER_DETAIL=Detail
 option.WATER_DETAIL.comment=Adjusts the ratio between large and small water normals.
 value.WATER_DETAIL.0.05=5%

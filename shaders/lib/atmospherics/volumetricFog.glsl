@@ -8,29 +8,6 @@ vec3 fogcolorSun0    = CalcSunColor(fogcolorMorning0, fogcolorDay0, fogcolorEven
 vec3 fogColorC0    	= CalcLightColor(fogcolorSun0, fogcolorNight0, weatherCol.rgb);
 #endif
 
-float rand2D(vec2 pos){
-	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
-}
-
-float getHeightNoise(vec2 p) {
-    vec2 u = floor(p);
-    vec2 v = fract(p);
-    vec2 s = smoothstep(0.0, 1.0, v);
-    
-    float a = rand2D(u);
-    float b = rand2D(u + vec2(1.0, 0.0));
-    float c = rand2D(u + vec2(0.0, 1.0));
-    float d = rand2D(u + vec2(1.0, 1.0));
-    float e = rand2D(u + vec2(0.0, 0.0));
-    float f = rand2D(u + vec2(1.0, 0.0));
-    float g = rand2D(u + vec2(0.0, 1.0));
-    float h = rand2D(u + vec2(1.0, 1.0));
-    
-    return mix(mix(mix(a, b, s.x), mix(c, d, s.x), s.y),
-               mix(mix(e, f, s.x), mix(g, h, s.x), s.y),
-               s.x);
-}
-
 #ifdef NETHER_SMOKE
 #endif
 

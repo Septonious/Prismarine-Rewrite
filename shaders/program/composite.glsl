@@ -168,8 +168,8 @@ vec2 getRefract(vec2 coord, vec3 waterPos){
 
 //Program//
 void main() {
-    vec4 color = texture2D(colortex0, texCoord);
-    vec4 translucent = texture2D(colortex1, texCoord);
+    vec4 color = texture2DLod(colortex0, texCoord, 2.0);
+    vec4 translucent = texture2DLod(colortex1, texCoord, 0.0);
 	float z0 = texture2D(depthtex0, texCoord).r;
 	float z1 = texture2D(depthtex1, texCoord).r;
 	vec4 vl = vec4(0.0);
