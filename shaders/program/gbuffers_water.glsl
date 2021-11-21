@@ -129,12 +129,21 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     return noise * WATER_BUMP;
 }
 
+void GetParallaxWaves(inout vec3 worldPos, vec3 viewVector) {
+	for(int i = 0; i < 4; i++) {
+		float height = -1.25 * GetWaterHeightMap(worldPos, vec2(0.0)) + 0.25;
+		worldPos.xz += height;
+	}
+}
+
 vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 	vec3 waterPos = worldPos + cameraPosition;
 
 	#if WATER_PIXEL > 0
 	waterPos = floor(waterPos * WATER_PIXEL) / WATER_PIXEL;
 	#endif
+
+	GetParallaxWaves(waterPos, viewVector);
 
 	float normalOffset = WATER_SHARPNESS;
 	
