@@ -132,7 +132,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 void GetParallaxWaves(inout vec3 worldPos, vec3 viewVector) {
 	for(int i = 0; i < 4; i++) {
 		float height = -1.25 * GetWaterHeightMap(worldPos, vec2(0.0)) + 0.25;
-		worldPos.xz += height * viewVector.xy;
+		worldPos.xz += height * viewVector.xy / dist;
 	}
 }
 
