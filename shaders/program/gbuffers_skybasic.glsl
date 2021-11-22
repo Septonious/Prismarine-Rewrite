@@ -119,7 +119,7 @@ void main() {
 	
 	#ifdef ROUND_SUN_MOON
 	vec3 lightMA = mix(lightMorning, lightEvening, mefade);
-    vec3 sunColor = mix(lightMA, sqrt(vec3(1) * lightMA * LIGHT_DI), timeBrightness);
+    vec3 sunColor = vec3(1.0, 1.0, 0.2);
 	if (isEyeInWater == 1) sunColor = waterColor.rgb;
     vec3 moonColor = sqrt(lightNight);
 

@@ -215,7 +215,7 @@ void main() {
 		vec3 worldPos = ToWorld(viewPos);
 
 		#ifdef INTEGRATED_EMISSION
-		float iEmissive = 0;
+		float iEmissive = 0.0;
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
@@ -241,16 +241,16 @@ void main() {
             float core = float(albedo.r < 0.1);
             float edge = float(albedo.b > 0.35 && albedo.b < 0.401 && core == 0.0);
             iEmissive = (core * 0.195 + 0.035 * edge);
-			iEmissive *= 4 * GLOW_STRENGTH;
+			iEmissive *= 4.0 * GLOW_STRENGTH;
 		} else if (mat > 103.9 && mat < 104.1){
             iEmissive = float(albedo.b < 0.16);
             iEmissive = min(pow(length(albedo.rgb) * length(albedo.rgb), 2) * iEmissive * GLOW_STRENGTH, 0.3);
-			iEmissive *= 4 * GLOW_STRENGTH;
+			iEmissive *= 4.0 * GLOW_STRENGTH;
 		} else if (mat > 104.9 && mat < 105.1){ // Warped Nether Warts
 			iEmissive = pow(float(albedo.g - albedo.b), 2) * GLOW_STRENGTH;
 		} else if (mat > 105.9 && mat < 106.1){ // Warped Nylium
 			if (albedo.g > albedo.b && albedo.g > albedo.r){
-				iEmissive = pow(float(albedo.g - albedo.b), 3) * GLOW_STRENGTH;
+				iEmissive = pow(float(albedo.g - albedo.b), 3.0) * GLOW_STRENGTH;
 			}
 		} else if (mat > 109.9 && mat < 110.1){
 			emissive = float(length(albedo.rgb) > 0.975) * 0.1 * GLOW_STRENGTH;
@@ -307,11 +307,6 @@ void main() {
 			albedo.rgb = blocklightCol * pow(ec, 1.5) / (BLOCKLIGHT_I * BLOCKLIGHT_I);
 			albedo.rgb /= 0.7 * albedo.rgb + 0.7;
 		}
-		if (lava > 0.5) {
-			albedo.rgb = pow(blocklightCol * ec / BLOCKLIGHT_I, vec3(2.0));
-			albedo.rgb /= 0.5 * albedo.rgb + 0.5;
-		}
-		#else
 		#endif
 
 		#ifdef WHITE_WORLD
@@ -449,27 +444,26 @@ void main() {
 		#endif
 
 		#ifdef OVERWORLD
-		float depth = clamp(length(viewPos.xyz), 0, 7);
-		depth = 8 - depth;
+		float depth = clamp(length(viewPos.xyz), 0.0, 7.0);
+		depth = 8.0 - depth;
 		if (isEyeInWater == 1){
-			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6 - rainStrength - rainStrength);
-			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512 * (0.25 + timeBrightness) + depth;
+			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6.0 - rainStrength - rainStrength);
+			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512.0 * (0.25 + timeBrightness) + depth;
 		}
 		#endif
 
-		/*
-		vec2 noisePos = cameraPosition.xz + worldPos.xz;
-		float noiseMap = texture2D(noisetex, noisePos * 0.00075).r;
-
-		albedo.rgb *= noiseMap;
-		*/
-
 		#ifdef NOISY_TEXTURES
-		if (mat > 110.9 && mat < 111.1){
+		if (mat > 110.9 && mat < 111.1 || lava > 0.5){
 			vec2 noiseCoord = vTexCoord.xy + 0.0025;
 			noiseCoord = floor(noiseCoord.xy * 64.0 * vTexCoordAM.pq * 32.0 * vec2(2.0, 2.0 / atlasRatio)) / 5.25;
+			if (lava > 0.5){
+				noiseCoord = floor((vTexCoord.xy + 0.0025) * 32.0 * vTexCoordAM.pq * 16.0 * vec2(2.0, 2.0 / atlasRatio)) / 2.625;
+				albedo.rgb = mix(albedo.rgb, vec3(1.6, 0.2, 0.0), 0.75);
+				noiseCoord += vec2(frametime * 0.01, 0.0);
+			}
 			noiseCoord += 0.25 * (floor((worldPos.xz + cameraPosition.xz) + 0.001) + floor((worldPos.y + cameraPosition.y) + 0.001));
 			float noise = texture2D(noisetex, noiseCoord).r + 0.6;
+			if (lava > 0.5) noise = texture2D(noisetex, noiseCoord).r + 0.2;
 			float noiseFactor = NOISE_STRENGTH * (1.0 - 0.5 * metalness) * (1.0 - 0.25 * smoothness) * max(1.0 - emissive, 0.0);
 			noise = pow(noise, noiseFactor);
 			albedo.rgb *= noise;

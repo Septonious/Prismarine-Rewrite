@@ -17,7 +17,6 @@ varying vec2 texCoord, lmCoord;
 
 varying vec3 normal, binormal, tangent;
 varying vec3 sunVec, upVec, eastVec;
-varying vec3 viewVector;
 
 varying vec4 color;
 
@@ -129,21 +128,21 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     return noise * WATER_BUMP;
 }
 
-void GetParallaxWaves(inout vec3 worldPos, vec3 viewVector) {
+void GetParallaxWaves(inout vec3 worldPos) {
 	for(int i = 0; i < 4; i++) {
 		float height = -1.25 * GetWaterHeightMap(worldPos, vec2(0.0)) + 0.25;
-		worldPos.xz += height * viewVector.xy / dist;
+		worldPos.xz += height * vec2(0.5, 0.5);
 	}
 }
 
-vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
+vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos) {
 	vec3 waterPos = worldPos + cameraPosition;
 
 	#if WATER_PIXEL > 0
 	waterPos = floor(waterPos * WATER_PIXEL) / WATER_PIXEL;
 	#endif
 
-	GetParallaxWaves(waterPos, viewVector);
+	GetParallaxWaves(waterPos);
 
 	float normalOffset = WATER_SHARPNESS;
 	
@@ -255,7 +254,7 @@ void main() {
 
 		#if WATER_NORMALS == 1 || WATER_NORMALS == 2
 		if (water > 0.5) {
-			normalMap = GetWaterNormal(worldPos, viewPos, viewVector);
+			normalMap = GetWaterNormal(worldPos, viewPos);
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		}
 		#endif
@@ -532,6 +531,31 @@ void main() {
 			#endif
 		}
 
+		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
+			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
+		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
+		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);
+			
+		 	#ifdef TAA
+		 	vec3 oViewPos = ToNDC(vec3(TAAJitter(oScreenPos.xy, -0.5), oScreenPos.z));
+		 	#else
+		 	vec3 oViewPos = ToNDC(oScreenPos);
+		 	#endif
+
+			float clampTimeBrightness = clamp(timeBrightness, 0.1, 1.0);
+			float difT = length(oViewPos - viewPos.xyz);
+					
+			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * 12.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
+			float absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
+			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
+			newAlbedo *= newAlbedo;
+
+			float absorb = (1.0 - albedo.a);
+			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness) * lightmap.y;
+
+			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
+		}
+
 		Fog(albedo.rgb, viewPos);
 
 		#if ALPHA_BLEND == 0
@@ -557,7 +581,6 @@ varying vec2 texCoord, lmCoord;
 
 varying vec3 normal, binormal, tangent;
 varying vec3 sunVec, upVec, eastVec;
-varying vec3 viewVector;
 
 varying vec4 color;
 
@@ -628,8 +651,6 @@ void main() {
 						  tangent.y, binormal.y, normal.y,
 						  tangent.z, binormal.z, normal.z);
 								  
-	viewVector = tbnMatrix * (gl_ModelViewMatrix * gl_Vertex).xyz;
-	
 	dist = length(gl_ModelViewMatrix * gl_Vertex);
 
 	#ifdef ADVANCED_MATERIALS
