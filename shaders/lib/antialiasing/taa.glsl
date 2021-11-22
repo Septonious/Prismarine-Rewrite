@@ -48,7 +48,7 @@ void TemporalAA(inout vec3 color, inout vec4 temp) {
 	vec2 prvCoord = Reprojection(coord);
 	
 	vec2 view = vec2(viewWidth, viewHeight);
-	vec3 tempColor = texture2DLod(colortex2, prvCoord, 0).gba;
+	vec3 tempColor = texture2DLod(colortex2, prvCoord, 0.0).gba;
 
 	if(tempColor == vec3(0.0)){
 		temp.gbr = color;

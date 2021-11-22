@@ -168,7 +168,7 @@ vec2 getRefract(vec2 coord, vec3 waterPos){
 
 //Program//
 void main() {
-    vec4 color = texture2DLod(colortex0, texCoord, 2.0);
+    vec4 color = texture2DLod(colortex0, texCoord, 0.0);
     vec4 translucent = texture2DLod(colortex1, texCoord, 0.0);
 	float z0 = texture2D(depthtex0, texCoord).r;
 	float z1 = texture2D(depthtex1, texCoord).r;
@@ -244,7 +244,9 @@ void main() {
 
 	//Volumetric Clouds
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
-	getVolumetricCloud(z1, z0, InterleavedGradientNoiseVL(), color.rgb, translucent);
+	float VoL = dot(normalize(viewPos.xyz), lightVec);
+	float scattering = pow(VoL * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
+	getVolumetricCloud(z1, z0, InterleavedGradientNoiseVL(), color.rgb, translucent, scattering);
 	#endif
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;

@@ -519,6 +519,9 @@ option.SKYBOX_BRIGHTNESS=Skybox Brightness
 option.SKYBOX_BRIGHTNESS.comment=Adjusts skybox brightness. §e[*]§rSet to 1.00 when subtractive skybox exists.
 
 #Cloud Config
+option.VCLOUDS_NOISE_MODE=Noise Mode
+value.VCLOUDS_NOISE_MODE.0=Perlin
+value.VCLOUDS_NOISE_MODE.1=Noise Texture
 option.VCLOUDS_AMOUNT=Amount
 option.VCLOUDS_RANGE=Range
 option.VCLOUDS_RANGE.comment=Changes the maximum render distance

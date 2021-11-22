@@ -5,11 +5,17 @@
 #endif
 
 float getCloudNoise(vec3 pos){
+	#if VCLOUDS_NOISE_MODE == 1
+	pos /= 4.0;
+	pos.xz *= 0.50;
+	#endif
+
 	vec3 u = floor(pos);
 	vec3 v = fract(pos);
 
 	v = v * v * (3.0 - 2.0 * v);
 	
+	#if VCLOUDS_NOISE_MODE == 0
 	float noisebdl = rand2D(u.xz + u.y * 32.0);
 	float noisebdr = rand2D(u.xz + u.y * 32.0 + vec2(1.0, 0.0));
 	float noisebul = rand2D(u.xz + u.y * 32.0 + vec2(0.0, 1.0));
@@ -18,14 +24,32 @@ float getCloudNoise(vec3 pos){
 	float noisetdr = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 0.0));
 	float noisetul = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(0.0, 1.0));
 	float noisetur = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 1.0));
+
 	float noise= mix(mix(mix(noisebdl, noisebdr, v.x), mix(noisebul, noisebur, v.x), v.z), mix(mix(noisetdl, noisetdr, v.x), mix(noisetul, noisetur, v.x), v.z), v.y);
 	return noise;
+	#elif VCLOUDS_NOISE_MODE == 1
+	vec2 uv = u.xz + v.xz + u.y * 16.0;
+
+	vec2 coord1 = uv / 64.0;
+	vec2 coord2 = uv / 64.0 + 16.0 / 64.0;
+		
+	float a = texture2DLod(noisetex, coord1, 2.0).x;
+	float b = texture2DLod(noisetex, coord2, 2.0).x;
+		
+	return mix(a, b, v.y);
+	#endif
 }
 
 float getCloudSample(vec3 pos){
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
-	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength * 0.5)) - pos.y) / VCLOUDS_VERTICAL_THICKNESS;
+	float verticalThickness = VCLOUDS_VERTICAL_THICKNESS;
+
+	#if VCLOUDS_NOISE_MODE == 1
+	verticalThickness *= 3.0;
+	#endif
+
+	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength)) - pos.y) / verticalThickness;
 	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.3) * 2.0;
 	
 	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5);
@@ -39,7 +63,7 @@ float getCloudSample(vec3 pos){
 	return noise;
 }
 
-void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inout vec3 color, vec4 translucent){
+void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inout vec3 color, vec4 translucent, float scattering){
 	//Here we set up the color of bottom and upper parts of the clouds
 	vec3 vcMorning    = vec3(VCLOUD_MR,   VCLOUD_MG,   VCLOUD_MB)   * VCLOUD_MI / 255;
 	vec3 vcDay        = vec3(VCLOUD_DR,   VCLOUD_DG,   VCLOUD_DB)   * VCLOUD_DI / 255;
@@ -79,10 +103,6 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 		wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.xy);
 
-		if (depth0 < minDist){
-			finalColor *= translucent;
-		}
-
 		if (length(wpos.xz) < maxDist){
 			#ifdef WORLD_CURVATURE
 			if (length(wpos.xz) < WORLD_CURVATURE_SIZE) wpos.y += length(wpos.xz) * length(wpos.xyz) / WORLD_CURVATURE_SIZE;
@@ -94,9 +114,12 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 			float noise = getCloudSample(wpos.xyz);
 
-			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
-			cloudsColor.a *= 1.0 - isEyeInWater * 0.8;
+			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
+			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
+			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT){
+				finalColor *= translucent;
+			}
 			finalColor += cloudsColor * (1.0 - finalColor.a);
 		}
 
