@@ -6,7 +6,7 @@
 
 float getCloudNoise(vec3 pos){
 	#if VCLOUDS_NOISE_MODE == 1
-	pos /= 4.0;
+	pos /= 2.0;
 	pos.xz *= 0.50;
 	#endif
 
@@ -30,11 +30,10 @@ float getCloudNoise(vec3 pos){
 	#elif VCLOUDS_NOISE_MODE == 1
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
 
-	vec2 coord1 = uv / 64.0;
-	vec2 coord2 = uv / 64.0 + 16.0 / 64.0;
-		
-	float a = texture2DLod(noisetex, coord1, 2.0).x;
-	float b = texture2DLod(noisetex, coord2, 2.0).x;
+	vec2 coord = uv / 64.0;
+	float a = texture2D(noisetex, coord).x;
+	coord = uv / 64.0 + 16.0 / 64.0;
+	float b = texture2D(noisetex, coord).x;
 		
 	return mix(a, b, v.y);
 	#endif
@@ -46,7 +45,7 @@ float getCloudSample(vec3 pos){
 	float verticalThickness = VCLOUDS_VERTICAL_THICKNESS;
 
 	#if VCLOUDS_NOISE_MODE == 1
-	verticalThickness *= 3.0;
+	verticalThickness *= 4.0;
 	#endif
 
 	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength)) - pos.y) / verticalThickness;
@@ -114,6 +113,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 			float noise = getCloudSample(wpos.xyz);
 
+			//float col = pow(smoothstep(VCLOUDS_HEIGHT + 8 * noise, VCLOUDS_HEIGHT - 8 * noise, wpos.y), 2.0);
 			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;

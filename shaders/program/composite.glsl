@@ -245,7 +245,7 @@ void main() {
 	//Volumetric Clouds
 	#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
 	float VoL = dot(normalize(viewPos.xyz), lightVec);
-	float scattering = pow(VoL * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
+	float scattering = pow(VoL * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 8.0) * 2.0;
 	getVolumetricCloud(z1, z0, InterleavedGradientNoiseVL(), color.rgb, translucent, scattering);
 	#endif
 
