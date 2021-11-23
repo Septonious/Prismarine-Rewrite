@@ -11,7 +11,7 @@ float InterleavedGradientNoiseVL() {
 	#ifdef TAA
 	return fract(n + frameCounter / 6.0);
 	#else
-	return n;
+	return fract(n);
 	#endif
 }
 
