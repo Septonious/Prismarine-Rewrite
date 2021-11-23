@@ -18,7 +18,7 @@ void main() {
 
 //Program//
 void main() {
-	
+	gl_Position = ftransform();
 }
 
 #endif
