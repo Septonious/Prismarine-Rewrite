@@ -11,7 +11,7 @@ float InterleavedGradientNoiseVL() {
 	#ifdef TAA
 	return fract(n + frameCounter / 6.0);
 	#else
-	return fract(n);
+	return n;
 	#endif
 }
 
@@ -64,8 +64,8 @@ float getVolumetricNoise0(vec3 pos){
 #endif
 
 float getFogNoise(vec3 pos) {
-	pos /= 8.0;
-	pos.xz *= 0.50;
+	pos /= 12.0;
+	pos.xz *= 0.25;
 
 	vec3 u = floor(pos);
 	vec3 v = fract(pos);
@@ -73,11 +73,10 @@ float getFogNoise(vec3 pos) {
 	v = (v * v) * (3.0 - 2.0 * v);
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
 
-	vec2 coord1 = uv / 64.0;
-	vec2 coord2 = uv / 64.0 + 16.0 / 64.0;
-		
-	float a = texture2DLod(noisetex, coord1, 2.0).x * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-	float b = texture2DLod(noisetex, coord2, 2.0).x * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	vec2 coord = uv / 64.0;
+	float a = texture2DLod(noisetex, coord, 2.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	coord = uv / 64.0 + 16.0 / 64.0;
+	float b = texture2DLod(noisetex, coord, 2.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
 		
 	return mix(a, b, v.y);
 }

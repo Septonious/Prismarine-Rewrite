@@ -76,10 +76,10 @@ void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol) {
     visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
 	visibility = clamp(visibility * 1.015 / invvisfactor - 0.015, 0.0, 1.0);
 	visibility = mix(1.0, visibility, 0.25 + 0.75) * (1.0 - rainStrength * 0.875);
-	visibility *= shadowFade * (1.25 - timeBrightness);
+	visibility *= shadowFade * (1.1 - timeBrightness);
 
 	#ifdef SUN_GLARE
-	color += lightCol * visibility * (1.0 + 0.25 * isEyeInWater) * 0.25;
+	color += lightCol * visibility * (0.1 + 0.25 * isEyeInWater);
 	#endif
 }
 

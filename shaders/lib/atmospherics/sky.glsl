@@ -57,7 +57,7 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
 
     sky = sky / sqrt(sky * sky + 1.0) * exposure * sunVisibility * (0.25 + timeBrightness * 0.75);
 
-    float sunMix = (VoL * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) * (HORIZON_VERTICAL_EXPONENT - timeBrightness * 0.25);
+    float sunMix = pow((VoL * 0.5 + 0.5), 2.0) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) * (HORIZON_VERTICAL_EXPONENT - timeBrightness * 0.25);
     
     #ifdef TF
     sunMix = (VoU * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) * (1.0 + timeBrightness);   

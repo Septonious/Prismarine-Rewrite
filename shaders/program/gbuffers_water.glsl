@@ -15,7 +15,7 @@ varying float dist;
 
 varying vec2 texCoord, lmCoord;
 
-varying vec3 normal, binormal, tangent, tangentViewDirection;
+varying vec3 normal, binormal, tangent, viewVector;
 varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
@@ -131,7 +131,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 void GetParallaxWaves(inout vec3 worldPos) {
 	for(int i = 0; i < 4; i++) {
 		float height = -1.25 * GetWaterHeightMap(worldPos, vec2(0.0)) + 0.25;
-		worldPos.xz += height * tangentViewDirection.xz / dist;
+		worldPos.xz += height * viewVector.xz / dist;
 	}
 }
 
@@ -542,7 +542,7 @@ void main() {
 		 	vec3 oViewPos = ToNDC(oScreenPos);
 		 	#endif
 
-			float clampTimeBrightness = clamp(timeBrightness, 0.1, 1.0);
+			float clampTimeBrightness = pow(clamp(timeBrightness, 0.1, 1.0), 2.0);
 			float difT = length(oViewPos - viewPos.xyz);
 					
 			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * 12.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
@@ -579,7 +579,7 @@ varying float dist;
 
 varying vec2 texCoord, lmCoord;
 
-varying vec3 normal, binormal, tangent, tangentViewDirection;
+varying vec3 normal, binormal, tangent, viewVector;
 varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
@@ -654,7 +654,7 @@ void main() {
 	vec3 viewPosition = mat3(gl_ModelViewMatrix) * gl_Vertex.xyz + gl_ModelViewMatrix[3].xyz; 
 	vec3 viewDirection = normalize(viewPosition);
 	vec3 tangentViewPosition = viewPosition * tbnMatrix;
-	tangentViewDirection = normalize(tangentViewPosition);
+	viewVector = normalize(tangentViewPosition);
 	dist = -viewPosition.z;
 
 	#ifdef ADVANCED_MATERIALS

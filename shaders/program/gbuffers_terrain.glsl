@@ -453,7 +453,7 @@ void main() {
 		#endif
 
 		#ifdef NOISY_TEXTURES
-		if (mat > 110.9 && mat < 111.1 || lava > 0.5){
+		if ((foliage < 0.1 && leaves < 0.1) || lava > 0.5){
 			vec2 noiseCoord = vTexCoord.xy + 0.0025;
 			noiseCoord = floor(noiseCoord.xy * 64.0 * vTexCoordAM.pq * 32.0 * vec2(2.0, 2.0 / atlasRatio)) / 5.25;
 			if (lava > 0.5){

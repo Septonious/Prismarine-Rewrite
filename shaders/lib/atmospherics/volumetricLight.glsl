@@ -22,8 +22,6 @@ vec4 GetShadowSpace(vec4 wpos) {
 vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dither, float visibility) {
 	vec3 vl = vec3(0.0);
 
-	dither = InterleavedGradientNoiseVL();
-	
 	#ifdef LIGHTSHAFT_CLOUDY_NOISE
 	#endif
 
@@ -38,15 +36,15 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	#ifdef OVERWORLD
 	float visfactor = 0.05 * (-0.1 * timeBrightness + 1.0) * (1.0 - rainStrength);
 	float invvisfactor = 1.0 - visfactor;
-	if (isEyeInWater == 1) visibility = 1;
 
 	visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
 	visibility = clamp(visibility * 1.015 / invvisfactor - 0.015, 0.0, 1.0);
+	visibility = clamp(visibility + isEyeInWater, 0.0, 1.0);
 	visibility = mix(1.0, visibility, 0.25 * 1 + 0.75) * 0.14285 * float(pixeldepth0 > 0.56);
 	#endif
 
 	#ifdef NETHER
-	float visibility = 0;
+	float visibility = 0.0;
 	#endif
 
 	if (visibility > 0.0) {
@@ -89,7 +87,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 				vec3 shadow = shadowCol * (1.0 - shadow0) + shadow0;
 
 				if (depth0 < minDist) shadow *= color;
-				else if (isEyeInWater == 1.0) shadow *= watercol * 64;
+				else if (isEyeInWater == 1.0) shadow *= watercol * 64.0;
 
 				#if defined LIGHTSHAFT_CLOUDY_NOISE && defined OVERWORLD
 				if (isEyeInWater != 1){

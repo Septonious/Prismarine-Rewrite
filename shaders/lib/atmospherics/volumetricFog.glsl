@@ -16,13 +16,13 @@ vec3 fogColorC0    	= CalcLightColor(fogcolorSun0, fogcolorNight0, weatherCol.rg
 
 vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float dither, vec3 viewPos, float visibility) {
     dither = InterleavedGradientNoiseVL();
-	float maxDist = 512;
+	float maxDist = 512.0;
 	float depth0 = GetLinearDepth2(pixeldepth0);
 	float depth1 = GetLinearDepth2(pixeldepth1);
-	if (isEyeInWater == 1) visibility = 0;
+	visibility = clamp(visibility - isEyeInWater, 0.0, 1.0);
 
-    #ifdef NETHER
-    visibility = 1;
+    #if defined NETHER && defined NETHER_SMOKE
+    visibility = 1.0;
     #endif
 
 	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
