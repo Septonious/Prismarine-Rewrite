@@ -23,8 +23,9 @@ uniform sampler2D colortex0;
 uniform sampler2D depthtex1, depthtex0;
 
 #if defined FOG_BLUR && defined OVERWORLD
+uniform int isEyeInWater;
 varying vec3 sunVec, upVec;
-uniform float timeBrightness, timeAngle, isEyeInWater, rainStrength;
+uniform float timeBrightness, timeAngle, rainStrength;
 uniform vec3 cameraPosition;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #endif
