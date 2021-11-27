@@ -24,8 +24,7 @@ uniform sampler2D depthtex1, depthtex0;
 
 #if defined FOG_BLUR && defined OVERWORLD
 varying vec3 sunVec, upVec;
-uniform float rainStrength;
-uniform float timeBrightness, timeAngle;
+uniform float timeBrightness, timeAngle, isEyeInWater, rainStrength;
 uniform vec3 cameraPosition;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #endif
@@ -124,11 +123,12 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	#endif
 
 	#if defined FOG_BLUR && defined OVERWORLD
-	vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000;
+	vec3 pos = worldPos.xyz + cameraPosition.xyz + 1000.0;
 	float height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
 		  height = pow(height, 16.0);
 		  height = clamp(height, 0, 1);
-	coc *= FIRST_LAYER_DENSITY * CalcTotalAmount(CalcDayAmount(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY), NIGHT_FOG_DENSITY) * (0.50 + rainStrength * 0.50);
+	float isEyeInCave = 1.0 - clamp(float(cameraPosition.y < 60.0) - isEyeInWater, 0.0, 1.0);
+	coc *= FIRST_LAYER_DENSITY * CalcTotalAmount(CalcDayAmount(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY), NIGHT_FOG_DENSITY) * (1.00 + rainStrength * 0.50) * (1.0 + isEyeInWater);
 	coc *= 1.0 - height;
 	#endif
 

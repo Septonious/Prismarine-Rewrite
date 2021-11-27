@@ -20,7 +20,7 @@ uniform vec3 cameraPosition, previousCameraPosition;
 uniform mat4 gbufferPreviousProjection, gbufferProjectionInverse;
 uniform mat4 gbufferModelView, gbufferPreviousModelView, gbufferModelViewInverse;
 
-uniform sampler2D colortex0;
+uniform sampler2D colortex0, noisetex;
 uniform sampler2D depthtex1;
 
 //Common Functions//

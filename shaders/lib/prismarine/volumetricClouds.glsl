@@ -27,8 +27,15 @@ float getCloudNoise(vec3 pos){
 
 	float noise= mix(mix(mix(noisebdl, noisebdr, v.x), mix(noisebul, noisebur, v.x), v.z), mix(mix(noisetdl, noisetdr, v.x), mix(noisetul, noisetur, v.x), v.z), v.y);
 	return noise;
+
 	#elif VCLOUDS_NOISE_MODE == 1
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
+
+	uv = uv * 512.0 + 0.5;
+	vec2 floorUV = floor(uv);
+	vec2 fractUV = fract(uv);
+	uv = floorUV + fractUV * fractUV * (3.0 - 2.0 * fractUV);
+	uv = (uv - 0.5) / 512.0;
 
 	vec2 coord = uv / 64.0;
 	float a = texture2DLod(noisetex, coord, 2.0).r;
@@ -114,7 +121,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			float noise = getCloudSample(wpos.xyz);
 
 			//float col = pow(smoothstep(VCLOUDS_HEIGHT + 8 * noise, VCLOUDS_HEIGHT - 8 * noise, wpos.y), 2.0);
-			vec4 cloudsColor = vec4(mix(vcloudsCol * vcloudsCol * (2.0 - rainStrength * 0.5 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
+			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 - rainStrength * 0.25 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
 			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT){

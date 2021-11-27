@@ -136,11 +136,11 @@ void main() {
 
 	#if Sharpen > 0 && !defined DOF && !defined TAA
 	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-	color *= Sharpen * 0.1 + 1.0;
-	color -= texture2D(colortex1,texCoord.xy+vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1,texCoord.xy+vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1,texCoord.xy+vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1,texCoord.xy+vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
+	color *= Sharpen * 0.1 + 0.9;
+	color -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
 	#endif
 
 	#ifdef TEST04	

@@ -303,11 +303,6 @@ void main() {
 			baseReflectance = vec3(0.02);
 		}
 
-		if (glass > 0.5){
-			albedo.a += albedo.a * 0.75;
-			albedo.a = clamp(albedo.a, 0.5, 0.95);
-		} 
-
 		vlAlbedo = mix(vec3(1.0), albedo.rgb, sqrt(albedo.a)) * (1.0 - pow(albedo.a, 64.0));
 		
 		float NoL = clamp(dot(newNormal, lightVec), 0.0, 1.0);
@@ -530,8 +525,8 @@ void main() {
 										   	   specularColor, shadow * vanillaDiffuse, color.a);
 			#endif
 		}
-
-		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)) {
+		glass = float(mat > 1.98 && mat < 2.02);
+		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5) || glass > 0.5) {
 			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
 		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
 		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);
@@ -545,13 +540,25 @@ void main() {
 			float clampTimeBrightness = pow(clamp(timeBrightness, 0.1, 1.0), 2.0);
 			float difT = length(oViewPos - viewPos.xyz);
 					
-			vec3 absorbColor = (normalize(waterColor.rgb) * 2 * WATER_I) * terrainColor * terrainColor * 12.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
-			float absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
+			vec3 absorbColor = vec3(0.0);
+			float absorbDist = 0.0;
+
+			if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)){
+				absorbColor = normalize(waterColor.rgb) * terrainColor * terrainColor * 8.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
+				absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
+			}
+			if (glass > 0.5){
+				albedo.a += albedo.a * 0.75;
+				albedo.a = clamp(albedo.a, 0.5, 0.95);
+				absorbColor = normalize(albedo.rgb * 2.0) * terrainColor * terrainColor * 6.0;
+				absorbDist = 1.0 - clamp(difT / 2.0, 0.0, 1.0);
+			}
+			
 			vec3 newAlbedo = mix(absorbColor, terrainColor, absorbDist);
 			newAlbedo *= newAlbedo;
 
 			float absorb = (1.0 - albedo.a);
-			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness) * lightmap.y;
+			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness);
 
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}

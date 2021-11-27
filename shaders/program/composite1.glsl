@@ -95,7 +95,8 @@ void main() {
 	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 1.0 - eBS, 1.0), 0.0);
+	float isEyeInCave = 1.0 - clamp(float(cameraPosition.y < 60) * (1.0 - eBS), 0.0, 1.0);
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.25, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
 	if (isEyeInWater == 1) visibility0 = 1.0;
 
 	if (visibility0 > 0){

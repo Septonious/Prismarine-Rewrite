@@ -456,11 +456,13 @@ void main() {
 		if ((foliage < 0.1 && leaves < 0.1) || lava > 0.5){
 			vec2 noiseCoord = vTexCoord.xy + 0.0025;
 			noiseCoord = floor(noiseCoord.xy * 64.0 * vTexCoordAM.pq * 32.0 * vec2(2.0, 2.0 / atlasRatio)) / 5.25;
+			/*
 			if (lava > 0.5){
 				noiseCoord = floor((vTexCoord.xy + 0.0025) * 32.0 * vTexCoordAM.pq * 16.0 * vec2(2.0, 2.0 / atlasRatio)) / 2.625;
 				albedo.rgb = mix(albedo.rgb, vec3(1.6, 0.2, 0.0), 0.75);
 				noiseCoord += vec2(frametime * 0.01, 0.0);
 			}
+			*/
 			noiseCoord += 0.25 * (floor((worldPos.xz + cameraPosition.xz) + 0.001) + floor((worldPos.y + cameraPosition.y) + 0.001));
 			float noise = texture2D(noisetex, noiseCoord).r + 0.6;
 			if (lava > 0.5) noise = texture2D(noisetex, noiseCoord).r + 0.2;

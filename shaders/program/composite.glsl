@@ -121,6 +121,8 @@ vec2 getRefract(vec2 coord, vec3 waterPos){
 }
 #endif
 
+float isEyeInCave = 1.0 - clamp(float(cameraPosition.y < 60) * (1.0 - eBS), 0.0, 1.0);
+
 //Includes//
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
@@ -178,7 +180,7 @@ void main() {
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
-	visibility = CalcTotalAmount(CalcDayAmount(1.0, 1.0 - eBS, 1.0), 0.0) * (1.0 - rainStrength);
+	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.25, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
 	#endif
 	#ifdef VOLUMETRIC_LIGHT
 	if (isEyeInWater == 1) visibility = 1.0;
@@ -215,20 +217,18 @@ void main() {
 	color.rgb = mix(color.rgb, outerOutline.rgb, outerOutline.a);
 	#endif
 
-	float dither = Bayer64(gl_FragCoord.xy);
-
 	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	if (visibility > 0) vl += getVolumetricFog(z0, z1, translucent, dither, viewPos.xyz, visibility);
+	if (visibility > 0) vl += getVolumetricFog(z0, z1, translucent,InterleavedGradientNoiseVL(), viewPos.xyz, visibility);
 	#endif
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_LIGHT
-	if (visibility > 0) vl.rgb += GetLightShafts(z0, z1, translucent.rgb, dither, visibility);
+	if (visibility > 0) vl.rgb += GetLightShafts(z0, z1, translucent.rgb, InterleavedGradientNoiseVL(), visibility);
 	#endif
 
 	#if defined FIREFLIES
-	float visibility1 = (1 - sunVisibility) * (1 - rainStrength) * (0 + eBS) * (1 - isEyeInWater);
-	if (visibility1 > 0) vl.rgb = GetFireflies(z0, translucent.rgb, dither);
+	float visibility1 = (1.0 - sunVisibility) * (1.0 - rainStrength) * (0.0 + eBS) * (1.0 - isEyeInWater);
+	if (visibility1 > 0) vl.rgb = GetFireflies(z0, translucent.rgb, Bayer64(gl_FragCoord.xy));
 	#endif
 	#endif
 

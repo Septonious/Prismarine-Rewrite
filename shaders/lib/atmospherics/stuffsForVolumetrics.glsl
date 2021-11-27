@@ -47,7 +47,7 @@ float getHeightNoise(vec2 pos){
 float getVolumetricNoise0(vec3 pos){
 	vec3 flr = floor(pos);
 	vec3 frc = fract(pos);
-	frc = frc * frc * (3.0-2.0 * frc);
+	frc = frc * frc * (3.0 - 2.0 * frc);
 	
 	float noisebdl = rand2D(flr.xz + (vec2(frametime, 0) * 0.00005) + flr.y * 32);
 	float noisebdr = rand2D(flr.xz - (vec2(frametime * 0.00015, 0) * 0.000075) + flr.y * 32 + vec2(1.0,0.0));
@@ -74,9 +74,9 @@ float getFogNoise(vec3 pos) {
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
 
 	vec2 coord = uv / 64.0;
-	float a = texture2DLod(noisetex, coord, 2.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	float a = texture2DLod(noisetex, coord, 4.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
 	coord = uv / 64.0 + 16.0 / 64.0;
-	float b = texture2DLod(noisetex, coord, 2.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	float b = texture2DLod(noisetex, coord, 4.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
 		
 	return mix(a, b, v.y);
 }

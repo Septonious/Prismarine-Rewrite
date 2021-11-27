@@ -16,7 +16,7 @@ varying vec2 texCoord;
 uniform int frameCounter;
 uniform float viewWidth, viewHeight, aspectRatio, frameTimeCounter;
 
-uniform sampler2D colortex0;
+uniform sampler2D colortex0, noisetex;
 
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
