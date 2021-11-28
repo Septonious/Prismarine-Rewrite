@@ -87,7 +87,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 				#endif
 				vec3 shadow = shadowCol * (1.0 - shadow0) + shadow0;
 
-				if (depth0 < minDist) shadow *= color;
+				if (depth0 < minDist && cameraPosition.y < LIGHTSHAFT_HEIGHT + 25) shadow *= color;
 				else if (isEyeInWater == 1.0) shadow *= watercol * 64.0;
 
 				vec3 pos = worldposition.xyz + cameraPosition.xyz;

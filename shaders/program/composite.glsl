@@ -42,10 +42,10 @@ uniform mat4 shadowProjection;
 
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
-uniform sampler2D depthtex0;
-uniform sampler2D depthtex1, depthtex2;
+uniform sampler2D depthtex1, depthtex0;
 
 uniform sampler2D noisetex;
+uniform sampler2D colortex8;
 
 #if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES
 uniform sampler2DShadow shadowtex0;

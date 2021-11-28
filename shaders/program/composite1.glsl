@@ -81,7 +81,7 @@ float GetLuminance(vec3 color) {
 void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
-	vec3 vl = texture2DLod(colortex1, texCoord.xy, 0.0).rgb;
+	vec3 vl = texture2D(colortex1, texCoord.xy).rgb;
 	
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;

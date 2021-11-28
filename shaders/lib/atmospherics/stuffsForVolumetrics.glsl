@@ -7,12 +7,11 @@ float GetLinearDepth2(float depth) {
 }
 
 float InterleavedGradientNoiseVL() {
-	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
-	#ifdef TAA
-	return fract(n + frameCounter / 6.0);
-	#else
-	return fract(n);
-	#endif
+    float noise = texelFetch2D(colortex8, ivec2(gl_FragCoord.xy) & 255, 0).r;
+
+    noise = fract(noise + frameCounter / 8.0);
+
+    return noise;
 }
 
 vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {

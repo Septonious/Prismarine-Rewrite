@@ -6,7 +6,7 @@
 
 float getCloudNoise(vec3 pos){
 	#if VCLOUDS_NOISE_MODE == 1
-	pos /= 2.0;
+	pos *= 0.50;
 	pos.xz *= 0.50;
 	#endif
 
