@@ -42,7 +42,7 @@ float GetCurvedBias(int i, float dither) {
 
 vec3 SampleBasicShadow(vec3 shadowPos) {
     float shadow0 = shadow2D(shadowtex0, vec3(shadowPos.st, shadowPos.z)).x;
-
+    shadow0 = shadow0 * shadow0 * (3.0 - 2.0 * shadow0);
     vec3 shadowCol = vec3(0.0);
     #ifdef SHADOW_COLOR
     if (shadow0 < 1.0) {

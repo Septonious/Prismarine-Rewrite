@@ -58,7 +58,8 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
     #if FOG_COLOR_MODE == 1
     fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC;
     #elif FOG_COLOR_MODE == 0
-    fog = GetSkyColor(viewPos, false) * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I;
+	fog = GetSkyColor(viewPos, false) * baseGradient;
+	fog *= 1.0 + nightVision;
     #elif FOG_COLOR_MODE == 2
     fog = getBiomeColor(fogColorC * 2.0) * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I;
     #endif
@@ -84,24 +85,14 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
     float lightMix = (1.0 - (1.0 - sunMix) * (1.0 - horizonMix)) * lViewPos;
 
 	vec3 lightFog = vec3(0.0);
-	if (layer){
-	    #if FOG_COLOR_MODE == 1
-        lightFog = pow(fogcolorSun, vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
-        #elif FOG_COLOR_MODE == 0
-        lightFog = pow(GetSkyColor(viewPos, false), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
-        #elif FOG_COLOR_MODE == 2
-        lightFog = pow(getBiomeColor(fogcolorSun * 2.0), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
-        #endif
-	}
-	if (!layer){
-        #if FOG_COLOR_MODE == 1
-        lightFog = pow(fogcolorSun, vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
-        #elif FOG_COLOR_MODE == 0
-        lightFog = pow(GetSkyColor(viewPos, false), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
-        #elif FOG_COLOR_MODE == 2
-        lightFog = pow(getBiomeColor(fogColorC * 2.0), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
-        #endif
-    }
+
+    #if FOG_COLOR_MODE == 1
+    lightFog = pow(fogcolorSun, vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
+    #elif FOG_COLOR_MODE == 0
+    lightFog = pow(GetSkyColor(viewPos, false) * 0.5 * vec3(FOG_R, FOG_G, FOG_B), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
+    #elif FOG_COLOR_MODE == 2
+    lightFog = pow(getBiomeColor(fogColorC * 2.0), vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
+    #endif
 
 	#ifdef TF
 	lightFog = pow(GetSkyColor(viewPos, false) / 2.0, vec3(4.0 - sunVisibility)) * baseGradient;
@@ -155,7 +146,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
-	float isEyeInCave = 1.0 - clamp(float(cameraPosition.y < 60) * (1.0 - eBS), 0.0, 1.0);
+	float isEyeInCave = clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
 	density *= clamp(cameraPosition.y * 0.01, 0.01, 1.00) * isEyeInCave;
 
 	float fog = length(viewPos) * density / 64.0;

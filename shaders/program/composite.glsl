@@ -121,7 +121,7 @@ vec2 getRefract(vec2 coord, vec3 waterPos){
 }
 #endif
 
-float isEyeInCave = 1.0 - clamp(float(cameraPosition.y < 60) * (1.0 - eBS), 0.0, 1.0);
+float isEyeInCave = clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
 
 //Includes//
 #include "/lib/prismarine/timeCalculations.glsl"

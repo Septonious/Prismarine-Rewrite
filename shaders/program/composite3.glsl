@@ -128,7 +128,7 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	float height = (pos.y - FOG_FIRST_LAYER_ALTITUDE) * 0.001;
 		  height = pow(height, 16.0);
 		  height = clamp(height, 0, 1);
-	float isEyeInCave = 1.0 - clamp(float(cameraPosition.y < 60.0) - isEyeInWater, 0.0, 1.0);
+	float isEyeInCave = clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) - isEyeInWater, 0.0, 1.0);
 	coc *= FIRST_LAYER_DENSITY * CalcTotalAmount(CalcDayAmount(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY), NIGHT_FOG_DENSITY) * (1.00 + rainStrength * 0.50) * (1.0 + isEyeInWater);
 	coc *= 1.0 - height;
 	#endif

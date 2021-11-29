@@ -96,29 +96,44 @@ void SharpenFilter(inout vec3 color, vec2 coord) {
 		color -= texture2D(colortex1, coord + offset).rgb * mult;
 	}
 }
-/*
-vec3 ImageSharpen(vec2 texCoord){
-	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-
-    vec3 c   = texture2D(colortex1, texCoord).xyz;
-    vec3 c_n = texture2D(colortex1, texCoord.xy + vec2(1.0, 0.0) * view).xyz * Sharpen * 0.025;
-    vec3 c_s = texture2D(colortex1, texCoord.xy + vec2(0.0, 1.0) * view).xyz * Sharpen * 0.025;
-    vec3 c_e = texture2D(colortex1, texCoord.xy + vec2(-1.0, 0.0) * view).xyz * Sharpen * 0.025;
-    vec3 c_w = texture2D(colortex1, texCoord.xy + vec2(0.0, -1.0) * view).xyz * Sharpen * 0.025;
-
-    vec3 max_edges = max(max(c_n, c_s), max(c_e, c_w));
-    vec3 min_edges = min(min(c_n, c_s), min(c_e, c_w));
-    vec3 sum_edges = c_n + c_e + c_s + c_w;
-    vec3 edge = -0.25 * min(min_edges / max_edges, (1.0 - max_edges) / (1.0 - min_edges));
-    float edges = max(-0.1875, min(0.0, max(edge.r, max(edge.g, edge.b))));
-    float w = edges * exp(-Sharpen);
-
-    vec3 col = (c + sum_edges * w) / (w * 4.0 + 1.0);
-    
-    return col;
-}
-*/
 #endif
+
+//GLOBAL ILLUMINATION STUFF//
+float sphereSDF(vec2 p, float size) {
+	return length(p) - size;
+}
+
+void AddObj(inout float dist0, float dist1, inout vec3 outColor, vec3 lightColor) {
+    if (dist0 > dist1) {
+        dist0 = dist1;
+        outColor = lightColor;
+    }
+}
+
+void scene(in vec2 pos, out vec3 color, out float dist0) {
+    dist0 = 1e9;
+    color = vec3(0.0, 0.0, 0.0);
+    AddObj(dist0, sphereSDF(pos - vec2(3.0, 1.0), 1.0), color, vec3(0.0, 0.0, 1.0));
+    AddObj(dist0, sphereSDF(pos - vec2(-3.0, 1.0), 1.0), color, vec3(1.0, 0.0, 0.0));
+}
+
+void trace(vec2 p, vec2 dir, out vec3 color) {
+    for (;;) {
+        float dist1 = 0.0;
+        scene(p, color, dist1);
+        if (dist1 < 1e-3) return;
+        if (dist1 > 1e1) break;
+        p += dir * dist1;
+    }
+    color = vec3(0.0, 0.0, 0.0);
+}
+
+float random (in vec2 pos) {
+    return fract(sin(dot(pos.xy, vec2(12.9898, 78.233))) * 43758.5453123);
+}
+
+#define SAMPLES 32
+////////////////////////
 
 //Program//
 void main() {
@@ -130,6 +145,18 @@ void main() {
 	vec3 color = texture2D(colortex1, texCoord).rgb;
 	#endif
 	
+    vec2 uv = (gl_FragCoord.xy - vec2(viewWidth, viewHeight) * 0.5) / viewWidth * 10.0;
+    vec3 col = vec3(0.0, 0.0, 0.0);
+    for (int i = 0; i < SAMPLES; i++) {
+        float t = (i + random(uv + i)) / SAMPLES * 6.283;
+        vec3 gi = vec3(0.0);
+        trace(uv, vec2(cos(t), sin(t)), gi);
+        col += gi;
+    }
+    col /= SAMPLES;
+
+    color = col * 2.0;
+
 	#ifdef TAA
 	SharpenFilter(color, newTexCoord);
 	#endif
