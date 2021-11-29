@@ -7,11 +7,16 @@ float GetLinearDepth2(float depth) {
 }
 
 float InterleavedGradientNoiseVL() {
+	/*
     float noise = texelFetch2D(colortex8, ivec2(gl_FragCoord.xy) & 255, 0).r;
 
     noise = fract(noise + frameCounter / 8.0);
 
     return noise;
+	*/
+
+	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
+	return fract(n + frameCounter / 8.0);
 }
 
 vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
@@ -28,7 +33,7 @@ float rand2D(vec2 pos){
 	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
-float getHeightNoise(vec2 pos){
+float getCloudWave(vec2 pos){
 	vec2 u = floor(pos);
 	vec2 v = fract(pos);
 	

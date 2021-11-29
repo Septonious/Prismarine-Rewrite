@@ -7,7 +7,7 @@
 float getCloudNoise(vec3 pos){
 	#if VCLOUDS_NOISE_MODE == 1
 	pos *= 0.50;
-	pos.xz *= 0.50;
+	pos.xz *= 0.40;
 	#endif
 
 	vec3 u = floor(pos);
@@ -31,16 +31,9 @@ float getCloudNoise(vec3 pos){
 	#elif VCLOUDS_NOISE_MODE == 1
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
 
-	uv = uv * 512.0 + 0.5;
-	vec2 floorUV = floor(uv);
-	vec2 fractUV = fract(uv);
-	uv = floorUV + fractUV * fractUV * (3.0 - 2.0 * fractUV);
-	uv = (uv - 0.5) / 512.0;
-
 	vec2 coord = uv / 64.0;
 	float a = texture2DLod(noisetex, coord, 2.0).r;
-	coord = uv / 64.0 + 16.0 / 64.0;
-	float b = texture2DLod(noisetex, coord, 2.0).r;
+	float b = texture2DLod(noisetex, coord + 0.25, 2.0).r;
 		
 	return mix(a, b, v.y);
 	#endif
@@ -56,16 +49,18 @@ float getCloudSample(vec3 pos){
 	#endif
 
 	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength)) - pos.y) / verticalThickness;
-	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.3) * 2.0;
+
+	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.3);
 	
-	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5);
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 2.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.125000 - wind * 0.3) * 3.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.062500 - wind * 0.2) * 4.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 5.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.016125) * 6.0;
+	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5) * 2.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 4.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.125000 - wind * 0.3) * 6.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.062500 - wind * 0.2) * 8.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 10.0;
+		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.016125) * 12.0;
 
 	noise = clamp(noise * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
+
 	return noise;
 }
 
@@ -92,6 +87,8 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
 	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
 
+
+
 	//Here we begin to march
 	vec4 wpos = vec4(0.0);
 	vec4 finalColor = vec4(0.0);
@@ -115,22 +112,29 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			else break;
 			#endif
 
-			float vh = getHeightNoise((wpos.xz + cameraPosition.xz + vec2(frametime * VCLOUDS_SPEED, 0.0)) * 0.01);
-			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -vh * 24.0, 0.0);
+			float cloudWave = getCloudWave((wpos.xz + cameraPosition.xz + vec2(frametime * VCLOUDS_SPEED, 0.0)) * 0.01);
+			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -cloudWave * 24.0, 0.0);
 
 			float noise = getCloudSample(wpos.xyz);
 
-			//float col = pow(smoothstep(VCLOUDS_HEIGHT + 8 * noise, VCLOUDS_HEIGHT - 8 * noise, wpos.y), 2.0);
-			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 - rainStrength * 0.25 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise), noise);
+			//This finds bottom and upper parts of clouds
+			float col = pow(smoothstep(VCLOUDS_HEIGHT + VCLOUDS_VERTICAL_THICKNESS * noise, VCLOUDS_HEIGHT - VCLOUDS_VERTICAL_THICKNESS * noise, wpos.y), 0.25);
+
+			//Color calculation and lighting
+			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 - rainStrength * 0.25 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise * col), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
+
+			//Translucency blending, works half correct
 			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT){
 				finalColor *= translucent;
 			}
+
 			finalColor += cloudsColor * (1.0 - finalColor.a);
 		}
 
 	}
 
+	//Output
 	color = mix(color, finalColor.rgb * (1.0 - rainStrength * 0.25), finalColor.a);
 }

@@ -39,7 +39,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
 
             if (length(wpos.xz) < maxDist && depth1 > minDist){
 
-                float vh = getHeightNoise((wpos.xz + cameraPosition.xz) * 0.025);
+                float vh = getCloudWave((wpos.xz + cameraPosition.xz) * 0.025);
 
                 #ifdef WORLD_CURVATURE
                 if (length(wpos.xz) < WORLD_CURVATURE_SIZE) wpos.y += length(wpos.xz) * length(wpos.xyz) / WORLD_CURVATURE_SIZE;

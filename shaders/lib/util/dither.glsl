@@ -1,4 +1,3 @@
-//technically there's nothing bayer-related, i was just lazy to go to all the files just to replace BayerX with this new thing
 /*
 //HASH12
 float dither(vec2 p) {
