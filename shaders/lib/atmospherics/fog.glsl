@@ -146,7 +146,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
-	float isEyeInCave = clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
+	float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
 	density *= clamp(cameraPosition.y * 0.01, 0.01, 1.00) * isEyeInCave;
 
 	float fog = length(viewPos) * density / 64.0;

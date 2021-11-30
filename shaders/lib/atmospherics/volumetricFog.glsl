@@ -53,7 +53,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #endif
 
                 #ifdef NETHER
-                float noise = getFogSample(wpos.xyz, 100, 48, 1.25, 1.10);
+                float noise = getFogSample(wpos.xyz, 80.0, 64.0, 1.25, 1.10);
                 #else
                 float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, LIGHTSHAFT_VERTICAL_THICKNESS, 0.4, LIGHTSHAFT_HORIZONTAL_THICKNESS);
                 #endif

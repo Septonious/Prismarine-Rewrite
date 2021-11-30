@@ -90,7 +90,7 @@ float GetLinearDepth(float depth) {
 #include "/lib/util/dither.glsl"
 #include "/lib/util/spaceConversion.glsl"
 #include "/lib/atmospherics/sky.glsl"
-#if FOG_COLOR_MODE == 2
+#if FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
 #ifdef EXP_FOG

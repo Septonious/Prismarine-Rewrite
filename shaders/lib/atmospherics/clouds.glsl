@@ -223,7 +223,7 @@ float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 	noise *= NEBULA_AMOUNT;
 
 	#ifdef OVERWORLD
-	noise *= 3.20;
+	noise *= 2.0;
 	#endif
 	
 	noise = max(1.0 - 2.0 * (0.5 * VoU + 0.5) * abs(noise - 3.5), 0.0);
@@ -234,7 +234,12 @@ float nebulaSample(vec2 coord, vec2 wind, float VoU) {
 #ifdef END
 float InterleavedGradientNoiseVL() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
-	return fract(n + frameCounter / 6.0);
+	#ifdef TAA
+	n = fract(n + frameCounter / 6.0);
+	#else
+	n = fract(n);
+	#endif
+	return n;
 }
 #endif
 
@@ -346,7 +351,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 					#endif
 				}else{
 					#if defined END
-					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 12, pow(currentStep, 0.4));
+					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 8, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(secondnebulaLowCol, secondnebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER

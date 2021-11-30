@@ -219,7 +219,7 @@ void main() {
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
-            iEmissive = sqrt(ore) * GLOW_STRENGTH;
+            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.5;
         } else if (mat > 100.9 && mat < 101.1){
 			iEmissive = (albedo.b - albedo.r) * albedo.r * 8.0 * GLOW_STRENGTH;
             iEmissive *= iEmissive * iEmissive;

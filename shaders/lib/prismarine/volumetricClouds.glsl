@@ -50,7 +50,7 @@ float getCloudSample(vec3 pos){
 
 	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength)) - pos.y) / verticalThickness;
 
-	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.3);
+	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.2);
 	
 	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5) * 2.0;
 		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 4.0;
@@ -84,8 +84,8 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	vec3 vcDownSun = CalcSunColor(vcDownMorning, vcDownDay * getBiomeColor(vcDownDay), vcDownEvening);
 	#endif
 
-	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
-	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
+	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.25);
+	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.25);
 
 
 
@@ -118,10 +118,15 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			float noise = getCloudSample(wpos.xyz);
 
 			//This finds bottom and upper parts of clouds
-			float col = pow(smoothstep(VCLOUDS_HEIGHT + VCLOUDS_VERTICAL_THICKNESS * noise, VCLOUDS_HEIGHT - VCLOUDS_VERTICAL_THICKNESS * noise, wpos.y), 0.25);
+			float verticalThickness = VCLOUDS_VERTICAL_THICKNESS;
+
+			#if VCLOUDS_NOISE_MODE == 1
+			verticalThickness *= 4.0;
+			#endif
+			float col = pow(smoothstep(VCLOUDS_HEIGHT * (1.0 + rainStrength) + verticalThickness * noise, VCLOUDS_HEIGHT * (1.0 + rainStrength) - verticalThickness * noise, wpos.y), 0.1);
 
 			//Color calculation and lighting
-			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 - rainStrength * 0.25 + scattering), vcloudsDownCol * (1.0 + rainStrength * 0.5), noise * col), noise);
+			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering), vcloudsDownCol, noise * col), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
 
@@ -136,5 +141,5 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	}
 
 	//Output
-	color = mix(color, finalColor.rgb * (1.0 - rainStrength * 0.25), finalColor.a);
+	color = mix(color, finalColor.rgb * (1.0 - rainStrength * 0.5), finalColor.a);
 }
