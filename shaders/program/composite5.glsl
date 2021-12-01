@@ -98,8 +98,8 @@ void Bloom(inout vec3 color, vec2 coord) {
 	float strength = BLOOM_STRENGTH;
 
 	#ifdef BLOOM_BALANCING
-	strength *= (1.00 - eBS * 0.75);
-	float isEnd = 1;
+	strength *= 1.00 - eBS * 0.50;
+	float isEnd = 1.0;
 	#ifdef END
 	isEnd = 0.25;
 	#endif

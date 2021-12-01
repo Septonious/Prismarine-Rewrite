@@ -94,6 +94,10 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
     #endif
 
+    #ifdef LIGHTMAP_DIM_CUTOFF
+    lightmap.x *= pow(lightmap.x, DIM_CUTOFF_FACTOR);
+    #endif
+
     float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
 
     float lightmapBrightness = lightmap.x * 15;
@@ -127,10 +131,6 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     blocklightCol = mix(blocklightCol, albedo.rgb, 0.2);
     #endif
 
-    #ifdef LIGHTMAP_DIM_CUTOFF
-    blocklightCol *= pow(newLightmap, DIM_CUTOFF_FACTOR);
-    #endif
-
     #ifdef BLOCKLIGHT_FLICKERING
     float jitter = 1.0 - sin(frameTimeCounter + cos(frameTimeCounter)) * BLOCKLIGHT_FLICKERING_STRENGTH;
     blocklightCol *= jitter;
@@ -158,6 +158,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #endif
 
     vec3 blockLighting = newLightmap * newLightmap * blocklightCol;
+
     vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
 
     #ifdef TOON_LIGHTMAP

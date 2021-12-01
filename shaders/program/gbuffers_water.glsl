@@ -426,7 +426,7 @@ void main() {
 
 				#ifdef OVERWORLD
 				#ifdef AURORA
-				skyReflection += DrawAurora(skyRefPos * 100.0, dither, 12);
+				skyReflection += DrawAurora(skyRefPos * 100.0, dither, 10);
 				#endif
 
 				#ifdef PLANAR_CLOUDS

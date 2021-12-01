@@ -159,11 +159,7 @@ screen.INFO=Prismarine Shader
 screen.INFO.comment=By Septonious with contribution of mlgimposter.
 
 #Lighting
-option.ADVANCED_ILLUMINATION=Advanced Illumination
-option.ADVANCED_ILLUMINATION.comment=Modified sunlight and blocklight.
-option.RANDOM_COLORED_LIGHTING=Random Colored Lighting
-option.BLOCKLIGHT_ALBEDO_BLENDING=Albedo Influence
-option.BLOCKLIGHT_ALBEDO_BLENDING=Blends the block light color with albedo of other blocks.
+option.ADVANCED_ILLUMINATION=Advanced .comment=Blends the block light color with albedo of other blocks.
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
 option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
 option.LIGHTMAP_DIM_CUTOFF=Dim Parts Cutoff 
@@ -661,6 +657,9 @@ option.LENS_FLARE_STRENGTH.comment=Adjusts lens flare intensity.
 
 option.FXAA=FXAA
 option.FXAA.comment=Enables fast approximate anti-aliasing, done by smoothing out edges with minimal performance cost. §e[*]§rPlease disable Antialiasing in Shaders menu while this option is enabled.
+
+option.CAS=Contrast Adaptive Sharpening
+option.Increases the detail of image, works as an upscaler. Enable TAA for better results.
 
 option.TAA=TAA
 option.TAA.comment=Enables temporal anti-aliasing, done by smart frame blending which captures improves tiny details and some effects. §e[*]§rSharpening included. §e[*]§rPlease disable Antialiasing in Shaders menu while this option is enabled.

@@ -8,7 +8,7 @@ float GetLinearDepth2(float depth) {
 
 float InterleavedGradientNoiseVL() {
 	/*
-    float noise = texelFetch2D(colortex8, ivec2(gl_FragCoord.xy) & 255, 0).r;
+    float noise = texelFetch2D(colortex8, ivec2(gl_FragCoord.xy) & 255.0, 0.0).r;
 
     noise = fract(noise + frameCounter / 8.0);
 

@@ -9,10 +9,6 @@ https://bitslablab.com
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
-#if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1 || defined PERBIOME_LIGHTSHAFTS
-uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
-#endif
-
 //Varyings//
 varying vec2 texCoord;
 
@@ -20,9 +16,12 @@ varying vec3 sunVec, upVec;
 
 //Uniforms//
 uniform int frameCounter;
-uniform int blockEntityId;
 uniform int isEyeInWater;
 uniform int worldTime;
+
+#if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1 || defined PERBIOME_LIGHTSHAFTS
+uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
+#endif
 
 uniform float blindFactor, nightVision;
 uniform float far, near;
@@ -40,12 +39,11 @@ uniform mat4 gbufferModelViewInverse;
 uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
 
-uniform sampler2D colortex0;
-uniform sampler2D colortex1;
-uniform sampler2D depthtex1, depthtex0;
+uniform sampler2D colortex0, colortex1, depthtex0, depthtex1;
 
+#if defined LIGHTSHAFT_CLOUDY_NOISE || VCLOUDS_NOISE_MODE == 1
 uniform sampler2D noisetex;
-uniform sampler2D colortex8;
+#endif
 
 #if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES
 uniform sampler2DShadow shadowtex0;

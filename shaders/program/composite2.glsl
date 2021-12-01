@@ -25,7 +25,6 @@ uniform sampler2D depthtex1;
 
 //Common Functions//
 vec3 MotionBlur(vec3 color, float z, float dither) {
-	
 	float hand = float(z < 0.56);
 
 	if (hand < 0.5) {

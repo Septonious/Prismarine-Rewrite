@@ -36,7 +36,7 @@ const bool colortex1MipmapEnabled = true;
 const bool shadowHardwareFiltering = true;
 const float shadowDistanceRenderMul = 1.0;
 const float aberrationStrength = float(CHROMATIC_ABERRATION_STRENGTH) / 512;
-const int noiseTextureResolution = 512;
+const int noisetexture2DResolution = 512;
 
 const float drynessHalflife = 50.0;
 const float wetnessHalflife = 300.0;
@@ -98,6 +98,46 @@ void SharpenFilter(inout vec3 color, vec2 coord) {
 }
 #endif
 
+#ifdef CAS
+void ContrastAdaptiveSharpening(out vec3 outColor){
+    // Normalized pixel coordinates (from 0 to 1)
+    vec2 uv = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+  
+    vec3 originalColor = texture2D(colortex1, uv).rgb;
+
+    // CAS algorithm
+    float maxGreen = originalColor.g;
+    float minGreen = originalColor.g;
+
+    vec4 uvoff = vec4(1.0, 0.0, 1.0, -1.0) / vec4(vec2(viewWidth, viewWidth), vec2(viewHeight, viewHeight));
+    vec3 modifiedColor = vec3(0.0);
+    vec3 newColor = texture2D(colortex1, uv + uvoff.yw).rgb;
+    maxGreen = max(maxGreen, newColor.g);
+    minGreen = min(minGreen, newColor.g);
+    modifiedColor = newColor;
+    	 newColor = texture2D(colortex1, uv + uvoff.xy).rgb;
+    maxGreen = max(maxGreen, newColor.g);
+    minGreen = min(minGreen, newColor.g);
+    modifiedColor += newColor;
+    	 newColor = texture2D(colortex1, uv + uvoff.yz).rgb;
+    maxGreen = max(maxGreen, newColor.g);
+    minGreen = min(minGreen, newColor.g);
+    modifiedColor += newColor;
+    	 newColor = texture2D(colortex1, uv - uvoff.xy).rgb;
+    maxGreen = max(maxGreen, newColor.g);
+    minGreen = min(minGreen, newColor.g);
+    modifiedColor += newColor;
+    float adaptiveSharpening = 0.0;
+    maxGreen = max(0.0, maxGreen);
+
+    adaptiveSharpening = minGreen / maxGreen;
+
+    adaptiveSharpening = sqrt(max(0.0, adaptiveSharpening));
+    adaptiveSharpening *= mix(-0.125, -0.2, 1.0);
+    outColor = (originalColor + modifiedColor * adaptiveSharpening) / (1.0 + 4.0 * adaptiveSharpening);
+}
+#endif
+
 //Program//
 void main() {
     vec2 newTexCoord = texCoord;
@@ -108,11 +148,15 @@ void main() {
 	vec3 color = texture2D(colortex1, texCoord).rgb;
 	#endif
 
-	#ifdef TAA
-	SharpenFilter(color, newTexCoord);
+    #ifdef TAA
+    SharpenFilter(color, newTexCoord);
+    #endif
+
+	#ifdef CAS
+	ContrastAdaptiveSharpening(color);
 	#endif
 
-	#if Sharpen > 0 && !defined DOF && !defined TAA
+	#if Sharpen > 0
 	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
 	color *= Sharpen * 0.1 + 0.9;
 	color -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;

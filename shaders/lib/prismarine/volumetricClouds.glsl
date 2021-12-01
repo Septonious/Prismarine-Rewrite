@@ -123,6 +123,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			#if VCLOUDS_NOISE_MODE == 1
 			verticalThickness *= 4.0;
 			#endif
+			
 			float col = pow(smoothstep(VCLOUDS_HEIGHT * (1.0 + rainStrength) + verticalThickness * noise, VCLOUDS_HEIGHT * (1.0 + rainStrength) - verticalThickness * noise, wpos.y), 0.1);
 
 			//Color calculation and lighting

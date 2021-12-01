@@ -142,7 +142,7 @@ void main() {
 	#endif
 
 	#ifdef AURORA
-	if (moonVisibility != 0) albedo.rgb += DrawAurora(viewPos.xyz, dither, 6);
+	if (moonVisibility != 0) albedo.rgb += DrawAurora(viewPos.xyz, dither, 10);
 	#endif
 
 	#ifdef PLANAR_CLOUDS

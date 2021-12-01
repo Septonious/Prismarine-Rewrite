@@ -10,11 +10,6 @@ https://bitslablab.com
 //#define TEST03
 //#define TEST04
 
-//!!! THESE OPTIONS CAUSE TEHC SUSSIES AND DIFFICULTIES :CRONG: !!!
-//#define TAA
-//
-
-
 
 
 /////// Exponential Fog & Volumetrics //////
@@ -80,7 +75,7 @@ https://bitslablab.com
 //#define RANDOM_COLORED_LIGHTING
 //#define LIGHTMAP_BRIGHTNESS_RECOLOR
   #define LIGHTMAP_DIM_CUTOFF
-  #define DIM_CUTOFF_FACTOR 4.00 //[1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
+  #define DIM_CUTOFF_FACTOR 5.00 //[1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00 4.25 4.50 4.75 5.00 5.25 5.50 5.75 6.00]
   #define BLOCKLIGHT_FLICKERING
   #define BLOCKLIGHT_FLICKERING_STRENGTH 0.2 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
   #define COLORED_SHADOW_OPACITY 0.9 //[0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0]
@@ -140,6 +135,14 @@ https://bitslablab.com
 
 
 /////////// Post Effects ///////////
+//#define TAA
+//#define CAS
+
+  #define FOG_BLUR
+//#define DISTANT_BLUR
+  #define DISTANT_BLUR_STRENGTH 3.0 //[1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0]
+  #define DISTANT_BLUR_RANGE 1 //[1 2 3 4 5 6 7 8]
+
   #define NETHER_HEAT_WAVE
   #define NETHER_HEAT_WAVE_STRENGTH 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 
@@ -510,7 +513,7 @@ https://bitslablab.com
   #define DISTANT_FADE_STYLE 1 //[0 1]
   #define FOG_DENSITY 1.00 //[0.00 0.25 0.50 0.75 1.00 1.50 2.00 2.50 3.00 3.50 4.00]
   #define WEATHER
-  #define WEATHER_OPACITY 2.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
+  #define WEATHER_OPACITY 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
 
   #define SKY_DENSITY_D 0.40 //[0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
   #define SKY_EXPOSURE_D 1.00 //[-1.00 -0.95 -0.90 -0.85 -0.80 -0.75 -0.70 -0.65 -0.60 -0.55 -0.50 -0.45 -0.40 -0.35 -0.30 -0.25 -0.20 -0.15 -0.10 -0.05 0.00 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00]
@@ -540,10 +543,6 @@ https://bitslablab.com
   #define WATER_PIXEL 0 //[0 16 32 64 128]
 
 //Post Effects//
-  #define FOG_BLUR
-//#define DISTANT_BLUR
-  #define DISTANT_BLUR_STRENGTH 3.0 //[1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0]
-  #define DISTANT_BLUR_RANGE 1 //[1 2 3 4 5 6 7 8]
 //#define DOF
   #define DOF_STRENGTH 8.0 //[1.0 2.0 4.0 8.0 16.0 32.0 64.0 128.0 256.0 384.0 512.0]
 //#define MOTION_BLUR

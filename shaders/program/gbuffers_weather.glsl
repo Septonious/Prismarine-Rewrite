@@ -81,9 +81,7 @@ void main() {
 		albedo.rgb *= 0.525;
 		#endif
 		
-		#ifdef EXP_FOG
 		if (gl_FragCoord.z > 0.991) Defog(albedo.rgb);
-		#endif
 
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));

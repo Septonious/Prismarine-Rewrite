@@ -172,7 +172,7 @@ vec3 DrawAurora(vec3 viewPos, float dither, int samples) {
 	#endif
 
 	vec2 wind = vec2(
-		frametime * 0.000125,
+		frametime * 0.0001,
 		sin(frametime * 0.05) * 0.00025
 	);
 
