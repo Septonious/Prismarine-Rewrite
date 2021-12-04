@@ -19,7 +19,7 @@ uniform int frameCounter;
 uniform int isEyeInWater;
 uniform int worldTime;
 
-#if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1 || defined PERBIOME_LIGHTSHAFTS
+#if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1 || defined PERBIOME_LIGHTSHAFTS || defined PERBIOME_CLOUDS_COLOR
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
 #endif
 
