@@ -406,8 +406,8 @@ void main() {
 				skyReflection = endCol.rgb * 0.01;
 
 				#if END_SKY == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 0);
 				#endif
 
 				#endif
@@ -435,8 +435,8 @@ void main() {
 				#endif
 
 				#if NIGHT_SKY_MODE == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 0);
 				#endif
 
 				skyReflection *= (4.0 - 3.0 * eBS) * lightmap.y;
@@ -527,7 +527,7 @@ void main() {
 			#endif
 		}
 		glass = float(mat > 1.98 && mat < 2.02);
-		if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5) || glass > 0.5) {
+		if ((isEyeInWater == 0 && water > 0.5) || glass > 0.5) {
 			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
 		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
 		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);

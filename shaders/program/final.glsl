@@ -13,6 +13,7 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
+uniform int frameCounter;
 uniform sampler2D colortex1;
 uniform int isEyeInWater;
 uniform float viewWidth, viewHeight;
@@ -76,28 +77,6 @@ vec3 getChromaticAbberation(vec2 coord, float amount) {
 }
 #endif
 
-#ifdef TAA
-vec2 sharpenOffsets[4] = vec2[4](
-	vec2( 1.0,  0.0),
-	vec2( 0.0,  1.0),
-	vec2(-1.0,  0.0),
-	vec2( 0.0, -1.0)
-);
-
-
-void SharpenFilter(inout vec3 color, vec2 coord) {
-	float mult = MC_RENDER_QUALITY * 0.125;
-	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-
-	color *= MC_RENDER_QUALITY * 0.5 + 1.0;
-
-	for(int i = 0; i < 4; i++) {
-		vec2 offset = sharpenOffsets[i] * view;
-		color -= texture2D(colortex1, coord + offset).rgb * mult;
-	}
-}
-#endif
-
 #ifdef CAS
 void ContrastAdaptiveSharpening(out vec3 outColor){
     // Normalized pixel coordinates (from 0 to 1)
@@ -138,38 +117,35 @@ void ContrastAdaptiveSharpening(out vec3 outColor){
 }
 #endif
 
+
 //Program//
 void main() {
     vec2 newTexCoord = texCoord;
 
 	#ifdef CHROMATIC_ABERRATION
-	vec3 color = getChromaticAbberation(texCoord, aberrationStrength);
+	vec4 color = vec4(getChromaticAbberation(texCoord, aberrationStrength), 1.0);
 	#else
-	vec3 color = texture2D(colortex1, texCoord).rgb;
+	vec4 color = texture2D(colortex1, texCoord);
 	#endif
 
-    #ifdef TAA
-    SharpenFilter(color, newTexCoord);
+    #ifdef CAS
+    ContrastAdaptiveSharpening(color.rgb)
     #endif
-
-	#ifdef CAS
-	ContrastAdaptiveSharpening(color);
-	#endif
 
 	#if Sharpen > 0
 	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-	color *= Sharpen * 0.1 + 0.9;
-	color -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1, texCoord.xy + vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
+	color.rgb *= Sharpen * 0.1 + 0.9;
+	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
+	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
 	#endif
 
 	#ifdef TEST04	
-	color *= 1.0 + playerMood;
+	color.rgb *= 1.0 + playerMood;
 	#endif
 
-	gl_FragColor = vec4(color, 1.0);
+	gl_FragColor = color;
 }
 
 #endif

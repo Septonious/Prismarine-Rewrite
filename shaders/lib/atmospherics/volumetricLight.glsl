@@ -58,7 +58,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 		
 		vec3 watercol = vec3(LIGHTSHAFT_WR, LIGHTSHAFT_WG, LIGHTSHAFT_WB) * LIGHTSHAFT_WI / 255.0 * LIGHTSHAFT_WI;
 		
-		for(int i = 0; i < LIGHTSHAFT_SAMPLES; i++) {
+		for(int i = 0; i <= LIGHTSHAFT_SAMPLES; i++) {
 			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE;
 
 			if (minDist >= maxDist) break;

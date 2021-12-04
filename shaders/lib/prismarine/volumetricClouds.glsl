@@ -7,7 +7,7 @@
 float getCloudNoise(vec3 pos){
 	#if VCLOUDS_NOISE_MODE == 1
 	pos *= 0.50;
-	pos.xz *= 0.40;
+	pos.xz *= 0.30;
 	#endif
 
 	vec3 u = floor(pos);
@@ -25,7 +25,7 @@ float getCloudNoise(vec3 pos){
 	float noisetul = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(0.0, 1.0));
 	float noisetur = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 1.0));
 
-	float noise= mix(mix(mix(noisebdl, noisebdr, v.x), mix(noisebul, noisebur, v.x), v.z), mix(mix(noisetdl, noisetdr, v.x), mix(noisetul, noisetur, v.x), v.z), v.y);
+	float noise = mix(mix(mix(noisebdl, noisebdr, v.x), mix(noisebul, noisebur, v.x), v.z), mix(mix(noisetdl, noisetdr, v.x), mix(noisetul, noisetur, v.x), v.z), v.y);
 	return noise;
 
 	#elif VCLOUDS_NOISE_MODE == 1
@@ -39,29 +39,27 @@ float getCloudNoise(vec3 pos){
 	#endif
 }
 
-float getCloudSample(vec3 pos){
+float getCloudSample(vec3 pos, float height, float stretching){
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
-	float verticalThickness = VCLOUDS_VERTICAL_THICKNESS;
-
-	#if VCLOUDS_NOISE_MODE == 1
-	verticalThickness *= 4.0;
-	#endif
-
-	float sampleHeight = abs((VCLOUDS_HEIGHT * (1.0 + rainStrength)) - pos.y) / verticalThickness;
-
-	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.9 + rainStrength * 0.2);
+	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.8 + rainStrength * 0.1);
 	
-	float noise = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5) * 2.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 4.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.125000 - wind * 0.3) * 6.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.062500 - wind * 0.2) * 8.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 10.0;
-		  noise+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.016125) * 12.0;
+	float noiseA = getCloudNoise(pos / VCLOUDS_SAMPLES * 0.500000 - wind * 0.5) * 2.0 * VCLOUDS_HORIZONTAL_THICKNESS;
+		  noiseA+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.250000 - wind * 0.4) * 3.0 * VCLOUDS_HORIZONTAL_THICKNESS;
+		  noiseA+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.125000 - wind * 0.3) * 4.0 * VCLOUDS_HORIZONTAL_THICKNESS;
+		  noiseA+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.062500 - wind * 0.2) * 5.0 * VCLOUDS_HORIZONTAL_THICKNESS;
+		  noiseA+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 6.0 * VCLOUDS_HORIZONTAL_THICKNESS;
 
-	noise = clamp(noise * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
+	//Sample vertical thickness and height
+	float sampleHeight = abs(height - pos.y) / stretching;
 
-	return noise;
+	//Shaping
+	float noiseB = clamp(noiseA * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
+	float density = pow(smoothstep(height + stretching * noiseB, height - stretching * noiseB, pos.y), 0.25);
+	sampleHeight = pow(sampleHeight, 8.0 * (1.5 - density) * (1.5 - density));
+
+	//Output
+	return clamp(noiseA * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
 }
 
 void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inout vec3 color, vec4 translucent, float scattering){
@@ -113,21 +111,23 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			#endif
 
 			float cloudWave = getCloudWave((wpos.xz + cameraPosition.xz + vec2(frametime * VCLOUDS_SPEED, 0.0)) * 0.01);
-			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, -cloudWave * 24.0, 0.0);
+			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
-			float noise = getCloudSample(wpos.xyz);
+			//Cloud noise
+			float stretching = VCLOUDS_VERTICAL_THICKNESS;
 
-			//This finds bottom and upper parts of clouds
-			float verticalThickness = VCLOUDS_VERTICAL_THICKNESS;
-
-			#if VCLOUDS_NOISE_MODE == 1
-			verticalThickness *= 4.0;
+			#if VCLOUDS_NOISE_QUALITY == 1
+			stretching *= 1.5;
 			#endif
-			
-			float col = pow(smoothstep(VCLOUDS_HEIGHT * (1.0 + rainStrength) + verticalThickness * noise, VCLOUDS_HEIGHT * (1.0 + rainStrength) - verticalThickness * noise, wpos.y), 0.1);
+
+			float height = VCLOUDS_HEIGHT * (1.0 + rainStrength * 0.2);
+			float noise = getCloudSample(wpos.xyz, height, stretching);
+
+			//This finds the density of cloud noise at different positions
+			float density = pow(smoothstep(height + stretching * noise, height - stretching * noise, wpos.y), 0.4);
 
 			//Color calculation and lighting
-			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering), vcloudsDownCol, noise * col), noise);
+			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering + scattering), vcloudsDownCol, noise * density), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
 

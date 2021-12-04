@@ -230,7 +230,7 @@ void main() {
 				#endif
 
 				#ifdef AURORA
-				skyReflection += DrawAurora(skyRefPos * 100.0, dither, 12) * cloudMixRate;
+				skyReflection += DrawAurora(skyRefPos * 100.0, dither, 10) * cloudMixRate;
 				#endif
 
 				#ifdef PLANAR_CLOUDS
@@ -239,8 +239,8 @@ void main() {
 				#endif
 
 				#if NIGHT_SKY_MODE == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 0);
 				#endif
 
 				float NoU = clamp(dot(normal, upVec), -1.0, 1.0);
@@ -262,8 +262,8 @@ void main() {
 				skyReflection = endCol.rgb * 0.025;
 
 				#if END_SKY == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 6, 0);
 				#endif
 
 				#endif

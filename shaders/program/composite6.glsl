@@ -23,12 +23,6 @@ uniform vec3 cameraPosition, previousCameraPosition;
 uniform mat4 gbufferPreviousProjection, gbufferProjectionInverse;
 uniform mat4 gbufferPreviousModelView, gbufferModelViewInverse;
 
-
-//Optifine Constants//
-#if defined VOLUMETRIC_LIGHT || defined VOLUMETRIC_FOG || defined FIREFLIES || defined NETHER_SMOKE
-const bool colortex1MipmapEnabled = true;
-#endif
-
 //Common Functions//
 float GetLuminance(vec3 color) {
 	return dot(color, vec3(0.299, 0.587, 0.114));
@@ -58,10 +52,10 @@ void main() {
 
     /*DRAWBUFFERS:1*/
 	gl_FragData[0] = vec4(color, 1.0);
-	#ifdef TAA
+    #ifdef TAA
     /*DRAWBUFFERS:12*/
 	gl_FragData[1] = vec4(prev);
-	#endif
+    #endif
 }
 
 #endif

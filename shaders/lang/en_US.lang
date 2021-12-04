@@ -170,10 +170,16 @@ option.BLOOM_FLICKERING=Bloom Flickering
 option.BLOOM_FLICKERING.comment=Enables flickering of bloom.
 option.BLOOM_FLICKERING_STRENGTH=Flickering Strength
 
+option.RANDOM_COLORED_LIGHTING=Random Colored Lighting
+
+option.BLOCKLIGHT_ALBEDO_BLENDING=Albedo Influence
+option.BLOCKLIGHT_ALBEDO_BLENDING.comment=Tints the block light color with color of surrounding blocks.
+
 option.BLOCKLIGHT_FLICKERING=Blocklight Flickering
 option.BLOCKLIGHT_FLICKERING.comment=Enables flickering of blocklight.
 option.BLOCKLIGHT_FLICKERING_STRENGTH=Flickering Strength
 
+option.SHADOW_BLUR=Shadow Blur Strength
 option.COLORED_SHADOW_OPACITY=Colored Shadows Opacity
 option.COLORED_SHADOW_BRIGHTNESS=Colored Shadows Brightness
 option.NOISY_TEXTURES=Noisy Textures

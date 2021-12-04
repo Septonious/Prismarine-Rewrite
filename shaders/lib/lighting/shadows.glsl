@@ -42,7 +42,7 @@ float GetCurvedBias(int i, float dither) {
 
 vec3 SampleBasicShadow(vec3 shadowPos) {
     float shadow0 = shadow2D(shadowtex0, vec3(shadowPos.st, shadowPos.z)).x;
-    shadow0 = shadow0 * shadow0 * (3.0 - 2.0 * shadow0);
+
     vec3 shadowCol = vec3(0.0);
     #ifdef SHADOW_COLOR
     if (shadow0 < 1.0) {
@@ -61,20 +61,24 @@ vec3 SampleFilteredShadow(vec3 shadowPos, float offset, float biasStep) {
     float sz = shadowPos.z;
     float dither = InterleavedGradientNoise();
     #endif
-    
-    for (int i = 0; i < 9; i++) {
-        vec2 shadowOffset = shadowOffsets[i] * offset;
-        shadow0 += shadow2D(shadowtex0, vec3(shadowPos.st + shadowOffset, shadowPos.z)).x;
-        #if SSS_QUALITY == 1
-        if (biasStep > 0.0) shadowPos.z = sz - biasStep * GetCurvedBias(i, dither);
-        #endif
+
+    float weight = 0.0;
+    for (int i = -2; i <= 2; i++){
+        for (int j = -2; j <= 2; j++){
+            weight += 1.0;
+            vec2 shadowOffset = vec2(i, j) * offset;
+            shadow0 += shadow2D(shadowtex0, vec3(shadowPos.st + shadowOffset, shadowPos.z)).x;
+            #if SSS_QUALITY == 1
+            if (biasStep > 0.0) shadowPos.z = sz - biasStep * GetCurvedBias(j, dither);
+            #endif
+        }
     }
-    shadow0 /= 9.0;
+    shadow0 /= weight;
 
     vec3 shadowCol = vec3(0.0);
     #ifdef SHADOW_COLOR
     if (shadow0 < 0.999) {
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i <= 9; i++) {
             vec2 shadowOffset = shadowOffsets[i] * offset;
             shadowCol += texture2D(shadowcolor0, shadowPos.st + shadowOffset).rgb *
                          shadow2D(shadowtex1, vec3(shadowPos.st + shadowOffset, shadowPos.z)).x;
@@ -113,10 +117,10 @@ vec3 GetShadow(vec3 worldPos, float NoL, float subsurface, float skylight) {
     float biasFactor = sqrt(1.0 - NoL * NoL) / NoL;
     float distortBias = distortFactor * shadowDistance / 256.0;
     distortBias *= 8.0 * distortBias;
-    float distanceBias = sqrt(dot(worldPos.xyz, worldPos.xyz)) * 0.005;
+    float distanceBias = sqrt(dot(worldPos.xyz, worldPos.xyz)) * 0.025;
     
     float bias = (distortBias * biasFactor + distanceBias + 0.05) / shadowMapResolution;
-    float offset = 1.0 / shadowMapResolution;
+    float offset = SHADOW_BLUR / shadowMapResolution;
     
     if (subsurface > 0.0) {
         bias = 0.0002;

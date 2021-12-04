@@ -53,6 +53,13 @@ void computeGI(out vec3 color, in float lightmap){
 }
 */
 
+vec3 getBlockLighting(vec3 color, float lightmap) {
+    lightmap = sqrt(lightmap) * lightmap;
+    color = mix(normalize(color), vec3(1.0), lightmap);
+    color = pow(lightmap, 6.0) * color * BLOCKLIGHT_I;
+    return color;
+}
+
 void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos,
                  vec2 lightmap, float smoothLighting, float NoL, float vanillaDiffuse,
                  float parallaxShadow, float emission, float subsurface) {
@@ -100,13 +107,13 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
 
-    float lightmapBrightness = lightmap.x * 15;
-    float lightMapBrightnessFactor = 1.25 - pow(lightmap.x, 6);
+    float lightmapBrightness = lightmap.x * 15.0;
+    float lightMapBrightnessFactor = 1.25 - pow(lightmap.x, 6.0);
     blocklightCol *= lightMapBrightnessFactor;
     blocklightCol *= 1.00 - lightmap.y * 0.75;
 
     #ifdef ADVANCED_ILLUMINATION
-    newLightmap = clamp(pow(lightmap.x, 6.00) + lightmap.x * 0.75, 0, 0.40);
+    newLightmap = clamp(pow(lightmap.x, 6.00) + lightmap.x * 0.75, 0.0, 0.40);
     newLightmap *= (lightmapBrightness * 0.30);
 
     float sunlightmap = pow(lightmap.y, 6.0) * timeBrightness * lightmap.y;
@@ -126,7 +133,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
         blocklightCol = mix(blocklightCol, vec3(blocklightColr, blocklightColg, blocklightColb), 0.5);
     }
     #endif
-
+   
     #ifdef BLOCKLIGHT_ALBEDO_BLENDING
     blocklightCol = mix(blocklightCol, albedo.rgb, 0.2);
     #endif
@@ -156,8 +163,8 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 	float CLb = texture2D(noisetex, 0.0008 * pos).r;
 	blocklightCol = vec3(CLr, CLg, CLb) * vec3(CLr, CLg, CLb);
     #endif
-
-    vec3 blockLighting = newLightmap * newLightmap * blocklightCol;
+    
+    vec3 blockLighting = getBlockLighting(blocklightCol, newLightmap) * 0.25;
 
     vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
 
@@ -171,6 +178,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     emissiveLighting *= emission * 4.0;
 
     float lightFlatten = clamp(1.0 - pow(1.0 - emission, 128.0), 0.0, 1.0);
+    blockLighting *= 1.0 - float(lightFlatten > 0.5) * 0.75;
     vanillaDiffuse = mix(vanillaDiffuse, 1.0, lightFlatten);
     smoothLighting = mix(smoothLighting, 1.0, lightFlatten);
         
