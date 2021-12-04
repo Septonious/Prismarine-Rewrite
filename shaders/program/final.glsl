@@ -132,15 +132,6 @@ void main() {
     ContrastAdaptiveSharpening(color.rgb)
     #endif
 
-	#if Sharpen > 0
-	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-	color.rgb *= Sharpen * 0.1 + 0.9;
-	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
-	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
-	color.rgb -= texture2D(colortex1, texCoord.xy + vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
-	#endif
-
 	#ifdef TEST04	
 	color.rgb *= 1.0 + playerMood;
 	#endif

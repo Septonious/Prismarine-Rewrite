@@ -78,7 +78,7 @@ uniform int heldBlockLightValue;
 uniform int heldBlockLightValue2;
 #endif
 
-#ifdef NOISY_TEXTURES
+#if defined ADVANCED_MATERIALS || defined NOISY_TEXTURES
 varying vec4 vTexCoord, vTexCoordAM;
 float atlasRatio = atlasSize.x / atlasSize.y;
 #endif
