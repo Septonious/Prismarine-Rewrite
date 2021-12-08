@@ -27,7 +27,7 @@ uniform sampler2D depthtex1, depthtex0;
 
 #include "/lib/util/encode.glsl"
 
-//colortex8 - blue noise, colortex9 - emissives, colortex10 - normal
+//colortex8 - blue noise, colortex9 - emissives
 //normal is "vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);"
 //normal in vertex: "normal = normalize(gl_NormalMatrix * gl_Normal);"
 
@@ -55,7 +55,7 @@ vec3 randomHemisphereDirection(vec2 r) {
 
 vec3 binarySearch(in vec3 rayPos, vec3 rayDir) {
 
-    for(int i = 0; i < 16; i++) {
+    for(int i = 0; i < 30; i++) {
         float depthDelta = texture(depthtex1, rayPos.xy).r - rayPos.z;
         rayPos += sign(depthDelta) * rayDir;
         rayDir *= 0.2f;
@@ -94,7 +94,14 @@ vec3 rotate(vec3 N, vec3 H){
     vec3 B = cross(T, N);
     return T * H.x + B * H.y + N * H.z;
 }
-
+const uint k = 1103515245U;  // GLIB C
+vec3 hash( uvec3 x ){
+    x = ((x>>8U)^x.yzx)*k;
+    x = ((x>>8U)^x.yzx)*k;
+    x = ((x>>8U)^x.yzx)*k;
+    
+    return vec3(x)*(1.0/float(0xffffffffU));
+}
 vec3 computeGI(vec3 screenPos, vec3 normal) {
     float dither = getRandomNoise(gl_FragCoord.xy);
 
@@ -105,7 +112,7 @@ vec3 computeGI(vec3 screenPos, vec3 normal) {
     vec3 weight = vec3(1.0); // How much the current iteration contributes to the final product
 
     for(int i = 0; i < 1; i++) {
-        vec2 noise = texture2D(noisetex, texCoord * 8.0).rg;
+        vec2 noise = hash(uvec3(gl_FragCoord.xy, frameCounter%100)).xy;
 
         hitNormal = normalize(DecodeNormal(texture2D(colortex6, hitPos.xy).xy)); //Sample 'new normal'
         hitPos = screenToView(hitPos) + hitNormal * 0.001; //Convert hit position into view space position and add small offset
