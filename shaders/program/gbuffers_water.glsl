@@ -571,7 +571,7 @@ void main() {
 		#endif
 	}
 
-    /* DRAWBUFFERS:01 */
+    /* DRAWBUFFERS: 01 */
     gl_FragData[0] = albedo;
 	gl_FragData[1] = vec4(vlAlbedo, 1.0);
 }

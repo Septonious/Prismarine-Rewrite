@@ -486,6 +486,8 @@ void main() {
 	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
 	gl_FragData[3] = vec4(fresnel3, 1.0);
 	#endif
+	/* DRAWBUFFERS:03679 */
+	gl_FragData[4] = vec4(recolor);
 }
 
 #endif

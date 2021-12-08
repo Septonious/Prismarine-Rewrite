@@ -53,7 +53,7 @@ void computeGI(out vec3 color, in float lightmap){
 }
 */
 
-vec3 getBlockLighting(vec3 color, float lightmap) {
+vec3 getLighting(vec3 color, float lightmap) {
     lightmap = sqrt(lightmap) * lightmap;
     color = mix(normalize(color), vec3(1.0), lightmap);
     color = pow(lightmap, 6.0) * color * BLOCKLIGHT_I;
@@ -72,6 +72,10 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     subsurface = 0.0;
     #endif
 
+    #ifdef ADVANCED_ILLUMINATION
+    lightmap.y = clamp(pow(lightmap.y, 0.25), 0.25, 1.0);
+    #endif
+
     #if defined OVERWORLD || defined END
     if (NoL > 0.0 || subsurface > 0.0) shadow = GetShadow(worldPos, NoL, subsurface, lightmap.y);
     shadow *= parallaxShadow;
@@ -86,7 +90,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     }
     
     vec3 fullShadow = shadow * NoL;
-    
+
     #ifdef OVERWORLD
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
     vec3 sceneLighting = mix(ambientCol, lightCol, fullShadow * shadowMult);
@@ -102,7 +106,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #endif
 
     #ifdef LIGHTMAP_DIM_CUTOFF
-    lightmap.x *= pow(lightmap.x, DIM_CUTOFF_FACTOR);
+    lightmap.x = pow(lightmap.x, DIM_CUTOFF_FACTOR);
     #endif
 
     float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
@@ -115,10 +119,11 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     #ifdef ADVANCED_ILLUMINATION
     newLightmap = clamp(pow(lightmap.x, 6.00) + lightmap.x * 0.75, 0.0, 0.40);
-    newLightmap *= (lightmapBrightness * 0.30);
+    newLightmap *= lightmapBrightness * 0.30;
 
     float sunlightmap = pow(lightmap.y, 6.0) * timeBrightness * lightmap.y;
-    vec3 sunlight = vec3(ADVANCED_ILLUMINATION_R, ADVANCED_ILLUMINATION_G, ADVANCED_ILLUMINATION_B) / 255.0 * ADVANCED_ILLUMINATION_I * color.rgb * sunlightmap * sunlightmap;
+    vec3 sunlight = vec3(ADVANCED_ILLUMINATION_R, ADVANCED_ILLUMINATION_G, ADVANCED_ILLUMINATION_B) / 255.0 * ADVANCED_ILLUMINATION_I;
+    sunlight = getLighting(sunlight, sunlightmap);
     #endif
 
     #ifdef LIGHTMAP_BRIGHTNESS_RECOLOR
@@ -136,7 +141,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #endif
    
     #ifdef BLOCKLIGHT_ALBEDO_BLENDING
-    blocklightCol = mix(blocklightCol, albedo.rgb, 0.2);
+    blocklightCol = mix(blocklightCol, albedo.rgb, 0.25);
     #endif
 
     #ifdef BLOCKLIGHT_FLICKERING
@@ -165,7 +170,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 	blocklightCol = vec3(CLr, CLg, CLb) * vec3(CLr, CLg, CLb);
     #endif
     
-    vec3 blockLighting = getBlockLighting(blocklightCol, newLightmap) * 0.25;
+    vec3 blockLighting = vec3(0);
 
     vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
 

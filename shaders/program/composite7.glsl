@@ -18,22 +18,19 @@ uniform int frameCounter;
 
 uniform mat4 gbufferProjection, gbufferProjectionInverse, gbufferModelViewInverse, gbufferModelView;
 
-
-uniform sampler2D colortex9, colortex6, colortex8, noisetex;
-
+#ifdef SSGI
+uniform sampler2D colortex9, colortex10, colortex8;
+#endif
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex1, depthtex0;
 
+#ifdef SSGI
 #include "/lib/util/encode.glsl"
 
-//colortex8 - blue noise, colortex9 - emissives, colortex10 - normal
-//normal is "vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);"
-//normal in vertex: "normal = normalize(gl_NormalMatrix * gl_Normal);"
-
-#define PI         3.14159265
-#define TAU        6.28318530
-#define INV_PI     0.31830988
+#define PI 3.14159265
+#define PI2 PI * 2.0
+#define INV_PI 1.0 / PI
 
 vec3 viewToScreen(in vec3 view) {
     vec4 temp =  gbufferProjection * vec4(view, 1.0);
@@ -47,35 +44,27 @@ float getRandomNoise(vec2 pos){
 
 vec3 randomHemisphereDirection(vec2 r) {
     float radius = sqrt(r.y);
-    float xOffset = radius * cos(TAU * r.x);
-    float yOffset = radius * sin(TAU * r.x);
+    float xOffset = radius * cos(PI2 * r.x);
+    float yOffset = radius * sin(PI2 * r.x);
     float zOffset = sqrt(1.0 - r.y);
     return normalize(vec3(xOffset, yOffset, zOffset));
 }
 
-vec3 binarySearch(in vec3 rayPos, vec3 rayDir) {
-
-    for(int i = 0; i < 16; i++) {
-        float depthDelta = texture(depthtex1, rayPos.xy).r - rayPos.z;
-        rayPos += sign(depthDelta) * rayDir;
-        rayDir *= 0.2f;
-    }
-    return rayPos;
-}
-
 bool raytrace(vec3 viewPos, vec3 rayDir, int steps, float jitter, inout vec3 hitPos) {
     vec3 screenPos = viewToScreen(viewPos);
+
     vec3 screenDir = normalize(viewToScreen(viewPos + rayDir) - screenPos) * (1.0 / steps);
 
     hitPos = screenPos + screenDir * jitter;
+
     for(int i = 0; i < steps; i++) {
         hitPos += screenDir;
         
         if(clamp(hitPos.xy, 0.0, 1.0) != hitPos.xy) { return false; }
+
         float depth = texture(depthtex1, hitPos.xy).r;
 
         if(abs(1e-2 - (hitPos.z - depth)) < 1e-2) {
-            hitPos = binarySearch(hitPos, screenDir);
             return true;
         }
     }
@@ -88,32 +77,44 @@ vec3 screenToView(vec3 view) {
     clip.xyz /= clip.w;
     return clip.xyz;
 }
+float InterleavedGradientNoiseVL() {
+	#ifdef BLUE_NOISE_DITHER
+	float n = texelFetch2D(colortex8, ivec2(gl_FragCoord.xy) & 255, 0).r;
+	#else
+	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
+	#endif
 
-vec3 rotate(vec3 N, vec3 H){
-    vec3 T = normalize(cross(N, vec3(0.0, 1.0, 1.0)));
-    vec3 B = cross(T, N);
-    return T * H.x + B * H.y + N * H.z;
+	#ifdef TAA
+	n = fract(n + frameCounter / 8.0);
+	#else
+	n = fract(n);
+	#endif
+
+	return n;
 }
 
-vec3 computeGI(vec3 screenPos, vec3 normal) {
-    float dither = getRandomNoise(gl_FragCoord.xy);
+mat3 getTBN(vec3 normal) {
+    vec3 tangent = normalize(cross(gbufferModelView[1].xyz, normal));
+    return mat3(tangent, cross(tangent, normal), normal);
+}
 
-    vec3 hitPos = screenPos;
-    vec3 hitNormal = normal;
+
+vec3 computeGI(vec3 viewPos, vec3 normal) {
+    float jitter = InterleavedGradientNoiseVL();
+
+    vec3 hitPos = viewPos + normal;
+
+    mat3 TBN = getTBN(normal);  
 
     vec3 illumination = vec3(0.0);
-    vec3 weight = vec3(1.0); // How much the current iteration contributes to the final product
+    vec3 weight = vec3(2.0); // How much the current iteration contributes to the final product
 
-    for(int i = 0; i < 1; i++) {
-        vec2 noise = texture2D(noisetex, texCoord * 8.0).rg;
+    for(int i = 0; i < 4; i++) {
+        vec2 noise = vec2(jitter);
+        noise = fract(frameTimeCounter * 16.0 + noise);
 
-        hitNormal = normalize(DecodeNormal(texture2D(colortex6, hitPos.xy).xy)); //Sample 'new normal'
-        hitPos = screenToView(hitPos) + hitNormal * 0.001; //Convert hit position into view space position and add small offset
-
-        //Direction - rotate your hemisphere sample by new normal each iteration
-        vec3 sampleDir = rotate(hitNormal, randomHemisphereDirection(noise));
-
-        bool hit = raytrace(hitPos, sampleDir, 30, dither, hitPos);
+        vec3 sampleDir = TBN * randomHemisphereDirection(noise.xy);
+        bool hit = raytrace(viewPos, sampleDir, 20, jitter, hitPos);
 
         if(hit) {
             vec3 albedo = texture2D(colortex0, hitPos.xy).rgb;
@@ -121,11 +122,16 @@ vec3 computeGI(vec3 screenPos, vec3 normal) {
 
             /* LAMBERT DIFFUSE */
             weight *= albedo;
-            illumination += weight * isEmissive;
+            illumination += weight * (isEmissive + isEmissive);
+
+			normal = normalize(DecodeNormal(texture2D(colortex10, hitPos.xy).xy));
+        } else {
+            break;
         }
     }
     return illumination;
 }
+#endif
 
 //Program//
 void main() {
@@ -137,12 +143,14 @@ void main() {
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
 
-    vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
-    vec3 gi = computeGI(screenPos.xyz, normal);
+    #ifdef SSGI
+    vec3 normal = normalize(DecodeNormal(texture2D(colortex10, texCoord.xy).xy));
+    vec3 gi = computeGI(viewPos.xyz, normal);
     color += gi;
+    #endif
 
     /*DRAWBUFFERS:0*/
-	gl_FragData[0] = vec4(color + gi, 1.0);
+	gl_FragData[0] = vec4(color, 1.0);
 }
 
 #endif

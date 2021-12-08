@@ -116,8 +116,8 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			//Cloud noise
 			float stretching = VCLOUDS_VERTICAL_THICKNESS;
 
-			#if VCLOUDS_NOISE_QUALITY == 1
-			stretching *= 1.5;
+			#if VCLOUDS_NOISE_MODE == 1
+			stretching *= 1.25;
 			#endif
 
 			float height = VCLOUDS_HEIGHT * (1.0 + rainStrength * 0.2);
@@ -132,7 +132,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
 
 			//Translucency blending, works half correct
-			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT){
+			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT - 10){
 				finalColor *= translucent;
 			}
 

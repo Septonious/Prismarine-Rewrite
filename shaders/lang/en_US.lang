@@ -159,7 +159,7 @@ screen.INFO=Prismarine Shader
 screen.INFO.comment=By Septonious with contribution of mlgimposter.
 
 #Lighting
-option.ADVANCED_ILLUMINATION=Advanced .comment=Blends the block light color with albedo of other blocks.
+option.ADVANCED_ILLUMINATION=Advanced Illumination
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
 option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
 option.LIGHTMAP_DIM_CUTOFF=Dim Parts Cutoff 
@@ -1207,3 +1207,5 @@ option.TEST01=Transparent World
 option.TEST02=Entity Highlight
 option.TEST03=Particle Highlight
 option.TEST04=playerMood Brightness
+option.BLUE_NOISE_DITHER=Blue Noise Dithering
+option.BLUE_NOISE_DITHER.comment=Enables blue noise dithering for volumetrics.

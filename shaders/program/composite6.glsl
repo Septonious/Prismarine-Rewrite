@@ -37,6 +37,8 @@ float GetLuminance(vec3 color) {
 #include "/lib/antialiasing/fxaa.glsl"
 #endif
 
+
+
 //Program//
 void main() {
 	vec3 color = texture2DLod(colortex1, texCoord, 0.0).rgb;
