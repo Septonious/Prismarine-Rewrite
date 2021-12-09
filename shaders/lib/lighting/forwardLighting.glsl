@@ -53,13 +53,6 @@ void computeGI(out vec3 color, in float lightmap){
 }
 */
 
-vec3 getLighting(vec3 color, float lightmap) {
-    lightmap = sqrt(lightmap) * lightmap;
-    color = mix(normalize(color), vec3(1.0), lightmap);
-    color = pow(lightmap, 6.0) * color * BLOCKLIGHT_I;
-    return color;
-}
-
 void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos,
                  vec2 lightmap, float smoothLighting, float NoL, float vanillaDiffuse,
                  float parallaxShadow, float emission, float subsurface) {
@@ -123,7 +116,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     float sunlightmap = pow(lightmap.y, 6.0) * timeBrightness * lightmap.y;
     vec3 sunlight = vec3(ADVANCED_ILLUMINATION_R, ADVANCED_ILLUMINATION_G, ADVANCED_ILLUMINATION_B) / 255.0 * ADVANCED_ILLUMINATION_I;
-    sunlight = getLighting(sunlight, sunlightmap);
+    sunlight = normalize(sunlight) * sunlightmap;
     #endif
 
     #ifdef LIGHTMAP_BRIGHTNESS_RECOLOR
@@ -170,7 +163,11 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 	blocklightCol = vec3(CLr, CLg, CLb) * vec3(CLr, CLg, CLb);
     #endif
     
-    vec3 blockLighting = vec3(0);
+    vec3 blockLighting = newLightmap * newLightmap * newLightmap * newLightmap * newLightmap * normalize(blocklightCol); //pow is crong
+
+    #ifdef SSGI
+    blockLighting = vec3(0.0);
+    #endif
 
     vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
 

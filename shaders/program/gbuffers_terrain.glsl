@@ -128,8 +128,11 @@ float InterleavedGradientNoise() {
 #include "/lib/util/jitter.glsl"
 #endif
 
-#ifdef ADVANCED_MATERIALS
+#if defined ADVANCED_MATERIALS || defined SSGI
 #include "/lib/util/encode.glsl"
+#endif
+
+#ifdef ADVANCED_MATERIALS
 #include "/lib/reflections/complexFresnel.glsl"
 #include "/lib/surface/directionalLightmap.glsl"
 #include "/lib/surface/materialGbuffers.glsl"
@@ -486,8 +489,12 @@ void main() {
 	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
 	gl_FragData[3] = vec4(fresnel3, 1.0);
 	#endif
-	/* DRAWBUFFERS:03679 */
-	gl_FragData[4] = vec4(recolor);
+
+	#if defined SSGI && !defined ADVANCED_MATERIALS
+	/* DRAWBUFFERS:069 */
+	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
+	gl_FragData[2] = vec4(recolor);
+	#endif
 }
 
 #endif

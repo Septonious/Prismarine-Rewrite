@@ -23,6 +23,7 @@ uniform float playerMood;
 #endif
 
 //Optifine Constants//
+const bool colortex11Clear = false;
 /*
 const int colortex0Format = R11F_G11F_B10F; //main scene
 const int colortex1Format = RGB8; //raw translucent, bloom, final scene

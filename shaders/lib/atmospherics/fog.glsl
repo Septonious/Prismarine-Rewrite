@@ -195,9 +195,8 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 		}
 	}
 	#endif
-	#endif
-
 	fog *= 1.0 - isEyeInWater;
+	#endif
 
 	#ifdef NETHER
 	float viewLength = length(viewPos);

@@ -16,10 +16,15 @@ varying vec2 texCoord;
 uniform int frameCounter;
 uniform float viewWidth, viewHeight, aspectRatio, frameTimeCounter;
 
-uniform sampler2D colortex0, noisetex;
+uniform sampler2D colortex0;
 
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
+
+#ifdef SSGI
+uniform sampler2D colortex11;
+const bool colortex11Clear = false;
+#endif
 
 //Common Variables//
 float ph = 0.8 / min(360.0, viewHeight);
@@ -64,8 +69,16 @@ void main() {
 		
 		 blur = clamp(blur + (Bayer64(gl_FragCoord.xy) - 0.5) / 384.0, vec3(0.0), vec3(1.0));
 
+	#ifdef SSGI
+	vec3 color = texture2D(colortex0, texCoord).rgb;
+	vec3 gi = texture2D(colortex11, texCoord).rgb;
+    /* DRAWBUFFERS:01 */
+	gl_FragData[0] = vec4(color + gi, 1.0);
+	gl_FragData[1] = vec4(blur, 1.0);
+	#else
     /* DRAWBUFFERS:1 */
 	gl_FragData[0] = vec4(blur, 1.0);
+	#endif
 }
 
 #endif
