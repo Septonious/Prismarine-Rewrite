@@ -53,8 +53,6 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness) 
 			}
 			color /= 25.0;
 		}
-
-		//Fog(color.rgb, (gbufferProjectionInverse * pos).xyz);
 		
 		color *= color.a;
 		color.a *= border;

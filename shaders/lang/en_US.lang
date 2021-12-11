@@ -159,6 +159,15 @@ screen.INFO=Prismarine Shader
 screen.INFO.comment=By Septonious with contribution of mlgimposter.
 
 #Lighting
+option.SSGI=Global Illumination
+option.SSGI.comment=Allows each emissive block to have its own light color and completely replaces Minecraft's lighting system. §f[§c-§f] Doesn't work with Iris and causes massive FPS drop!'
+option.BOUNCES=GI Bounces
+option.DENOISE=GI Denoising
+option.DENOISE_STRENGTH=Denoising Strength
+option.GI_DEPTH_LENIENCY=Depth Leniency
+option.STRIDE=GI Raytracer Stride
+option.ILLUMINATION_STRENGTH=Illumination Strength
+
 option.ADVANCED_ILLUMINATION=Advanced Illumination
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
 option.LIGHTMAP_BRIGHTNESS_RECOLOR.comment=Changes the color of lightmap depending on its brightness. Can look cursed sometimes ;P
@@ -1209,3 +1218,5 @@ option.TEST03=Particle Highlight
 option.TEST04=playerMood Brightness
 option.BLUE_NOISE_DITHER=Blue Noise Dithering
 option.BLUE_NOISE_DITHER.comment=Enables blue noise dithering for volumetrics.
+option.DO_NOT_CLICK=§cExtreme Realism
+option.DO_NOT_CLICK.comment=Enhances every single feature of the shader to make it "look like real life". Wait what the-

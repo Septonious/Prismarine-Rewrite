@@ -76,7 +76,9 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 		cloudGradient * cloud
 	);
 	cloud *= sqrt(sqrt(clamp(VoU * 8.0 - 1.0, 0.0, 1.0)));
-	
+	#ifdef OVERWORLD
+    cloudColor.rgb *= clamp(cameraPosition.y * 0.01, 0.01, 1.0);
+    #endif
 	return vec4(cloudColor * colorMultiplier, cloud * cloud * CLOUD_OPACITY);
 }
 #endif

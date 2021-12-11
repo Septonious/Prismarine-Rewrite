@@ -181,13 +181,14 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	if (isEyeInWater != 2.0){
 		float vanillaFog = 1.0 - (far - fogFactor) * 1.5 / ((FOG_DENSITY + pow(isEyeInWater * 1.25, 4.0)) * far);
 		vanillaFog = clamp(vanillaFog, 0.0, 1.0);
+		#ifdef OVERWORLD
+		vanillaFog *= clamp(cameraPosition.y * 0.01, 0.01, 1.0);
+		#endif
 	
 		if (vanillaFog > 0.0){
 			vec3 vanillaFogColor = vec3(0.0);
 			vanillaFogColor = GetSkyColor(viewPos, false);
-
 			vanillaFogColor *= 1.0 + nightVision;
-
 			fogColor *= fog;
 			
 			fog = mix(fog, 1.0, vanillaFog);
@@ -233,7 +234,7 @@ void BlindFog(inout vec3 color, vec3 viewPos) {
 
 vec3 denseFogColor[2] = vec3[2](
 	vec3(1.0, 0.3, 0.01),
-	vec3(0.1, 0.16, 0.2)
+	vec3(0.3, 0.46, 0.5)
 );
 
 void DenseFog(inout vec3 color, vec3 viewPos) {

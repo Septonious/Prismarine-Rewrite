@@ -559,7 +559,7 @@ void main() {
 			newAlbedo *= newAlbedo;
 
 			float absorb = (1.0 - albedo.a);
-			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness);
+			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness * eBS);
 
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}

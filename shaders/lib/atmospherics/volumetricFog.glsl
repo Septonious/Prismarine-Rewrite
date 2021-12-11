@@ -32,8 +32,12 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
     vec4 wpos = vec4(0.0);
 
     if (visibility > 0){
-		for(int i = 0; i < LIGHTSHAFT_SAMPLES; i++) {
-			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE; 
+        for(int i = 0; i < LIGHTSHAFT_SAMPLES; i++) {
+			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE;
+
+            #ifdef DO_NOT_CLICK
+            minDist = 0.0;
+            #endif
 
 			wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.st);
 

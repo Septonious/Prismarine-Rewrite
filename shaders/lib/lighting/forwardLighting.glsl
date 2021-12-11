@@ -88,6 +88,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
     vec3 sceneLighting = mix(ambientCol, lightCol, fullShadow * shadowMult);
     sceneLighting *= (4.0 - 3.0 * lightmap.y) * lightmap.y * (1.0 + scattering * shadow);
+    if (isEyeInWater == 0) sceneLighting *= pow(lightmap.y, 3.0); //light leaking fix
     #endif
 
     #ifdef END
@@ -100,6 +101,10 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     #ifdef LIGHTMAP_DIM_CUTOFF
     lightmap.x = pow(lightmap.x, DIM_CUTOFF_FACTOR);
+    #endif
+
+    #ifdef SSGI
+    lightmap.x *= 0.0;
     #endif
 
     float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
@@ -165,9 +170,9 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     
     vec3 blockLighting = newLightmap * newLightmap * newLightmap * newLightmap * newLightmap * normalize(blocklightCol); //pow is crong
 
-    #ifdef SSGI
-    blockLighting = vec3(0.0);
-    #endif
+    //#ifdef SSGI
+    //blockLighting = vec3(0.0);
+    //#endif
 
     vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
 

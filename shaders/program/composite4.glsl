@@ -18,12 +18,16 @@ uniform float viewWidth, viewHeight, aspectRatio, frameTimeCounter;
 
 uniform sampler2D colortex0;
 
+#ifdef SSGI
+uniform sampler2D colortex11;
+#endif
+
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
 
 #ifdef SSGI
-uniform sampler2D colortex11;
 const bool colortex11Clear = false;
+const bool colortex11MipmapEnabled = true;
 #endif
 
 //Common Variables//
@@ -55,6 +59,9 @@ vec3 BloomTile(float lod, vec2 coord, vec2 offset) {
 }
 
 #include "/lib/util/dither.glsl"
+#if defined SSGI && defined DENOISE
+#include "/lib/prismarine/blur.glsl"
+#endif
 
 //Program//
 void main() {
@@ -71,7 +78,11 @@ void main() {
 
 	#ifdef SSGI
 	vec3 color = texture2D(colortex0, texCoord).rgb;
+	#ifdef DENOISE
+	vec3 gi = BoxBlur(colortex11, 3, DENOISE_STRENGTH);
+	#else
 	vec3 gi = texture2D(colortex11, texCoord).rgb;
+	#endif
     /* DRAWBUFFERS:01 */
 	gl_FragData[0] = vec4(color + gi, 1.0);
 	gl_FragData[1] = vec4(blur, 1.0);

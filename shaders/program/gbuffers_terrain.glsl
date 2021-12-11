@@ -196,6 +196,8 @@ void main() {
 	vec3 fresnel3 = vec3(0.0);
 	#endif
 
+	float emissive = 0.0; float lava = 0.0;
+
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 
@@ -205,8 +207,8 @@ void main() {
 		
 		float foliage  = float(mat > 0.98 && mat < 1.02);
 		float leaves   = float(mat > 1.98 && mat < 2.02);
-		float emissive = float(mat > 2.98 && mat < 3.02);
-		float lava     = float(mat > 3.98 && mat < 4.02);
+			  emissive = float(mat > 2.98 && mat < 3.02);
+			  lava     = float(mat > 3.98 && mat < 4.02);
 		float candle   = float(mat > 4.98 && mat < 5.02);
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
@@ -255,8 +257,10 @@ void main() {
 			if (albedo.g > albedo.b && albedo.g > albedo.r){
 				iEmissive = pow(float(albedo.g - albedo.b), 3.0) * GLOW_STRENGTH;
 			}
-		} else if (mat > 109.9 && mat < 110.1){
+		} else if (mat > 107.9 && mat < 108.1){ // Amethyst
 			emissive = float(length(albedo.rgb) > 0.975) * 0.1 * GLOW_STRENGTH;
+		} else if (mat > 109.9 && mat < 110.1){ // Glow Lichen
+			emissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 4.0;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
@@ -267,7 +271,11 @@ void main() {
 		#endif
 
 		#ifdef TEST01
-		if (mat > 108.9 && mat < 109.1) albedo.a *= 0;
+		if (mat > 106.9 && mat < 107.1) albedo.a *= 0.0;
+		#endif
+
+		#ifdef SSGI
+		if (mat > 9998.9) emissive = 16.0;
 		#endif
 
 		float metalness      = 0.0;
@@ -492,9 +500,10 @@ void main() {
 
 	#if defined SSGI && !defined ADVANCED_MATERIALS
 	/* DRAWBUFFERS:069 */
-	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
-	gl_FragData[2] = vec4(recolor);
+	gl_FragData[1] = vec4(newNormal * 0.5 + 0.5, 1.0);
+	gl_FragData[2] = vec4(emissive + lava);
 	#endif
+
 }
 
 #endif
@@ -593,7 +602,7 @@ void main() {
 	vec2 midCoord = (gl_TextureMatrix[0] *  mc_midTexCoord).st;
 	vec2 texMinMidCoord = texCoord - midCoord;
 
-	vTexCoordAM.pq  = abs(texMinMidCoord) * 2;
+	vTexCoordAM.pq  = abs(texMinMidCoord) * 2.0;
 	vTexCoordAM.st  = min(texCoord, midCoord - texMinMidCoord);
 	
 	vTexCoord.xy    = sign(texMinMidCoord) * 0.5 + 0.5;
@@ -628,6 +637,8 @@ void main() {
 	if (mc_Entity.x == 10400)
 		color.a = 1.0;
 
+	if (mc_Entity.x == 20007) mat = 107.0;
+
 	#ifdef INTEGRATED_EMISSION
 	isPlant = 0.0;
 	if (mc_Entity.x == 20000) mat = 100.0;
@@ -637,9 +648,13 @@ void main() {
 	if (mc_Entity.x == 20004) mat = 104.0;
 	if (mc_Entity.x == 20005) mat = 105.0;
 	if (mc_Entity.x == 20006) mat = 106.0;
-	if (mc_Entity.x == 20007) mat = 109.0;
-	if (mc_Entity.x == 20008) mat = 110.0;
+	if (mc_Entity.x == 20008) mat = 108.0;
+	if (mc_Entity.x == 20010) mat = 110.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
+	#endif
+
+	#ifdef SSGI
+	if (mc_Entity.x == 29999) mat = 9999.0;
 	#endif
 
 	#ifdef NOISY_TEXTURES

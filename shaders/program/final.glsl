@@ -23,7 +23,6 @@ uniform float playerMood;
 #endif
 
 //Optifine Constants//
-const bool colortex11Clear = false;
 /*
 const int colortex0Format = R11F_G11F_B10F; //main scene
 const int colortex1Format = RGB8; //raw translucent, bloom, final scene
@@ -34,6 +33,7 @@ const int gaux2Format = RGB10_A2; //reflection image
 const int gaux3Format = RGB16; //normals
 const int gaux4Format = RGB16; //fresnel
 */
+
 const bool colortex1MipmapEnabled = true;
 const bool shadowHardwareFiltering = true;
 const float shadowDistanceRenderMul = 1.0;
@@ -130,7 +130,7 @@ void main() {
 	#endif
 
     #ifdef CAS
-    ContrastAdaptiveSharpening(color.rgb)
+    ContrastAdaptiveSharpening(color.rgb);
     #endif
 
 	#ifdef TEST04	
