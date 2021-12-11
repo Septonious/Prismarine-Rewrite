@@ -9,12 +9,11 @@ https://bitslablab.com
 //#define TEST02
 //#define TEST03
 //#define TEST04
-  #define SSGI
 //#define BLUE_NOISE_DITHER
 //#define DO_NOT_CLICK
 
 /////// SSGI ///////
-  #define SSGI
+//#define SSGI
   #define GI_DEPTH_LENIENCY 10.0 //[0.1 0.4 0.7 1.0 1.3 1.6 1.9 2.2 2.5 2.8 3.1 3.4 3.7 4.0 4.3 4.6 4.9 5.2 5.5 5.8 6.1 6.4 6.7 7.0 7.3 7.6 7.9 8.2 8.5 8.8 9.1 9.4 9.7 10.0]
   #define DENOISE
   #define DENOISE_STRENGTH 0.004 //[0.001 0.002 0.003 0.004 0.005 0.006 0.007 0.008 0.009 0.010]
