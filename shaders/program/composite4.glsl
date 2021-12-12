@@ -19,15 +19,12 @@ uniform float viewWidth, viewHeight, aspectRatio, frameTimeCounter;
 uniform sampler2D colortex0;
 
 #ifdef SSGI
-uniform sampler2D colortex11;
+uniform sampler2D colortex11, depthtex0;
+uniform float far, near;
 #endif
 
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
-
-#ifdef SSGI
-const bool colortex11MipmapEnabled = true;
-#endif
 
 //Common Variables//
 float ph = 0.8 / min(360.0, viewHeight);
@@ -57,6 +54,13 @@ vec3 BloomTile(float lod, vec2 coord, vec2 offset) {
 	return pow(bloom / 32.0, vec3(0.25));
 }
 
+#ifdef SSGI
+float GetLinearDepth(float depth) {
+   return (2.0 * near) / (far + near - depth * (far - near));
+}
+#endif
+
+//Includes//
 #include "/lib/util/dither.glsl"
 #if defined SSGI && defined DENOISE
 #include "/lib/prismarine/blur.glsl"
@@ -79,7 +83,7 @@ void main() {
 	vec3 color = texture2D(colortex0, texCoord).rgb;
 
 	#ifdef DENOISE
-	vec3 gi = BoxBlur(colortex11, 4, DENOISE_STRENGTH, texCoord);
+	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH, texCoord);
 	#else
 	vec3 gi = texture2D(colortex11, texCoord).rgb;
 	#endif

@@ -1,15 +1,73 @@
-vec3 BoxBlur(sampler2D colortex, int steps, float strength, vec2 coord) {
+vec2 dofOffsets[60] = vec2[60](
+	vec2( 0.0    ,  0.25  ),
+	vec2(-0.2165 ,  0.125 ),
+	vec2(-0.2165 , -0.125 ),
+	vec2( 0      , -0.25  ),
+	vec2( 0.2165 , -0.125 ),
+	vec2( 0.2165 ,  0.125 ),
+	vec2( 0      ,  0.5   ),
+	vec2(-0.25   ,  0.433 ),
+	vec2(-0.433  ,  0.25  ),
+	vec2(-0.5    ,  0     ),
+	vec2(-0.433  , -0.25  ),
+	vec2(-0.25   , -0.433 ),
+	vec2( 0      , -0.5   ),
+	vec2( 0.25   , -0.433 ),
+	vec2( 0.433  , -0.2   ),
+	vec2( 0.5    ,  0     ),
+	vec2( 0.433  ,  0.25  ),
+	vec2( 0.25   ,  0.433 ),
+	vec2( 0      ,  0.75  ),
+	vec2(-0.2565 ,  0.7048),
+	vec2(-0.4821 ,  0.5745),
+	vec2(-0.51295,  0.375 ),
+	vec2(-0.7386 ,  0.1302),
+	vec2(-0.7386 , -0.1302),
+	vec2(-0.51295, -0.375 ),
+	vec2(-0.4821 , -0.5745),
+	vec2(-0.2565 , -0.7048),
+	vec2(-0      , -0.75  ),
+	vec2( 0.2565 , -0.7048),
+	vec2( 0.4821 , -0.5745),
+	vec2( 0.51295, -0.375 ),
+	vec2( 0.7386 , -0.1302),
+	vec2( 0.7386 ,  0.1302),
+	vec2( 0.51295,  0.375 ),
+	vec2( 0.4821 ,  0.5745),
+	vec2( 0.2565 ,  0.7048),
+	vec2( 0      ,  1     ),
+	vec2(-0.2588 ,  0.9659),
+	vec2(-0.5    ,  0.866 ),
+	vec2(-0.7071 ,  0.7071),
+	vec2(-0.866  ,  0.5   ),
+	vec2(-0.9659 ,  0.2588),
+	vec2(-1      ,  0     ),
+	vec2(-0.9659 , -0.2588),
+	vec2(-0.866  , -0.5   ),
+	vec2(-0.7071 , -0.7071),
+	vec2(-0.5    , -0.866 ),
+	vec2(-0.2588 , -0.9659),
+	vec2(-0      , -1     ),
+	vec2( 0.2588 , -0.9659),
+	vec2( 0.5    , -0.866 ),
+	vec2( 0.7071 , -0.7071),
+	vec2( 0.866  , -0.5   ),
+	vec2( 0.9659 , -0.2588),
+	vec2( 1      ,  0     ),
+	vec2( 0.9659 ,  0.2588),
+	vec2( 0.866  ,  0.5   ),
+	vec2( 0.7071 ,  0.7071),
+	vec2( 0.5    ,  0.8660),
+	vec2( 0.2588 ,  0.9659)
+);
+
+vec3 BoxBlur(sampler2D colortex, float strength, vec2 coord) {
 	vec3 blur = vec3(0.0);
 
-	float weight = 0.0;
-	for(int i = -steps; i <= steps; i++) {
-		for(int j = -steps; j <= steps; j++){
-			vec2 offset = vec2(i, j) * strength * vec2(1.0 / aspectRatio, 1.0);
-			blur += texture2D(colortex, coord + offset).rgb;
-			weight += 1.0;
-		}
+	for(int j = 0; j <= 16; j++){
+		vec2 offset = dofOffsets[j] * strength * vec2(1.0 / aspectRatio, 1.0);
+		blur += texture2D(colortex, coord + offset).rgb;
 	}
-	blur /= weight;
 
-	return blur;
+	return blur / 16.0;
 }

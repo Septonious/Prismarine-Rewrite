@@ -32,6 +32,10 @@ uniform float far, near;
 uniform float viewHeight, viewWidth;
 uniform float eyeAltitude;
 
+#ifndef SSGI
+uniform float aspectRatio;
+#endif
+
 uniform ivec2 eyeBrightnessSmooth;
 
 uniform vec3 cameraPosition;
@@ -77,11 +81,19 @@ float GetLuminance(vec3 color) {
 #endif
 #endif
 
+#ifndef SSGI
+#include "/lib/prismarine/blur.glsl"
+#endif
+
 //Program//
 void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
+	#ifdef SSGI
 	vec3 vl = texture2D(colortex1, texCoord.xy).rgb;
+	#else
+	vec3 vl = BoxBlur(colortex1, 0.016, texCoord);
+	#endif
 	
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;

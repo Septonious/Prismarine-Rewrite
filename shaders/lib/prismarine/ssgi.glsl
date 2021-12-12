@@ -36,6 +36,30 @@ vec3 screenToView(vec3 view) {
 //
 
 //Raytracer from Zombye's spectrum shader
+/*
+MIT License
+
+Copyright (c) 2017-2018 Jacob Eriksson
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 float AscribeDepth(float depth, float ascribeAmount) {
 	depth = 1.0 - 2.0 * depth;
 	depth = (depth + gbufferProjection[2].z * ascribeAmount) / (1.0 + ascribeAmount);
@@ -113,12 +137,6 @@ bool IntersectSSRay(inout vec3 position, vec3 startVS, vec3 rayDirection, float 
 }
 //
 
-vec3 rotate(vec3 N, vec3 H){
-    vec3 T = normalize(cross(N, vec3(0.0, 1.0, 1.0)));
-    vec3 B = cross(T, N);
-    return T * H.x + B * H.y + N * H.z;
-}
-
 vec3 generateUnitVector(vec2 hash) {
     hash.x *= TAU;
     hash.y = hash.y * 2.0 - 1.0;
@@ -158,8 +176,9 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
             float isEmissive = texture2D(colortex9, currentPosition.xy).w == 0.0 ? 0.0 : 1.0;
 
             weight *= albedo;
-            illumination += weight * (isEmissive + isEmissive + isEmissive + isEmissive);
+            illumination += weight * isEmissive;
         }
     }
+
     return illumination;
 }

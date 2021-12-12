@@ -142,5 +142,5 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	}
 
 	//Output
-	color = mix(color, finalColor.rgb * (1.0 - rainStrength * 0.5), finalColor.a);
+	color = mix(color, finalColor.rgb, finalColor.a);
 }

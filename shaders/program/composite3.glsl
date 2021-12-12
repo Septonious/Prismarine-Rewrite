@@ -192,7 +192,7 @@ void main() {
     #endif
 
     #ifdef SSGI
-    vec3 normal = normalize(texture2D(colortex6, texCoord.xy).xyz);
+    vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
     vec3 gi = computeGI(screenPos.xyz, normal, float(z0 < 0.56));
     /*RENDERTARGETS:0,11*/
 	gl_FragData[0] = vec4(color, 1.0);
