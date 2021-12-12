@@ -257,11 +257,13 @@ void main() {
 				iEmissive = pow(float(albedo.g - albedo.b), 3.0) * GLOW_STRENGTH;
 			}
 		} else if (mat > 107.9 && mat < 108.1){ // Amethyst
-			emissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH;
+			iEmissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH;
 		} else if (mat > 109.9 && mat < 110.1){ // Glow Lichen
-			emissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 3.0;
+			iEmissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 3.0;
 		} else if (mat > 110.9 && mat < 111.1){
-			emissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.2 * GLOW_STRENGTH;
+			iEmissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.2 * GLOW_STRENGTH;
+		} else if (mat > 111.9 && mat < 112.1){ // Soul Emissives
+			iEmissive = float(albedo.b > albedo.r || albedo.b > albedo.g) * 0.5 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
@@ -653,6 +655,7 @@ void main() {
 	if (mc_Entity.x == 20008) mat = 108.0;
 	if (mc_Entity.x == 20010) mat = 110.0;
 	if (mc_Entity.x == 20011) mat = 111.0;
+	if (mc_Entity.x == 20012) mat = 112.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 

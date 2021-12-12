@@ -20,7 +20,6 @@ uniform sampler2D colortex0;
 
 #ifdef SSGI
 uniform sampler2D colortex11, depthtex0;
-uniform float far, near;
 #endif
 
 //Optifine Constants//
@@ -53,12 +52,6 @@ vec3 BloomTile(float lod, vec2 coord, vec2 offset) {
 
 	return pow(bloom / 32.0, vec3(0.25));
 }
-
-#ifdef SSGI
-float GetLinearDepth(float depth) {
-   return (2.0 * near) / (far + near - depth * (far - near));
-}
-#endif
 
 //Includes//
 #include "/lib/util/dither.glsl"
