@@ -393,9 +393,9 @@ option.NIGHT_SKY_MODE=Night Sky
 value.NIGHT_SKY_MODE.0=OFF
 value.NIGHT_SKY_MODE.1=Nebula
 option.FOG_COLOR_MODE=Low-Altitude Fog Col.
-option.FOG_COLOR_MODE.comment=Changes the overworld fog. Sky colored fog picks the color from the sky. Single colored fog has only one color which can be set manually. Per - biome fog picks the color depending on the biome.
+option.FOG_COLOR_MODE.comment=Changes the overworld fog. Sky colored fog picks the color from the sky. Per - biome fog picks the color depending on the biome.
 value.FOG_COLOR_MODE.2=Per - Biome
-value.FOG_COLOR_MODE.1=Single Color
+value.FOG_COLOR_MODE.1=Manual
 value.FOG_COLOR_MODE.0=Sky Colored
 option.VOLUMETRIC_CLOUDS=Volumetric Clouds
 option.VOLUMETRIC_CLOUDS.comment=World space 3D clouds which you can fly through. Work only with Optifine. Performance impact!
@@ -468,6 +468,7 @@ value.LIGHTSHAFT_COLOR_MODE.0=Automatic
 value.LIGHTSHAFT_COLOR_MODE.1=Manual 
 value.LIGHTSHAFT_COLOR_MODE.2=Sky Color + Manual
 
+option.EXP_FOG=Exponential Fog
 option.FOG_DENSITY=Fog Density
 option.FOG_DENSITY.comment=Adjusts fog density. §e[*]§rThis option is ignored in the nether.
 
@@ -679,7 +680,7 @@ option.CAS=Contrast Adaptive Sharpening
 option.Increases the detail of image, works as an upscaler. Enable TAA for better results.
 
 option.TAA=TAA
-option.TAA.comment=Enables temporal anti-aliasing, done by smart frame blending which captures improves tiny details and some effects. §e[*]§rSharpening included. §e[*]§rPlease disable Antialiasing in Shaders menu while this option is enabled.
+option.TAA.comment=Enables temporal anti-aliasing, done by smart frame blending which captures improves tiny details and some effects. §e[*]§rPlease disable Antialiasing in Shaders menu while this option is enabled.
 
 option.VIGNETTE=Vignette
 option.Vignette.comment=Fades the edge of the screen to black. §e[*]§rDisable for 360 imaging.
@@ -953,7 +954,7 @@ option.LIGHTMAP_B=Blue Value
 option.LIGHTMAP_G=Green Value
 
 option.SKY_COLOR_MODE=Sky Color Mode
-value.SKY_COLOR_MODE.0=Single Color
+value.SKY_COLOR_MODE.0=Manual
 value.SKY_COLOR_MODE.1=Per - Biome
 
 option.TFSKY_R=Twilight Forest - Red

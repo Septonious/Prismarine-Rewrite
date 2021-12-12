@@ -127,7 +127,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			float density = pow(smoothstep(height + stretching * noise, height - stretching * noise, wpos.y), 0.4);
 
 			//Color calculation and lighting
-			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering + scattering), vcloudsDownCol, noise * density), noise);
+			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering), vcloudsDownCol, noise * density), noise);
 			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
 

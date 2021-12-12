@@ -179,7 +179,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 
 	#if DISTANT_FADE == 1 || DISTANT_FADE == 3
 	if (isEyeInWater != 2.0){
-		float vanillaFog = 1.0 - (far - fogFactor) * 1.5 / ((FOG_DENSITY + pow(isEyeInWater * 1.25, 4.0)) * far);
+		float vanillaFog = 1.0 - (far - fogFactor) * 4.0 / ((FOG_DENSITY + pow(isEyeInWater * 1.25, 4.0)) * far);
 		vanillaFog = clamp(vanillaFog, 0.0, 1.0);
 		#ifdef OVERWORLD
 		vanillaFog *= clamp(cameraPosition.y * 0.01, 0.01, 1.0);
