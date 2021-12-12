@@ -156,8 +156,7 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 }
 
 #ifdef SSGI
-uniform sampler2D colortex6, colortex9, colortex11, noisetex;
-const bool colortex11Clear = false;
+uniform sampler2D colortex6, colortex9, colortex11, colortex12, noisetex;
 
 #include "/lib/util/encode.glsl"
 #include "/lib/prismarine/ssgi.glsl"

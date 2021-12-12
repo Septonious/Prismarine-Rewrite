@@ -149,6 +149,7 @@ screen.ADDITIONAL_BLOCKLIGHT_COLORS=Additional Colors
 screen.CA_CONFIG=Ch. Aberration Config
 screen.BLOCKLIGHT_CONFIG=Blocklight Config
 screen.SUNLIGHT_COLOR=Sun Illumination Color
+screen.SSGI=SSGI Config
 
 screen.WORLD=World
 screen.WAVING=Waving Blocks
@@ -156,7 +157,7 @@ screen.CURVATURE=Curvature
 
 #Settings
 screen.INFO=Prismarine Shader
-screen.INFO.comment=By Septonious with contribution of mlgimposter.
+screen.INFO.comment=Based on BSL by Capt Tatsu. Made by Septonious
 
 #Lighting
 option.SSGI=Global Illumination
@@ -167,6 +168,7 @@ option.DENOISE_STRENGTH=Denoising Strength
 option.GI_DEPTH_LENIENCY=Depth Leniency
 option.STRIDE=GI Raytracer Stride
 option.ILLUMINATION_STRENGTH=Illumination Strength
+option.EMISSIVE_CONCRETE=Emissive Concrete
 
 option.ADVANCED_ILLUMINATION=Advanced Illumination
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor

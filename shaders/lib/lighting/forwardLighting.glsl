@@ -108,7 +108,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #endif
 
     float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
-    newLightmap = clamp(newLightmap, 0.65, 1.00);
+    newLightmap = clamp(newLightmap, 0.25, 1.00);
 
     float lightmapBrightness = lightmap.x * 15.0;
     float lightMapBrightnessFactor = 1.25 - pow(lightmap.x, 6.0);

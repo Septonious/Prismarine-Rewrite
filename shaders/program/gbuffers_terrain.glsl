@@ -110,7 +110,8 @@ float InterleavedGradientNoise() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
 	return fract(n + frameCounter / 8.0);
 }
-
+#ifdef EMISSIVE_CONCRETE
+#endif
 //Includes//
 #ifdef OVERWORLD
 #include "/lib/color/waterColor.glsl"
@@ -224,12 +225,10 @@ void main() {
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
-            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.5;
-        } else if (mat > 100.9 && mat < 101.1){
-			iEmissive = (albedo.b - albedo.r) * albedo.r * 8.0 * GLOW_STRENGTH;
-            iEmissive *= iEmissive * iEmissive;
-            iEmissive = clamp(iEmissive, 0.05, 1.0);
-            if (length(albedo.rgb) > 1.6 || albedo.r > albedo.b * 1.7) iEmissive = 1.0;
+            iEmissive = sqrt(ore) * GLOW_STRENGTH;
+        } else if (mat > 100.9 && mat < 101.1){ // Crying Obsidian and Respawn Anchor
+			iEmissive = (albedo.b - albedo.r) * albedo.r * GLOW_STRENGTH;
+            iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH;
 		} else if (mat > 101.9 && mat < 102.1){
             vec3 comPos = fract(worldPos.xyz + cameraPosition.xyz);
             comPos = abs(comPos - vec3(0.5));
@@ -240,17 +239,17 @@ void main() {
                 dif = abs(dif);
                 iEmissive = float(max(dif.r, max(dif.g, dif.b)) > 0.1) * 25.0;
                 iEmissive *= float(albedo.r > 0.44 || albedo.g > 0.29);
-				iEmissive *= 0.25;
+				iEmissive *= 0.5;
             }
 		} else if (mat > 102.9 && mat < 103.1){
             float core = float(albedo.r < 0.1);
             float edge = float(albedo.b > 0.35 && albedo.b < 0.401 && core == 0.0);
             iEmissive = (core * 0.195 + 0.035 * edge);
-			iEmissive *= 4.0 * GLOW_STRENGTH;
+			iEmissive *= 8.0 * GLOW_STRENGTH;
 		} else if (mat > 103.9 && mat < 104.1){
             iEmissive = float(albedo.b < 0.16);
-            iEmissive = min(pow(length(albedo.rgb) * length(albedo.rgb), 2) * iEmissive * GLOW_STRENGTH, 0.3);
-			iEmissive *= 4.0 * GLOW_STRENGTH;
+            iEmissive = min(pow(length(albedo.rgb) * length(albedo.rgb), 2.0) * iEmissive * GLOW_STRENGTH, 0.3);
+			iEmissive *= 8.0 * GLOW_STRENGTH;
 		} else if (mat > 104.9 && mat < 105.1){ // Warped Nether Warts
 			iEmissive = pow(float(albedo.g - albedo.b), 2) * GLOW_STRENGTH;
 		} else if (mat > 105.9 && mat < 106.1){ // Warped Nylium
@@ -258,13 +257,15 @@ void main() {
 				iEmissive = pow(float(albedo.g - albedo.b), 3.0) * GLOW_STRENGTH;
 			}
 		} else if (mat > 107.9 && mat < 108.1){ // Amethyst
-			emissive = float(length(albedo.rgb) > 0.975) * 0.1 * GLOW_STRENGTH;
+			emissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH;
 		} else if (mat > 109.9 && mat < 110.1){ // Glow Lichen
-			emissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 4.0;
+			emissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 3.0;
+		} else if (mat > 110.9 && mat < 111.1){
+			emissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.2 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
-			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
+			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.2;
 		}
 		#endif
 		emissive += iEmissive;
@@ -274,7 +275,7 @@ void main() {
 		if (mat > 106.9 && mat < 107.1) albedo.a *= 0.0;
 		#endif
 
-		#ifdef SSGI
+		#if defined SSGI && defined EMISSIVE_CONCRETE
 		if (mat > 9998.9) emissive = 16.0;
 		#endif
 
@@ -499,9 +500,10 @@ void main() {
 	#endif
 
 	#if defined SSGI && !defined ADVANCED_MATERIALS
-	/* DRAWBUFFERS:069 */
-	gl_FragData[1] = vec4(newNormal * 0.5 + 0.5, 1.0);
+	/* RENDERTARGETS:0,6,9,12 */
+	gl_FragData[1] = vec4(normal * 0.5 + 0.5, 1.0);
 	gl_FragData[2] = vec4(emissive + lava);
+	gl_FragData[3] = albedo;
 	#endif
 
 }
@@ -650,6 +652,7 @@ void main() {
 	if (mc_Entity.x == 20006) mat = 106.0;
 	if (mc_Entity.x == 20008) mat = 108.0;
 	if (mc_Entity.x == 20010) mat = 110.0;
+	if (mc_Entity.x == 20011) mat = 111.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 

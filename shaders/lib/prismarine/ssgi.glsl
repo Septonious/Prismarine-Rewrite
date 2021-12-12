@@ -48,13 +48,7 @@ float MinOf(vec3 x) { return min(min(x.x, x.y), x.z); }
 vec2 viewResolution = vec2(viewWidth, viewHeight);
 vec2 viewPixelSize = 1.0 / viewResolution;
 
-bool IntersectSSRay(
-	inout vec3 position, // Starting position in screen-space. This gets set to the hit position, also in screen-space.
-	vec3 startVS, // Starting position in view-space
-	vec3 rayDirection, // Ray direction in view-space
-    float dither,
-	const uint stride // Stride, in pixels. Should be >= 1.
-) {
+bool IntersectSSRay(inout vec3 position, vec3 startVS, vec3 rayDirection, float dither, int stride) {
 	vec3 rayStep  = startVS + abs(startVS.z) * rayDirection;
 	     rayStep  = viewToScreen(rayStep) - position;
 	     rayStep *= MinOf((step(0.0, rayStep) - position) / rayStep);
@@ -159,12 +153,13 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
         currentPosition = hitPos;
 
         if (hit && hand < 0.5) {
-            vec3 albedo = texture2D(colortex0, currentPosition.xy).rgb * INV_PI;
+            vec3 albedo = texture2D(colortex12, currentPosition.xy).rgb * INV_PI;
+
             float isEmissive = texture2D(colortex9, currentPosition.xy).w == 0.0 ? 0.0 : 1.0;
 
             weight *= albedo;
             illumination += weight * (isEmissive + isEmissive + isEmissive + isEmissive);
         }
     }
-    return illumination * normalize(illumination);
+    return illumination;
 }

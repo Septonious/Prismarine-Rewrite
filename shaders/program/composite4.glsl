@@ -26,7 +26,6 @@ uniform sampler2D colortex11;
 const bool colortex0MipmapEnabled = true;
 
 #ifdef SSGI
-const bool colortex11Clear = false;
 const bool colortex11MipmapEnabled = true;
 #endif
 
@@ -78,11 +77,13 @@ void main() {
 
 	#ifdef SSGI
 	vec3 color = texture2D(colortex0, texCoord).rgb;
+
 	#ifdef DENOISE
-	vec3 gi = BoxBlur(colortex11, 3, DENOISE_STRENGTH);
+	vec3 gi = BoxBlur(colortex11, 4, DENOISE_STRENGTH, texCoord);
 	#else
 	vec3 gi = texture2D(colortex11, texCoord).rgb;
 	#endif
+
     /* DRAWBUFFERS:01 */
 	gl_FragData[0] = vec4(color + gi, 1.0);
 	gl_FragData[1] = vec4(blur, 1.0);
