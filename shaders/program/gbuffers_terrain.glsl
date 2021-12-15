@@ -663,10 +663,6 @@ void main() {
 	if (mc_Entity.x == 29999) mat = 9999.0;
 	#endif
 
-	#ifdef NOISY_TEXTURES
-	if (mc_Entity.x == 20009) mat = 111.0;
-	#endif
-
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
 	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
