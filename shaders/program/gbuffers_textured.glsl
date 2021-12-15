@@ -10,7 +10,7 @@ https://bitslablab.com
 #ifdef FSH
 
 //Varyings//
-varying vec2 texCoord, lmCoord;
+varying vec2 texCoord;
 
 varying vec3 normal;
 varying vec3 sunVec, upVec, eastVec;
@@ -107,7 +107,6 @@ void main() {
     vec4 albedo = texture2D(texture, texCoord) * color;
 
 	if (albedo.a > 0.001) {
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
 		#ifdef TAA
@@ -115,36 +114,14 @@ void main() {
 		#else
 		vec3 viewPos = ToNDC(screenPos);
 		#endif
-		vec3 worldPos = ToWorld(viewPos);
-		
-		#ifdef DYNAMIC_HANDLIGHT
-		float heldLightValue = max(float(heldBlockLightValue), float(heldBlockLightValue2));
-		float handlight = clamp((heldLightValue - 2.0 * length(viewPos)) / 15.0, 0.0, 0.9333);
-		lightmap.x = max(lightmap.x, handlight);
-		#endif
-
-		#ifdef TOON_LIGHTMAP
-		lightmap = floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0;
-		lightmap = clamp(lightmap, vec2(0.0), vec2(1.0));
-		#endif
 
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);
 		#endif
-
-		float NoL = 1.0;
-		//NoL = clamp(dot(normal, lightVec) * 1.01 - 0.01, 0.0, 1.0);
-
-		float NoU = clamp(dot(normal, upVec), -1.0, 1.0);
-		float NoE = clamp(dot(normal, eastVec), -1.0, 1.0);
-		float vanillaDiffuse = (0.25 * NoU + 0.75) + (0.667 - abs(NoE)) * (1.0 - abs(NoU)) * 0.15;
-			  vanillaDiffuse*= vanillaDiffuse;
 		
 		vec3 shadow = vec3(0.0);
-		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NoL, 1.0,
-				    1.0, 0.0, 0.0);
 
 		#ifdef EXP_FOG
 		Fog(albedo.rgb, viewPos);
@@ -169,10 +146,12 @@ void main() {
 	else albedo.a *= difference;
 	#endif
 
+	albedo.rgb *= 0.25;
+
 	#ifdef TEST03
-	albedo *= 2.0;
+	albedo.rgb *= 4.0;
 	#endif
-	
+
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
@@ -182,6 +161,12 @@ void main() {
 	gl_FragData[2] = vec4(0.0, 0.0, 0.0, 1.0);
 	gl_FragData[3] = vec4(0.0, 0.0, 0.0, 1.0);
 	#endif
+
+	#if defined SSGI && !defined ADVANCED_MATERIALS && defined EMISSIVE_PARTICLES
+	/* RENDERTARGETS:0,9,12 */
+	gl_FragData[1] = vec4(32.0);
+	gl_FragData[2] = vec4(albedo.rgb * 4.0, albedo.a);
+	#endif
 }
 
 #endif
@@ -190,7 +175,7 @@ void main() {
 #ifdef VSH
 
 //Varyings//
-varying vec2 texCoord, lmCoord;
+varying vec2 texCoord;
 
 varying vec3 normal;
 varying vec3 sunVec, upVec, eastVec;
@@ -251,9 +236,6 @@ float GetLogarithmicDepth(float depth) {
 //Program//
 void main() {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-    
-	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, vec2(0.0), vec2(0.9333, 1.0));
 
 	normal = normalize(gl_NormalMatrix * gl_Normal);
     

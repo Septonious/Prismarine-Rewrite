@@ -116,9 +116,6 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     blocklightCol *= 1.00 - lightmap.y * 0.75;
 
     #ifdef ADVANCED_ILLUMINATION
-    newLightmap = clamp(pow(lightmap.x, 6.00) + lightmap.x * 0.75, 0.0, 0.40);
-    newLightmap *= lightmapBrightness * 0.30;
-
     float sunlightmap = pow(lightmap.y, 6.0) * timeBrightness * lightmap.y;
     vec3 sunlight = vec3(ADVANCED_ILLUMINATION_R, ADVANCED_ILLUMINATION_G, ADVANCED_ILLUMINATION_B) / 255.0 * ADVANCED_ILLUMINATION_I;
     sunlight = normalize(sunlight) * sunlightmap;

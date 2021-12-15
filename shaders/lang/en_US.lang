@@ -169,6 +169,7 @@ option.GI_DEPTH_LENIENCY=Depth Leniency
 option.STRIDE=GI Raytracer Stride
 option.ILLUMINATION_STRENGTH=Illumination Strength
 option.EMISSIVE_CONCRETE=Emissive Concrete
+option.EMISSIVE_PARTICLES=Emissive Particles
 
 option.ADVANCED_ILLUMINATION=Advanced Illumination
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
