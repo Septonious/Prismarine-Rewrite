@@ -63,8 +63,8 @@ vec3 SampleFilteredShadow(vec3 shadowPos, float offset, float biasStep) {
     #endif
 
     float weight = 0.0;
-    for (int i = -2; i <= 2; i++){
-        for (int j = -2; j <= 2; j++){
+    for (int i = -2; i < 2; i++){
+        for (int j = -2; j < 2; j++){
             weight += 1.0;
             vec2 shadowOffset = vec2(i, j) * offset;
             shadow0 += shadow2D(shadowtex0, vec3(shadowPos.st + shadowOffset, shadowPos.z)).x;
