@@ -18,7 +18,7 @@ uniform float viewWidth, viewHeight, aspectRatio, frameTimeCounter;
 
 uniform sampler2D colortex0;
 
-#ifdef SSGI
+#if defined SSGI && !defined ADVANCED_MATERIALS
 uniform sampler2D colortex11, depthtex0;
 #endif
 
@@ -55,7 +55,7 @@ vec3 BloomTile(float lod, vec2 coord, vec2 offset) {
 
 //Includes//
 #include "/lib/util/dither.glsl"
-#if defined SSGI && defined DENOISE
+#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
 #include "/lib/prismarine/blur.glsl"
 #endif
 
@@ -72,7 +72,7 @@ void main() {
 		
 		 blur = clamp(blur + (Bayer64(gl_FragCoord.xy) - 0.5) / 384.0, vec3(0.0), vec3(1.0));
 
-	#ifdef SSGI
+	#if defined SSGI && !defined ADVANCED_MATERIALS
 	vec3 color = texture2D(colortex0, texCoord).rgb;
 
 	#ifdef DENOISE

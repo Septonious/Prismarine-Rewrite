@@ -12,7 +12,7 @@ https://bitslablab.com
 //#define BLUE_NOISE_DITHER
 //#define DO_NOT_CLICK
 
-/////// SSGI ///////
+/////// screen space global illumination ///////
 //#define SSGI
   #define GI_DEPTH_LENIENCY 4.9 //[0.1 0.4 0.7 1.0 1.3 1.6 1.9 2.2 2.5 2.8 3.1 3.4 3.7 4.0 4.3 4.6 4.9 5.2 5.5 5.8 6.1 6.4 6.7 7.0 7.3 7.6 7.9 8.2 8.5 8.8 9.1 9.4 9.7 10.0 10.3 10.6 10.9 11.2 11.5 11.8 12.1 12.4 12.7 13.0 13.3 13.6 13.9 14.2 14.5 14.8 15.1 15.4 15.7 16.0]
   #define DENOISE

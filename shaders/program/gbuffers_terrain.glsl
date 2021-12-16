@@ -129,7 +129,7 @@ float InterleavedGradientNoise() {
 #include "/lib/util/jitter.glsl"
 #endif
 
-#if defined ADVANCED_MATERIALS || defined SSGI
+#if defined ADVANCED_MATERIALS || (defined SSGI && !defined ADVANCED_MATERIALS)
 #include "/lib/util/encode.glsl"
 #endif
 
@@ -277,7 +277,7 @@ void main() {
 		if (mat > 106.9 && mat < 107.1) albedo.a *= 0.0;
 		#endif
 
-		#if defined SSGI && defined EMISSIVE_CONCRETE
+		#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined EMISSIVE_CONCRETE
 		if (mat > 9998.9) emissive = 16.0;
 		#endif
 

@@ -1,5 +1,6 @@
 //huge thanks to lvutner, belmu and niemand for help!
 
+#if defined SSGI && !defined ADVANCED_MATERIALS
 //Constants
 #define TAU    6.28318530
 #define INV_PI 0.31830988
@@ -182,3 +183,4 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
 
     return illumination;
 }
+#endif

@@ -155,7 +155,7 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	return dof;
 }
 
-#ifdef SSGI
+#if defined SSGI && !defined ADVANCED_MATERIALS
 uniform sampler2D colortex6, colortex9, colortex11, colortex12, noisetex;
 
 #include "/lib/util/encode.glsl"
@@ -191,7 +191,7 @@ void main() {
     #ifdef DISTANT_BLUR
     #endif
 
-    #ifdef SSGI
+    #if defined SSGI && !defined ADVANCED_MATERIALS
     vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
     vec3 gi = computeGI(screenPos.xyz, normal, float(z0 < 0.56));
     /*RENDERTARGETS:0,11*/
