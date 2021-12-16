@@ -84,7 +84,7 @@ void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
-	vec3 vl = BoxBlur(colortex1, 0.02, texCoord);
+	vec3 vl = BoxBlur(colortex1, 0.01, texCoord);
 	
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;

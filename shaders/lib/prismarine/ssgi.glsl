@@ -3,7 +3,6 @@
 #if defined SSGI && !defined ADVANCED_MATERIALS
 //Constants
 #define TAU    6.28318530
-#define INV_PI 0.31830988
 
 //Noise
 const uint k = 1103515245U;
@@ -152,6 +151,7 @@ vec3 generateCosineVector(vec3 vector, vec2 xy) {
 
 vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
     float dither = getRandomNoise(gl_FragCoord.xy);
+	dither = fract(dither + frameCounter / 8.0);
 
     vec3 currentPosition = screenPos;
     vec3 hitNormal = normal;
@@ -172,7 +172,7 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
         currentPosition = hitPos;
 
         if (hit && hand < 0.5) {
-            vec3 albedo = texture2D(colortex12, currentPosition.xy).rgb * INV_PI;
+            vec3 albedo = texture2D(colortex12, currentPosition.xy).rgb;
 
             float isEmissive = texture2D(colortex9, currentPosition.xy).w == 0.0 ? 0.0 : 1.0;
 
