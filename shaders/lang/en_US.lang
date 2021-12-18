@@ -1220,7 +1220,5 @@ option.TEST01=Transparent World
 option.TEST02=Entity Highlight
 option.TEST03=Particle Highlight
 option.TEST04=playerMood Brightness
-option.BLUE_NOISE_DITHER=Blue Noise Dithering
-option.BLUE_NOISE_DITHER.comment=Enables blue noise dithering for volumetrics.
 option.DO_NOT_CLICK=§cExtreme Realism
 option.DO_NOT_CLICK.comment=Enhances every single feature of the shader to make it "look like real life". Wait what the-

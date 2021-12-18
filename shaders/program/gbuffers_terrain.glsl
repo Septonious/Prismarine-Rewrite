@@ -325,6 +325,10 @@ void main() {
 			albedo.rgb = blocklightCol * pow(ec, 1.5) / (BLOCKLIGHT_I * BLOCKLIGHT_I);
 			albedo.rgb /= 0.7 * albedo.rgb + 0.7;
 		}
+		#else
+		if (recolor > 0.5) {
+			albedo.rgb *= 4.0;
+		}
 		#endif
 
 		#ifdef WHITE_WORLD
@@ -465,7 +469,8 @@ void main() {
 		float depth = clamp(length(viewPos.xyz), 0.0, 7.0);
 		depth = 8.0 - depth;
 		if (isEyeInWater == 1){
-			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6.0 - rainStrength - rainStrength);
+			float clampEyeBrightness = clamp(eBS, 0.1, 1.0);
+			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6.0 - rainStrength - rainStrength) * clampEyeBrightness;
 			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512.0 * (0.25 + timeBrightness) + depth;
 		}
 		#endif

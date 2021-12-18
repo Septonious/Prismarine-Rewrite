@@ -178,7 +178,7 @@ void main() {
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
-	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.25, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
+	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
 	#endif
 	#ifdef VOLUMETRIC_LIGHT
 	if (isEyeInWater == 1) visibility = 1.0;
@@ -249,16 +249,21 @@ void main() {
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;
 	
-    /*DRAWBUFFERS:01*/
+    /*DRAWBUFFERS:0158*/
 	gl_FragData[0] = color;
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
 	gl_FragData[1] = vl;
 	#endif
 	
     #ifdef REFLECTION_PREVIOUS
-    /*DRAWBUFFERS:015*/
 	gl_FragData[2] = vec4(reflectionColor, float(z0 < 1.0));
 	#endif
+
+	//#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD
+	//vec3 vclouds = vec3(0.0);
+	//getVolumetricCloud(z1, z0, InterleavedGradientNoiseVL(), vclouds, translucent, scattering);
+	//gl_FragData[3] = vec4(vclouds, 1.0);
+	//#endif
 }
 
 #endif

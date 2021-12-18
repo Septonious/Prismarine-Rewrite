@@ -2,57 +2,6 @@
 #include "/lib/lighting/shadows.glsl"
 #endif
 
-/*
-float getSquareSDF(vec2 pos, vec2 size) {
-	vec2 r = abs(pos) - size;
-    return min(max(r.x, r.y), 0.0) + length(max(r, vec2(0.0)));
-}
-
-void addObject(inout float distA, inout vec3 color, float distB, vec3 objectColor) {
-    if (distA > distB) {
-        distA = distB;
-        color = objectColor;
-    }
-}
-
-void getScene(in vec2 pos, out vec3 color, out float distA) {
-	color = vec3(0.0);
-    distA = 1e9;
-	vec3 objectColor = vec3(1.0, 0.7, 0.3);
-    addObject(distA, color, getSquareSDF(pos - vec2(0.0, 0.0), vec2(1.0)), objectColor);
-
-}
-
-void raytrace(vec2 pos, vec2 dir, out vec3 objectColor) {
-    for (;;) {
-        float distB = 0.0;
-        getScene(pos, objectColor, distB);
-        if (distB < 1e-3) return;
-        if (distB > 1e1) break;
-        pos += dir * distB;
-    }
-    objectColor = vec3(0.0);
-}
-
-float getRandomNoise(vec2 pos){
-	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
-}
-
-void computeGI(out vec3 color, in float lightmap){
-    vec2 coord = (gl_FragCoord.xy - (vec2(viewWidth, viewHeight) * 0.5)) / viewHeight * 6.0;
-    vec3 col = vec3(0.0);
-    
-    for (int i = 0; i < 32; i++) {
-        float t = (float(i) + getRandomNoise(coord + float(i))) / 32.0 * 6.283;
-        vec3 objectColor = vec3(0.0);
-        raytrace(coord, vec2(cos(t), sin(t)), objectColor);
-        col += objectColor;
-    }
-
-    color = col / 32.0 * 2.0;
-}
-*/
-
 void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos,
                  vec2 lightmap, float smoothLighting, float NoL, float vanillaDiffuse,
                  float parallaxShadow, float emission, float subsurface) {
@@ -86,7 +35,9 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     #ifdef OVERWORLD
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
-    vec3 sceneLighting = mix(ambientCol, lightCol, fullShadow * shadowMult);
+    float rainFactor = 1.0 - rainStrength * 0.25;
+    lightmap.y *= rainFactor;
+    vec3 sceneLighting = mix(ambientCol * rainFactor, lightCol * rainFactor, fullShadow * shadowMult);
     sceneLighting *= (4.0 - 3.0 * lightmap.y) * lightmap.y * (1.0 + scattering * shadow);
     if (isEyeInWater == 0) sceneLighting *= pow(lightmap.y, 3.0); //light leaking fix
     #endif

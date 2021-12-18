@@ -166,6 +166,7 @@ void main() {
     /* DRAWBUFFERS:04 */
 	gl_FragData[1] = vec4(cloud.a, 0.0, 0.0, 0.0);
     #endif
+	
 }
 
 #endif

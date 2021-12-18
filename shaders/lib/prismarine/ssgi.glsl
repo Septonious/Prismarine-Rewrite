@@ -181,6 +181,6 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
         }
     }
 
-    return illumination;
+    return pow(illumination, vec3(0.5));
 }
 #endif

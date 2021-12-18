@@ -45,7 +45,10 @@ uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
-uniform sampler2D noisetex;
+
+//#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD 
+//uniform sampler2D colortex8;
+//#endif
 
 //Optifine Constants//
 const bool colortex1MipmapEnabled = true;
@@ -84,8 +87,14 @@ void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
-	vec3 vl = BoxBlur(colortex1, 0.01, texCoord);
-	
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+	vec3 vl = BoxBlur(colortex1, 0.005, texCoord);
+	#endif
+
+	//#if defined OVERWORLD && defined VOLUMETRIC_CLOUDS
+	//color.rgb += BoxBlur(colortex8, 0.005, texCoord);
+	//#endif
+
 	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
 		 viewPos /= viewPos.w;
 
@@ -95,11 +104,11 @@ void main() {
 	vec3 lightshaftDay      = vec3(LIGHTSHAFT_DR, LIGHTSHAFT_DG, LIGHTSHAFT_DB) * LIGHTSHAFT_DI / 255.0;
 	vec3 lightshaftEvening  = vec3(LIGHTSHAFT_ER, LIGHTSHAFT_EG, LIGHTSHAFT_EB) * LIGHTSHAFT_EI / 255.0;
 	vec3 lightshaftNight    = vec3(LIGHTSHAFT_NR, LIGHTSHAFT_NG, LIGHTSHAFT_NB) * LIGHTSHAFT_NI * 0.3 / 255.0;
-	vec3 lightshaftSun     = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
-	vec3 lightshaftCol  = CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
+	vec3 lightshaftSun      = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
+	vec3 lightshaftCol  	= CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
 	float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.25, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
 	if (isEyeInWater == 1) visibility0 = 1.0;
 
 	if (visibility0 > 0){

@@ -545,7 +545,7 @@ void main() {
 			float absorbDist = 0.0;
 
 			if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)){
-				absorbColor = normalize(waterColor.rgb * WATER_I) * terrainColor * terrainColor * 8.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
+				absorbColor = normalize(waterColor.rgb * WATER_I) * terrainColor * terrainColor * 6.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
 				absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
 			}
 			if (glass > 0.5){
@@ -559,7 +559,7 @@ void main() {
 			newAlbedo *= newAlbedo;
 
 			float absorb = (1.0 - albedo.a);
-			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness * eBS);
+			absorb = sqrt(absorb * (1.0 - rainStrength) * clampTimeBrightness * lightmap.y);
 
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}

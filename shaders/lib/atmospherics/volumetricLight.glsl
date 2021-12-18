@@ -19,7 +19,7 @@ vec4 GetShadowSpace(vec4 wpos) {
 }
 
 //Light shafts from Robobo1221 (modified)
-vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dither, float visibility) {
+vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dither, float visibility0) {
 	vec3 vl = vec3(0.0);
 
 	#ifdef LIGHTSHAFT_CLOUDY_NOISE
@@ -38,7 +38,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	float visfactor = 0.05 * (-0.1 * timeBrightness + 1.0) * (1.0 - rainStrength);
 	float invvisfactor = 1.0 - visfactor;
 
-	visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
+	float visibility = visfactor / (1.0 - invvisfactor * visibility0) - visfactor;
 	visibility = clamp(visibility * 1.015 / invvisfactor - 0.015, 0.0, 1.0);
 	visibility = clamp(visibility + isEyeInWater, 0.0, 1.0);
 	visibility = mix(1.0, visibility, 0.25 * 1 + 0.75) * 0.14285 * float(pixeldepth0 > 0.56);
@@ -61,6 +61,11 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 		for(int i = 0; i <= LIGHTSHAFT_SAMPLES; i++) {
 			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE;
 				  minDist *= 1.0 - (isEyeInWater * 0.75);
+
+			if (visibility0 < 0.6 && isEyeInWater != 1.0){
+				if (depth0 < minDist && color.r < 0.25 && color.b > color.r) visibility = 1.0;
+				else break;
+			}
 
             #ifdef DO_NOT_CLICK
             minDist = 0.0;
@@ -92,13 +97,13 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 				#endif
 				vec3 shadow = shadowCol * (1.0 - shadow0) + shadow0;
 
-				if (depth0 < minDist && cameraPosition.y < LIGHTSHAFT_HEIGHT + 25) shadow *= color;
-				else if (isEyeInWater == 1.0) shadow *= watercol * 64.0;
+				if (depth0 < minDist) shadow *= color;
+				else if (isEyeInWater == 1.0 || depth0 < minDist) shadow *= watercol * 64.0;
 
 				vec3 pos = worldposition.xyz + cameraPosition.xyz;
 
 				#if defined LIGHTSHAFT_CLOUDY_NOISE && defined OVERWORLD
-				if (isEyeInWater != 1.0){
+				if (isEyeInWater != 1.0 && depth0 > minDist){
 					#ifdef WORLD_CURVATURE
 					if (length(worldposition.xz) < WORLD_CURVATURE_SIZE) worldposition.y += length(worldposition.xz) * length(worldposition.xyz) / WORLD_CURVATURE_SIZE;
 					else break;
@@ -108,7 +113,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 					shadow *= noise;
 				}
 				#else
-				float sampleHeight = pow(abs(100.0 - pos.y) / 16.0, 2.0);
+				float sampleHeight = pow(abs(LIGHTSHAFT_HEIGHT - pos.y) / 16.0, 2.0);
 					  sampleHeight = clamp(2.0 - (1.0 + sampleHeight), 0.0, 1.0);
 				shadow *= sampleHeight * 0.05;
 				#endif

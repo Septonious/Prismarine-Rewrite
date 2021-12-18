@@ -82,8 +82,8 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	vec3 vcDownSun = CalcSunColor(vcDownMorning, vcDownDay * getBiomeColor(vcDownDay), vcDownEvening);
 	#endif
 
-	vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.3);
-	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.3);
+	vec3 vcloudsCol     = CalcLightColor(vcSun * vcSun, vcNight * vcNight, weatherCol.rgb * 0.14);
+	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.34);
 
 
 
@@ -96,6 +96,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 	float maxDist = 256.0 * VCLOUDS_RANGE;
 	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
+	float rainFactor = 1.0 - rainStrength * 0.8;
 
 	for (minDist; minDist < maxDist; minDist += VCLOUDS_QUALITY) {
 		if (depth1 < minDist){
@@ -127,9 +128,14 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			float density = pow(smoothstep(height + stretching * noise, height - stretching * noise, wpos.y), 0.4);
 
 			//Color calculation and lighting
-			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering) * vcloudsCol, vcloudsDownCol, noise * density), noise);
-			cloudsColor.a *= 1.0 - isEyeInWater * 0.5;
+			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering * rainFactor), vcloudsDownCol, noise * density), noise);
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
+
+			//Underwater fix
+			if (isEyeInWater == 1){
+				float clampEyeBrightness = clamp(eBS, 0.1, 1.0);
+				cloudsColor *= clampEyeBrightness * 0.5;
+			}
 
 			//Translucency blending, works half correct
 			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT - 10){
@@ -142,5 +148,5 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	}
 
 	//Output
-	color = mix(color, finalColor.rgb, finalColor.a);
+	color = mix(color, finalColor.rgb * rainFactor, finalColor.a);
 }

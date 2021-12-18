@@ -11,11 +11,7 @@ uniform sampler2D colortex8;
 #endif
 
 float InterleavedGradientNoiseVL() {
-	#ifdef BLUE_NOISE_DITHER
-	float n = texelFetch2D(colortex8, ivec2(gl_FragCoord.xy) & 255, 0).r;
-	#else
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
-	#endif
 
 	#ifdef TAA
 	n = fract(n + frameCounter / 8.0);
