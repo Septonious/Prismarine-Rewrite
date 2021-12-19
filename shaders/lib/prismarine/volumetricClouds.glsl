@@ -83,7 +83,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	#endif
 
 	vec3 vcloudsCol     = CalcLightColor(vcSun * vcSun, vcNight * vcNight, weatherCol.rgb * 0.14);
-	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.34);
+	vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.37);
 
 
 

@@ -31,6 +31,10 @@ uniform float timeBrightness, timeAngle, rainStrength;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #endif
 
+#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+uniform sampler2D colortex11;
+#endif
+
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
 
@@ -110,6 +114,10 @@ vec2 dofOffsets[60] = vec2[60](
 #include "/lib/prismarine/timeCalculations.glsl"
 #endif
 
+#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+#include "/lib/prismarine/blur.glsl"
+#endif
+
 //Common Functions//
 vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	vec3 dof = vec3(0.0);
@@ -155,21 +163,13 @@ vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	return dof;
 }
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
-uniform sampler2D colortex6, colortex9, colortex11, colortex12, noisetex;
-
-#include "/lib/util/encode.glsl"
-#include "/lib/prismarine/ssgi.glsl"
-#endif
-
 //Program//
 void main() {
 	vec3 color = texture2D(colortex0, texCoord).rgb;
 
+    #if defined DOF || (defined FOG_BLUR && defined OVERWORLD) || defined DISTANT_BLUR
     float z0 = texture2D(depthtex0, texCoord.xy).r;
 	vec4 screenPos = vec4(texCoord.x, texCoord.y, z0, 1.0);
-
-    #if defined DOF || (defined FOG_BLUR && defined OVERWORLD) || defined DISTANT_BLUR
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
 
@@ -191,16 +191,16 @@ void main() {
     #ifdef DISTANT_BLUR
     #endif
 
-    #if defined SSGI && !defined ADVANCED_MATERIALS
-    vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
-    vec3 gi = computeGI(screenPos.xyz, normal, float(z0 < 0.56));
-    /*RENDERTARGETS:0,11*/
+	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH * 2.0, texCoord);
+
+	/* RENDERTARGETS:0,11 */
 	gl_FragData[0] = vec4(color, 1.0);
-    gl_FragData[1] = vec4(gi, 1.0);
-    #else
+	gl_FragData[1] = vec4(gi, 1.0);
+	#else
     /*DRAWBUFFERS:0*/
     gl_FragData[0] = vec4(color, 1.0);
-    #endif
+	#endif
 }
 
 #endif

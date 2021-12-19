@@ -267,11 +267,13 @@ void main() {
 		} else if (mat > 112.9 && mat < 113.1) { // Brewing Stand
 			iEmissive = float(albedo.r > 0.65) * 0.5 * GLOW_STRENGTH;
 		} else if (mat > 113.9 && mat < 114.1) { // Glow berries
-			iEmissive = 16.0;
+			iEmissive = float(albedo.r > albedo.g || albedo.r > albedo.b) * GLOW_STRENGTH;
+		} else if (mat > 114.9 && mat < 115.1) { // Torches
+			iEmissive = 32.0;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
-			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.2;
+			iEmissive = float(albedo.b > albedo.g || albedo.r > albedo.g) * GLOW_STRENGTH * 0.1;
 		}
 		#endif
 		emissive += iEmissive;
@@ -512,7 +514,7 @@ void main() {
 
 	#if defined SSGI && !defined ADVANCED_MATERIALS
 	/* RENDERTARGETS:0,6,9,12 */
-	gl_FragData[1] = vec4(normal * 0.5 + 0.5, 1.0);
+	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
 	gl_FragData[2] = vec4(emissive + lava);
 	gl_FragData[3] = albedo;
 	#endif
@@ -667,6 +669,7 @@ void main() {
 	if (mc_Entity.x == 20012) mat = 112.0;
 	if (mc_Entity.x == 20013) mat = 113.0;
 	if (mc_Entity.x == 20014) mat = 114.0;
+	if (mc_Entity.x == 20015) mat = 115.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 

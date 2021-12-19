@@ -107,13 +107,12 @@ void ContrastAdaptiveSharpening(out vec3 outColor){
     maxGreen = max(maxGreen, newColor.g);
     minGreen = min(minGreen, newColor.g);
     modifiedColor += newColor;
-    float adaptiveSharpening = 0.0;
     maxGreen = max(0.0, maxGreen);
 
-    adaptiveSharpening = minGreen / maxGreen;
+    float adaptiveSharpening = minGreen / maxGreen;
 
     adaptiveSharpening = sqrt(max(0.0, adaptiveSharpening));
-    adaptiveSharpening *= mix(-0.125, -0.2, 1.0);
+    adaptiveSharpening *= mix(-0.125, -0.2, 0.5);
     outColor = (originalColor + modifiedColor * adaptiveSharpening) / (1.0 + 4.0 * adaptiveSharpening);
 }
 #endif

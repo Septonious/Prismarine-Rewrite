@@ -9,7 +9,7 @@ vec3 fogcolorEvening    = vec3(FOGCOLOR_ER,   FOGCOLOR_EG,   FOGCOLOR_EB)   * FO
 vec3 fogcolorNight      = vec3(FOGCOLOR_NR,   FOGCOLOR_NG,   FOGCOLOR_NB)   * FOGCOLOR_NI * 0.3 / 255.0;
 
 vec3 fogcolorSun    = CalcSunColor(fogcolorMorning, fogcolorDay, fogcolorEvening);
-vec3 fogColorC    	= CalcLightColor(fogcolorSun, fogcolorNight, weatherCol.rgb);
+vec3 fogColorC    	= CalcLightColor(fogcolorSun, fogcolorNight, weatherCol.rgb * 0.3);
 
 float mefade0 = 1.0 - clamp(abs(timeAngle - 0.5) * 8.0 - 1.5, 0.0, 1.0);
 float dfade0 = 1.0 - timeBrightness;
@@ -122,15 +122,15 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
     );
     fog *= fog;
 
-    float scattering = pow(VoL * shadowFade * 0.5 + 0.5, 6.0);
+    float scattering = pow(VoL * shadowFade * 0.5 + 0.5, 6.0) * (1.0 - rainStrength * 0.8);
 
 	float nightGradient = exp(-(VoU * 0.5 + 0.5) * 0.35 / nightDensity);
     vec3 nightFog = fogcolorNight * fogcolorNight * nightGradient * nightExposure;
     fog = mix(nightFog, fog, sunVisibility * sunVisibility);
 
     float rainGradient = exp(-(VoU * 0.5 + 0.5) * 0.125 / weatherDensity);
-    vec3 weatherFog = weatherCol.rgb * weatherCol.rgb;
-    weatherFog *= GetLuminance(ambientCol / (weatherFog)) * (0.2 * sunVisibility + 0.2) * (1 + scattering);
+    vec3 weatherFog = weatherCol.rgb * weatherCol.rgb * 0.1;
+    weatherFog *= GetLuminance(weatherFog / weatherFog) * (0.2 * sunVisibility + 0.2) * (1.0 + scattering);
     fog = mix(fog, weatherFog * rainGradient, rainStrength);
 
 	return fog;

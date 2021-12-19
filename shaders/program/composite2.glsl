@@ -23,6 +23,10 @@ uniform mat4 gbufferModelView, gbufferPreviousModelView, gbufferModelViewInverse
 uniform sampler2D colortex0, noisetex;
 uniform sampler2D depthtex1;
 
+#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+uniform sampler2D colortex11;
+#endif
+
 //Common Functions//
 vec3 MotionBlur(vec3 color, float z, float dither) {
 	float hand = float(z < 0.56);
@@ -71,9 +75,13 @@ vec3 MotionBlur(vec3 color, float z, float dither) {
 #include "/lib/util/outlineDepth.glsl"
 #endif
 
+#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+#include "/lib/prismarine/blur.glsl"
+#endif
+
 //Program//
 void main() {
-    vec3 color = texture2DLod(colortex0, texCoord, 0.0).rgb;
+    vec3 color = texture2D(colortex0, texCoord).rgb;
 	
 	#ifdef MOTION_BLUR
 	float z = texture2D(depthtex1, texCoord.st).x;
@@ -86,8 +94,16 @@ void main() {
 	color = MotionBlur(color, z, dither);
 	#endif
 	
-	/*DRAWBUFFERS:0*/
-	gl_FragData[0] = vec4(color,1.0);
+	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH, texCoord);
+
+	/* RENDERTARGETS:0,11 */
+	gl_FragData[0] = vec4(color, 1.0);
+	gl_FragData[1] = vec4(gi, 1.0);
+	#else
+    /*DRAWBUFFERS:0*/
+    gl_FragData[0] = vec4(color, 1.0);
+	#endif
 }
 
 #endif

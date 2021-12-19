@@ -46,9 +46,9 @@ uniform sampler2D depthtex1;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 
-//#if defined VOLUMETRIC_CLOUDS && defined OVERWORLD 
-//uniform sampler2D colortex8;
-//#endif
+#if defined SSGI && !defined ADVANCED_MATERIALS
+uniform sampler2D colortex6, colortex9, colortex11, colortex12;
+#endif
 
 //Optifine Constants//
 const bool colortex1MipmapEnabled = true;
@@ -82,6 +82,11 @@ float GetLuminance(vec3 color) {
 
 #include "/lib/prismarine/blur.glsl"
 
+#if defined SSGI && !defined ADVANCED_MATERIALS
+#include "/lib/util/encode.glsl"
+#include "/lib/prismarine/ssgi.glsl"
+#endif
+
 //Program//
 void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
@@ -95,8 +100,9 @@ void main() {
 	//color.rgb += BoxBlur(colortex8, 0.005, texCoord);
 	//#endif
 
-	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord.xy, pixeldepth0, 1.0) * 2.0 - 1.0);
-		 viewPos /= viewPos.w;
+	vec4 screenPos = vec4(texCoord.x, texCoord.y, pixeldepth0, 1.0);
+	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
+	viewPos /= viewPos.w;
 
 	#ifdef OVERWORLD
 	#ifdef VOLUMETRIC_LIGHT
@@ -138,8 +144,18 @@ void main() {
 	color.rgb += vl;
 	#endif
 
-	/* DRAWBUFFERS:0 */
+    #if defined SSGI && !defined ADVANCED_MATERIALS
+    vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
+    vec3 gi = computeGI(screenPos.xyz, normal, float(pixeldepth0 < 0.56));
+
+    /*RENDERTARGETS:0,11*/
 	gl_FragData[0] = color;
+    gl_FragData[1] = vec4(gi, 1.0);
+
+    #else
+    /*DRAWBUFFERS:0*/
+    gl_FragData[0] = color;
+    #endif
 }
 
 #endif

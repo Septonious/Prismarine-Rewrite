@@ -39,7 +39,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     lightmap.y *= rainFactor;
     vec3 sceneLighting = mix(ambientCol * rainFactor, lightCol * rainFactor, fullShadow * shadowMult);
     sceneLighting *= (4.0 - 3.0 * lightmap.y) * lightmap.y * (1.0 + scattering * shadow);
-    if (isEyeInWater == 0) sceneLighting *= pow(lightmap.y, 3.0); //light leaking fix
+    if (isEyeInWater == 0) sceneLighting *= lightmap.y * lightmap.y * lightmap.y * lightmap.y; //light leaking fix
     #endif
 
     #ifdef END

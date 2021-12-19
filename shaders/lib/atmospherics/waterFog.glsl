@@ -4,6 +4,7 @@ uniform vec3 fogColor;
 
 vec4 GetWaterFog(vec3 viewPos) {
     float clampEyeBrightness = clamp(eBS, 0.1, 1.0);
+    float clampTimeBrightness = pow(clamp(timeBrightness, 0.1, 1.0), 2.0);
     float fog = length(viewPos) / waterFogRange;
     fog = 1.0 - exp(-3.0 * fog);
     
@@ -22,7 +23,7 @@ vec4 GetWaterFog(vec3 viewPos) {
     waterFogColor *= 1.0 - blindFactor;
 
     #ifdef OVERWORLD
-    vec3 waterFogTint = lightCol * shadowFade * (4.0 - timeBrightness - timeBrightness);
+    vec3 waterFogTint = lightCol * shadowFade * (clampTimeBrightness + clampTimeBrightness);
     #endif
     #ifdef NETHER
     vec3 waterFogTint = netherCol.rgb;
