@@ -38,7 +38,7 @@ float getCloudNoise(vec3 pos){
 	return mix(a, b, v.y);
 	#endif
 }
-
+const vec4 cloudGradient = vec4(0.2, 0.2, 0.85, 0.2);
 float getCloudSample(vec3 pos, float height, float stretching){
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
@@ -57,6 +57,7 @@ float getCloudSample(vec3 pos, float height, float stretching){
 	float noiseB = clamp(noiseA * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
 	float density = pow(smoothstep(height + stretching * noiseB, height - stretching * noiseB, pos.y), 0.25);
 	sampleHeight = pow(sampleHeight, 8.0 * (1.5 - density) * (1.5 - density));
+
 
 	//Output
 	return clamp(noiseA * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
@@ -96,7 +97,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 	float maxDist = 256.0 * VCLOUDS_RANGE;
 	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
-	float rainFactor = 1.0 - rainStrength * 0.8;
+	float rainFactor = 1.0 - rainStrength * 0.55;
 
 	for (minDist; minDist < maxDist; minDist += VCLOUDS_QUALITY) {
 		if (depth1 < minDist){

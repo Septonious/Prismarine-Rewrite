@@ -93,7 +93,7 @@ void main() {
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	vec3 vl = BoxBlur(colortex1, 0.005, texCoord);
+	vec3 vl = BoxBlur(colortex1, 0.01, texCoord);
 	#endif
 
 	//#if defined OVERWORLD && defined VOLUMETRIC_CLOUDS
@@ -115,7 +115,7 @@ void main() {
 
 	float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
 	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
-	if (isEyeInWater == 1) visibility0 = 1.0;
+	if (isEyeInWater == 1) visibility0 = 1.0 - rainStrength;
 
 	if (visibility0 > 0){
 		vec3 lightshaftWater = vec3(LIGHTSHAFT_WR, LIGHTSHAFT_WG, LIGHTSHAFT_WB) * LIGHTSHAFT_WI / 255.0;

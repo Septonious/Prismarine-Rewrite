@@ -63,7 +63,7 @@ vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view) {
 	vec3 minclr = RGBToYCoCg(color);
 	vec3 maxclr = minclr;
 
-	for(int i = 0; i < 8; i++) {
+	for(int i = 0; i < 16; i++) {
 		vec2 offset = neighbourhoodOffsets[i] * view;
 		vec3 clr = texture2DLod(colortex1, texCoord + offset, 0.0).rgb;
 

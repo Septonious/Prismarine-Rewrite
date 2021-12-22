@@ -3,7 +3,7 @@
 #if defined SSGI && !defined ADVANCED_MATERIALS
 
 //Constants
-#define TAU    6.28318530
+#define TAU 6.28318530
 
 //Noise
 const uint k = 1103515245U;
@@ -113,10 +113,9 @@ bool IntersectSSRay(inout vec3 position, vec3 startVS, vec3 rayDirection, float 
 	}
 
 	if (hit) {
-
 		bool refhit = true;
 		float refstride = stride;
-		for (int i = 0; i < (2 ^ stride); ++i) {
+		for (int i = 0; i < (2 ^ stride); i++) {
 			t += (refhit && t > 0.0 ? -1.0 : 1.0) * (refstride *= 0.5);
 			position = rayOrigin + t * rayStep;
 

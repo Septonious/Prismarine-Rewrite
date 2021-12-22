@@ -8,8 +8,15 @@ vec3 fogcolorDay        = vec3(FOGCOLOR_DR,   FOGCOLOR_DG,   FOGCOLOR_DB)   * FO
 vec3 fogcolorEvening    = vec3(FOGCOLOR_ER,   FOGCOLOR_EG,   FOGCOLOR_EB)   * FOGCOLOR_EI / 255.0;
 vec3 fogcolorNight      = vec3(FOGCOLOR_NR,   FOGCOLOR_NG,   FOGCOLOR_NB)   * FOGCOLOR_NI * 0.3 / 255.0;
 
+vec3 fogcolorMorning2    = vec3(FOGCOLOR2_MR,   FOGCOLOR2_MG,   FOGCOLOR2_MB)   * FOGCOLOR2_MI / 255.0;
+vec3 fogcolorDay2        = vec3(FOGCOLOR2_DR,   FOGCOLOR2_DG,   FOGCOLOR2_DB)   * FOGCOLOR2_DI / 255.0;
+vec3 fogcolorEvening2    = vec3(FOGCOLOR2_ER,   FOGCOLOR2_EG,   FOGCOLOR2_EB)   * FOGCOLOR2_EI / 255.0;
+vec3 fogcolorNight2      = vec3(FOGCOLOR2_NR,   FOGCOLOR2_NG,   FOGCOLOR2_NB)   * FOGCOLOR2_NI * 0.3 / 255.0;
+
 vec3 fogcolorSun    = CalcSunColor(fogcolorMorning, fogcolorDay, fogcolorEvening);
 vec3 fogColorC    	= CalcLightColor(fogcolorSun, fogcolorNight, weatherCol.rgb * 0.3);
+vec3 fogcolorSun2    = CalcSunColor(fogcolorMorning2, fogcolorDay2, fogcolorEvening2);
+vec3 fogColorC2    	= CalcLightColor(fogcolorSun2, fogcolorNight2, weatherCol.rgb * 0.3);
 
 float mefade0 = 1.0 - clamp(abs(timeAngle - 0.5) * 8.0 - 1.5, 0.0, 1.0);
 float dfade0 = 1.0 - timeBrightness;
@@ -44,9 +51,11 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 
 	float densitySun = CalcFogDensity(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY);
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
+
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
-	if (isEyeInWater == 1) density *= 0.0;
+	density *= 1.0 - isEyeInWater;
+
     float nightDensity = NIGHT_FOG_DENSITY;
     float weatherDensity = WEATHER_FOG_DENSITY;
     float exposure = exp2(timeBrightness * 0.75 - 1.00);
@@ -55,7 +64,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 	float baseGradient = exp(-(VoU * 0.5 + 0.5) * 0.5 / density);
 
 	vec3 fog = vec3(0.0);
-	fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC;
+	fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC2;
 
 	if (!layer){
 		#if FOG_COLOR_MODE == 1
@@ -90,7 +99,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
     float lightMix = (1.0 - (1.0 - sunMix) * (1.0 - horizonMix)) * lViewPos;
 
 	vec3 lightFog = vec3(0.0);
-	lightFog = pow(fogcolorSun, vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
+	lightFog = pow(fogcolorSun2, vec3(4.0 - sunVisibility)) * baseGradient * FOG_I;
 
 	if (!layer){
 		#if FOG_COLOR_MODE == 1

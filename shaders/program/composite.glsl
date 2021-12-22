@@ -181,7 +181,7 @@ void main() {
 	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
 	#endif
 	#ifdef VOLUMETRIC_LIGHT
-	if (isEyeInWater == 1) visibility = 1.0;
+	if (isEyeInWater == 1) visibility = 1.0 - rainStrength;
 	#endif
 	#else
 	#ifdef NETHER_SMOKE

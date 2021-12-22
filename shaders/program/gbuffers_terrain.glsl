@@ -269,7 +269,9 @@ void main() {
 		} else if (mat > 113.9 && mat < 114.1) { // Glow berries
 			iEmissive = float(albedo.r > albedo.g || albedo.r > albedo.b) * GLOW_STRENGTH;
 		} else if (mat > 114.9 && mat < 115.1) { // Torches
-			iEmissive = 32.0;
+			iEmissive = GLOW_STRENGTH * GLOW_STRENGTH;
+		} else if (mat > 115.9 && mat < 116.1) { // Lantern
+			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
@@ -640,7 +642,7 @@ void main() {
 	if (mc_Entity.x == 10208)
 		mat = 5.0;
 
-	if (mc_Entity.x == 10201 || mc_Entity.x == 10205 || mc_Entity.x == 10206)
+	if (mc_Entity.x == 10201 || mc_Entity.x == 10205)
 		recolor = 1.0;
 
 	if (mc_Entity.x == 10202)
@@ -670,6 +672,7 @@ void main() {
 	if (mc_Entity.x == 20013) mat = 113.0;
 	if (mc_Entity.x == 20014) mat = 114.0;
 	if (mc_Entity.x == 20015) mat = 115.0;
+	if (mc_Entity.x == 10206) mat = 116.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 

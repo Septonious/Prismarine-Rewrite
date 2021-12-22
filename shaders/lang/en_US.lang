@@ -50,6 +50,10 @@ screen.FOGCOLOR_M=Fog (Morning)
 screen.FOGCOLOR_D=Fog (Day)
 screen.FOGCOLOR_E=Fog (Evening)
 screen.FOGCOLOR_N=Fog (Night)
+screen.FOGCOLOR2_M=2nd Fog Layer (Morning)
+screen.FOGCOLOR2_D=2nd Fog Layer (Day)
+screen.FOGCOLOR2_E=2nd Fog Layer (Evening)
+screen.FOGCOLOR2_N=2nd Fog Layer (Night)
 screen.LIGHTSHAFTAMBIENT_M=Ambient Fog (Morning)
 screen.LIGHTSHAFTAMBIENT_D=Ambient Fog (Day)
 screen.LIGHTSHAFTAMBIENT_E=Ambient Fog (Evening)
@@ -804,6 +808,26 @@ option.VCLOUDDOWN_NR=Red
 option.VCLOUDDOWN_NG=Green
 option.VCLOUDDOWN_NB=Blue
 option.VCLOUDDOWN_NI=Intensity
+
+option.FOGCOLOR2_MR=Red
+option.FOGCOLOR2_MG=Green
+option.FOGCOLOR2_MB=Blue
+option.FOGCOLOR2_MI=Intensity
+
+option.FOGCOLOR2_DR=Red
+option.FOGCOLOR2_DG=Green
+option.FOGCOLOR2_DB=Blue
+option.FOGCOLOR2_DI=Intensity
+
+option.FOGCOLOR2_ER=Red
+option.FOGCOLOR2_EG=Green
+option.FOGCOLOR2_EB=Blue
+option.FOGCOLOR2_EI=Intensity
+
+option.FOGCOLOR2_NR=Red
+option.FOGCOLOR2_NG=Green
+option.FOGCOLOR2_NB=Blue
+option.FOGCOLOR2_NI=Intensity
 
 option.FOGCOLOR_MR=Red
 option.FOGCOLOR_MG=Green
