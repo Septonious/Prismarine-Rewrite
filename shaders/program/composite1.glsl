@@ -63,6 +63,7 @@ float frametime = frameTimeCounter*ANIMATION_SPEED;
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
+float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
 
 float GetLuminance(vec3 color) {
 	return dot(color,vec3(0.299, 0.587, 0.114));
@@ -117,7 +118,7 @@ void main() {
 	vec3 lightshaftSun      = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  	= CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * eBS;
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave);
 	if (isEyeInWater == 1) visibility0 = 1.0 - rainStrength;
 
 	if (visibility0 > 0){

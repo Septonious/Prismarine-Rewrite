@@ -70,7 +70,7 @@ void main() {
 	     blur += BloomTile(6.0, bloomCoord, vec2(0.645    , 0.3325));
 	     blur += BloomTile(7.0, bloomCoord, vec2(0.670625 , 0.3325));
 		
-		 blur = clamp(blur + (Bayer64(gl_FragCoord.xy) - 0.5) / 384.0, vec3(0.0), vec3(1.0));
+		 blur = clamp(blur, vec3(0.0), vec3(1.0));
 
 	#if defined SSGI && !defined ADVANCED_MATERIALS
 	vec3 color = texture2D(colortex0, texCoord).rgb;

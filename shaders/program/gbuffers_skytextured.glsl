@@ -83,17 +83,17 @@ void main() {
 
 	#ifdef OVERWORLD
 	albedo *= color;
-	albedo.rgb = pow(albedo.rgb,vec3(2.2)) * SKYBOX_BRIGHTNESS * albedo.a;
+	albedo.rgb = pow(albedo.rgb, vec3(2.2)) * SKYBOX_BRIGHTNESS * albedo.a;
 
-	#ifdef SKY_DESATURATION
-    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight,vec3(1.6)) * 4.0;
+	#if defined SKY_DESATURATION && defined OVERWORLD
+    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight, vec3(1.6)) * 4.0;
 	albedo.rgb = mix(desat, albedo.rgb, sunVisibility);
 	#endif
 	#endif
 
 	#ifdef END
-	albedo.rgb = albedo.rgb *= 0.5 * endCol.rgb;
-	albedo.rgb = GetLuminance(albedo.rgb) * albedo.rgb;
+	albedo.rgb = 0.5 * endCol.rgb;
+	albedo.rgb *= GetLuminance(albedo.rgb);
 
 	#ifdef END_STARS
 	#ifdef SMALL_STARS
@@ -134,7 +134,7 @@ uniform float timeAngle;
 
 uniform mat4 gbufferModelView;
 
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 uniform int frameCounter;
 
 uniform float viewWidth;
@@ -157,7 +157,7 @@ void main() {
 	
 	gl_Position = ftransform();
 	
-	#ifdef TAA
+	#if defined TAA && defined OVERWORLD
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

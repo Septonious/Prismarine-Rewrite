@@ -45,7 +45,7 @@ void main() {
 	color = FXAA311(color);
     #endif
 
-    #ifdef TAA
+    #if defined TAA && defined OVERWORLD
     vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
     prev = TemporalAA(color, prev.r);
     #endif

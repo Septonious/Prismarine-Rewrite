@@ -56,6 +56,10 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 	if (layer) density *= SECOND_LAYER_DENSITY;
 	density *= 1.0 - isEyeInWater;
 
+	#ifdef OVERWORLD
+	float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.25, 1.0);
+	#endif
+
     float nightDensity = NIGHT_FOG_DENSITY;
     float weatherDensity = WEATHER_FOG_DENSITY;
     float exposure = exp2(timeBrightness * 0.75 - 1.00);
@@ -66,7 +70,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 	vec3 fog = vec3(0.0);
 	fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC2;
 
-	if (!layer){
+	if (!layer && isEyeInCave > 0.8){
 		#if FOG_COLOR_MODE == 1
 		fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC;
 		#elif FOG_COLOR_MODE == 0
@@ -75,6 +79,8 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 		#elif FOG_COLOR_MODE == 2
 		fog = getBiomeColor(fogColorC) * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I;
 		#endif
+	} else {
+		fog = minLightCol.rgb * baseGradient * 2.0;
 	}
 
 
@@ -190,11 +196,12 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	if (isEyeInWater != 2.0){
 		float vanillaFog = 1.0 - (far - fogFactor) * 4.0 / ((FOG_DENSITY + pow(isEyeInWater * 1.25, 4.0)) * far);
 		vanillaFog = clamp(vanillaFog, 0.0, 1.0);
+		
 		#ifdef OVERWORLD
-		vanillaFog *= clamp(cameraPosition.y * 0.01, 0.01, 1.0);
+		vanillaFog *= isEyeInCave * isEyeInCave * isEyeInCave;
 		#endif
 	
-		if (vanillaFog > 0.0){
+		if (vanillaFog > 0.0 && isEyeInCave > 0.25){
 			vec3 vanillaFogColor = vec3(0.0);
 			vanillaFogColor = GetSkyColor(viewPos, false);
 			vanillaFogColor *= 1.0 + nightVision;

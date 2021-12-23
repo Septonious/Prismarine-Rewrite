@@ -160,6 +160,11 @@ void main() {
 	#endif
 	#endif
 	
+	#ifdef OVERWORLD
+    float isEyeInCave0 = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
+    albedo.rgb *= isEyeInCave0 * isEyeInCave0 * isEyeInCave0;
+	#endif
+
     /* DRAWBUFFERS:0 */
 	gl_FragData[0] = vec4(albedo, 1.0 - star);
     #if defined OVERWORLD && defined PLANAR_CLOUDS

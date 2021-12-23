@@ -105,7 +105,7 @@ float InterleavedGradientNoise() {
 #include "/lib/lighting/forwardLighting.glsl"
 #include "/lib/surface/ggx.glsl"
 
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -162,7 +162,7 @@ void main() {
 		emission *= dot(albedo.rgb, albedo.rgb) * 0.333;
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-		#ifdef TAA
+		#if defined TAA && defined OVERWORLD
 		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
@@ -358,7 +358,7 @@ uniform vec3 cameraPosition;
 
 uniform mat4 gbufferModelView, gbufferModelViewInverse;
 
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 uniform int frameCounter;
 
 uniform float viewWidth, viewHeight;
@@ -380,7 +380,7 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
 //Includes//
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -436,7 +436,7 @@ void main() {
 	gl_Position = ftransform();
     #endif
 	
-	#ifdef TAA
+	#if defined TAA && defined OVERWORLD
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

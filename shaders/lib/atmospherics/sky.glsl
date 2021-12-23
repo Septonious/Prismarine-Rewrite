@@ -92,6 +92,9 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     sky = mix(sky, weatherSky * rainGradient, rainStrength);
     #endif
 
+    float isEyeInCave1 = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
+    sky.rgb *= isEyeInCave1 * isEyeInCave1 * isEyeInCave1;
+
     sky *= ground;
 
     return sky;

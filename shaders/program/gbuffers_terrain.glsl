@@ -125,7 +125,7 @@ float InterleavedGradientNoise() {
 #include "/lib/lighting/forwardLighting.glsl"
 #include "/lib/surface/ggx.glsl"
 
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -213,7 +213,7 @@ void main() {
 		float candle   = float(mat > 4.98 && mat < 5.02);
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-		#ifdef TAA
+		#if defined TAA && defined OVERWORLD
 		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
@@ -225,7 +225,8 @@ void main() {
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
-            iEmissive = sqrt(ore) * GLOW_STRENGTH;
+            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.1;
+			giEmissive = sqrt(ore) * GLOW_STRENGTH * 2.0;
         } else if (mat > 100.9 && mat < 101.1){ // Crying Obsidian and Respawn Anchor
 			iEmissive = (albedo.b - albedo.r) * albedo.r * GLOW_STRENGTH;
             iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH;
@@ -289,7 +290,7 @@ void main() {
 		#ifdef EMISSIVE_CONCRETE
 		if (mat > 9998.9 && mat < 9999.1) emissive = 16.0;
 		#endif
-		if (mat > 9997.9 && mat < 9998.1) giEmissive = lightmap.y;
+		if (mat > 9997.9 && mat < 9998.1) giEmissive = lightmap.y * timeBrightness;
 		#endif
 
 		float metalness      = 0.0;
@@ -566,7 +567,7 @@ uniform vec3 cameraPosition;
 
 uniform mat4 gbufferModelView, gbufferModelViewInverse;
 
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 uniform int frameCounter;
 
 uniform float viewWidth, viewHeight;
@@ -590,7 +591,7 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 //Includes//
 #include "/lib/vertex/waving.glsl"
 
-#ifdef TAA
+#if defined TAA && defined OVERWORLD
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -703,7 +704,7 @@ void main() {
 
 	gl_Position = gl_ProjectionMatrix * gbufferModelView * position;
 	
-	#ifdef TAA
+	#if defined TAA && defined OVERWORLD
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

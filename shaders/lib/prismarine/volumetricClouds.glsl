@@ -94,7 +94,6 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 	float depth0 = GetLinearDepth2(pixeldepth0);
 	float depth1 = GetLinearDepth2(pixeldepth1);
-
 	float maxDist = 256.0 * VCLOUDS_RANGE;
 	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
 	float rainFactor = 1.0 - rainStrength * 0.55;
@@ -130,7 +129,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 			//Color calculation and lighting
 			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering * rainFactor), vcloudsDownCol, noise * density), noise);
-			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY;
+			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY * isEyeInCave;
 
 			//Underwater fix
 			if (isEyeInWater == 1){
@@ -147,6 +146,8 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 		}
 
 	}
+
+	finalColor *= isEyeInCave * isEyeInCave * isEyeInCave;
 
 	//Output
 	color = mix(color, finalColor.rgb * rainFactor, finalColor.a);

@@ -53,6 +53,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 		
 		float depth0 = GetLinearDepth2(pixeldepth0);
 		float depth1 = GetLinearDepth2(pixeldepth1);
+		
 		vec4 worldposition = vec4(0.0);
 		vec4 shadowposition = vec4(0.0);
 		
@@ -109,7 +110,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 					else break;
 					#endif
 
-					float noise = getFogSample(pos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS * (3.0 - isEyeInCave), 0.60, LIGHTSHAFT_HORIZONTAL_THICKNESS * (2.0 - isEyeInCave));
+					float noise = getFogSample(pos.xyz, LIGHTSHAFT_HEIGHT + 5, LIGHTSHAFT_VERTICAL_THICKNESS, 0.60, LIGHTSHAFT_HORIZONTAL_THICKNESS);
 					shadow *= noise;
 				}
 				#else

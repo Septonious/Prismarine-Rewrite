@@ -119,6 +119,8 @@ vec2 getRefract(vec2 coord, vec3 waterPos){
 }
 #endif
 
+float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
+
 //Includes//
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
@@ -176,7 +178,7 @@ void main() {
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
-	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * eBS;
+	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave);
 	#endif
 
 	#ifdef VOLUMETRIC_LIGHT
