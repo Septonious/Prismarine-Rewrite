@@ -226,7 +226,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	float fog = length(viewPos) * END_FOG_DENSITY / 128.0;
 	fog += 6.0 * pow(fogFactor / far, 6.0);
 	fog = 1.0 - exp(-0.8 * fog * fog);
-	vec3 fogColor = endCol.rgb * 0.03;
+	vec3 fogColor = endCol.rgb * 0.025;
 	#endif
 	#endif
 

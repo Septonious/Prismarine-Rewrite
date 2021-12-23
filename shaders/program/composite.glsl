@@ -119,8 +119,6 @@ vec2 getRefract(vec2 coord, vec3 waterPos){
 }
 #endif
 
-float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
-
 //Includes//
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
@@ -129,7 +127,7 @@ float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0
 #include "/lib/util/dither.glsl"
 #include "/lib/atmospherics/waterFog.glsl"
 
-#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined VOLUMETRIC_CLOUDS && defined OVERWORLD)
+#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined VOLUMETRIC_CLOUDS && defined OVERWORLD) || (defined END && defined END_SMOKE)
 #include "/lib/atmospherics/stuffsForVolumetrics.glsl"
 #endif
 
@@ -137,7 +135,7 @@ float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0
 #include "/lib/prismarine/biomeColor.glsl"
 #endif
 
-#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 #include "/lib/atmospherics/volumetricFog.glsl"
 #endif
 
@@ -178,15 +176,19 @@ void main() {
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
-	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
+	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * eBS;
 	#endif
+
 	#ifdef VOLUMETRIC_LIGHT
 	if (isEyeInWater == 1) visibility = 1.0 - rainStrength;
 	#endif
+
 	#else
-	#ifdef NETHER_SMOKE
+
+	#if (defined NETHER && defined NETHER_SMOKE) || (defined END && defined END_SMOKE)
 	visibility = 1.0;
 	#endif
+
 	#endif
 
 	vec4 screenPos = vec4(texCoord.x, texCoord.y, z0, 1.0);
@@ -215,8 +217,8 @@ void main() {
 	color.rgb = mix(color.rgb, outerOutline.rgb, outerOutline.a);
 	#endif
 
-	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	if (visibility > 0) vl += getVolumetricFog(z0, z1, translucent,InterleavedGradientNoiseVL(), viewPos.xyz, visibility);
+	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
+	if (visibility > 0) vl += getVolumetricFog(z0, z1, translucent, InterleavedGradientNoiseVL(), viewPos.xyz, visibility);
 	#endif
 
 	#ifdef OVERWORLD
@@ -251,7 +253,7 @@ void main() {
 	
     /*DRAWBUFFERS:0158*/
 	gl_FragData[0] = color;
-	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 	gl_FragData[1] = vl;
 	#endif
 	

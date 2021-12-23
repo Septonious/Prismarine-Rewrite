@@ -95,7 +95,7 @@ void main() {
 	#endif
 	
 	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-	vec3 gi = smartDeNoise(colortex11, texCoord, 2.0, 2.0, 0.25);
+	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH, texCoord);
 
 	/* RENDERTARGETS:0,11 */
 	gl_FragData[0] = vec4(color, 1.0);

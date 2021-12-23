@@ -249,6 +249,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 	#ifdef END
 	dither = InterleavedGradientNoiseVL();
 	#endif
+
 	dither *= NEBULA_DITHERING_STRENGTH;
 
 	float auroraVisibility = 0.0;
@@ -269,6 +270,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 	#else
 	float VoU = dot(normalize(viewPos.xyz), upVec);
 	#endif
+
 	float sampleStep = 1.0 / samples;
 	float currentStep = dither * sampleStep;
 
@@ -333,9 +335,9 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 				star *= GetNoise(starcoord.xy + 0.23);
 			}
 
-			star = clamp(star - 0.7125, 0.0, 1.0) * multiplier * 2;
+			star = clamp(star - 0.7125, 0.0, 1.0) * multiplier * 2.0;
 			star * vec3(0.75, 0.85, 1.00);
-			star *= STARS_BRIGHTNESS * 128;
+			star *= STARS_BRIGHTNESS * 128.0;
 			#endif
 			
 			if (noise > 0.0) {
@@ -345,7 +347,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 				noise *= max(sqrt(1.0 - length(planeCoord.xz) * 2.5), 0.0);
 				if (nebulaType == 0){
 					#if defined END
-					nebulaColor = mix(endCol.rgb * 6, endCol.rgb * 8, pow(currentStep, 0.4));
+					nebulaColor = mix(endCol.rgb * 4.0, endCol.rgb * 5.0, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(nebulaLowCol, nebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER
@@ -353,7 +355,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 					#endif
 				}else{
 					#if defined END
-					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 8, pow(currentStep, 0.4));
+					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 4, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(secondnebulaLowCol, secondnebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER

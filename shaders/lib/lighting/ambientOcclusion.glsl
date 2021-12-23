@@ -12,10 +12,6 @@ float AmbientOcclusion(float dither) {
 	float hand = float(depth < 0.56);
 	depth = GetLinearDepth(depth);
 
-	#ifdef TAA
-	dither = fract(dither + frameTimeCounter * 8.0);
-	#endif
-
 	float currentStep = 0.2 * dither + 0.2;
 
 	float radius = 0.35;

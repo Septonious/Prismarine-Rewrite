@@ -146,7 +146,7 @@ void main() {
 	else albedo.a *= difference;
 	#endif
 
-	albedo.rgb *= 0.25;
+	albedo.rgb *= 0.15;
 
 	#ifdef TEST03
 	albedo.rgb *= 4.0;

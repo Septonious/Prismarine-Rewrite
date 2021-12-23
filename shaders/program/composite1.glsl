@@ -92,8 +92,12 @@ void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
-	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
-	vec3 vl = BoxBlur(colortex1, 0.01, texCoord);
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
+	#ifdef OVERWORLD
+	vec3 vl = BoxBlur(colortex1, 0.02, texCoord);
+	#else
+	vec3 vl = BoxBlur(colortex1, 0.005, texCoord);
+	#endif
 	#endif
 
 	//#if defined OVERWORLD && defined VOLUMETRIC_CLOUDS
@@ -113,8 +117,7 @@ void main() {
 	vec3 lightshaftSun      = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  	= CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * isEyeInCave;
+	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * eBS;
 	if (isEyeInWater == 1) visibility0 = 1.0 - rainStrength;
 
 	if (visibility0 > 0){
@@ -137,7 +140,7 @@ void main() {
 
 	#endif
 
-	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
     vl *= LIGHT_SHAFT_STRENGTH * (1.0 - rainStrength * 0.875) * shadowFade *
 		  (1.0 - blindFactor);
 

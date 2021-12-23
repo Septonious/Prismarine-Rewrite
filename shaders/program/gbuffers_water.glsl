@@ -118,8 +118,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 	offset /= 256.0;
 	float noiseA = texture2D(noisetex, (worldPos.xz - wind) / 256.0 + offset).r;
 	float noiseB = texture2D(noisetex, (worldPos.xz + wind) / 96.0 + offset).r;
-	noiseA *= noiseA;
-	noiseB *= noiseB;
+	noiseA *= noiseA; noiseB *= noiseB;
 	#endif
 	
 	#if WATER_NORMALS > 0
@@ -129,21 +128,26 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     return noise * WATER_BUMP;
 }
 
-void GetParallaxWaves(inout vec3 worldPos) {
+vec3 GetParallaxWaves(vec3 worldPos, vec3 viewVector) {
+	vec3 parallaxPos = worldPos;
+	
 	for(int i = 0; i < 4; i++) {
-		float height = -1.25 * GetWaterHeightMap(worldPos, vec2(0.0)) + 0.25;
-		worldPos.xz += height * viewVector.xz / dist;
+		float height = -1.25 * GetWaterHeightMap(parallaxPos, vec2(0.0)) + 0.25;
+		parallaxPos.xz += height * viewVector.xy / dist;
 	}
+	return parallaxPos;
 }
 
-vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos) {
+vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 	vec3 waterPos = worldPos + cameraPosition;
 
 	#if WATER_PIXEL > 0
 	waterPos = floor(waterPos * WATER_PIXEL) / WATER_PIXEL;
 	#endif
 
-	GetParallaxWaves(waterPos);
+	#ifdef WATER_PARALLAX
+	waterPos = GetParallaxWaves(waterPos, viewVector);
+	#endif
 
 	float normalOffset = WATER_SHARPNESS;
 	
@@ -255,7 +259,7 @@ void main() {
 
 		#if WATER_NORMALS == 1 || WATER_NORMALS == 2
 		if (water > 0.5) {
-			normalMap = GetWaterNormal(worldPos, viewPos);
+			normalMap = GetWaterNormal(worldPos, viewPos, viewVector);
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		}
 		#endif
@@ -545,7 +549,7 @@ void main() {
 			float absorbDist = 0.0;
 
 			if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)){
-				absorbColor = normalize(waterColor.rgb * WATER_I) * terrainColor * terrainColor * 7.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
+				absorbColor = normalize(waterColor.rgb * WATER_I) * terrainColor * terrainColor * 8.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
 				absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
 			}
 			if (glass > 0.5){
@@ -659,11 +663,9 @@ void main() {
 						  tangent.y, binormal.y, normal.y,
 						  tangent.z, binormal.z, normal.z);
 								  
-	vec3 viewPosition = mat3(gl_ModelViewMatrix) * gl_Vertex.xyz + gl_ModelViewMatrix[3].xyz; 
-	vec3 viewDirection = normalize(viewPosition);
-	vec3 tangentViewPosition = viewPosition * tbnMatrix;
-	viewVector = normalize(tangentViewPosition);
-	dist = -viewPosition.z;
+	viewVector = tbnMatrix * (gl_ModelViewMatrix * gl_Vertex).xyz;
+	
+	dist = length(gl_ModelViewMatrix * gl_Vertex);
 
 	#ifdef ADVANCED_MATERIALS
 	vec2 midCoord = (gl_TextureMatrix[0] *  mc_midTexCoord).st;

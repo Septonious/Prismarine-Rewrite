@@ -197,7 +197,7 @@ void main() {
 	vec3 fresnel3 = vec3(0.0);
 	#endif
 
-	float emissive = 0.0; float lava = 0.0;
+	float emissive = 0.0; float lava = 0.0; float giEmissive = 0.0;
 
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
@@ -285,8 +285,11 @@ void main() {
 		if (mat > 106.9 && mat < 107.1) albedo.a *= 0.0;
 		#endif
 
-		#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined EMISSIVE_CONCRETE
-		if (mat > 9998.9) emissive = 16.0;
+		#if defined SSGI && !defined ADVANCED_MATERIALS
+		#ifdef EMISSIVE_CONCRETE
+		if (mat > 9998.9 && mat < 9999.1) emissive = 16.0;
+		#endif
+		if (mat > 9997.9 && mat < 9998.1) giEmissive = lightmap.y;
 		#endif
 
 		float metalness      = 0.0;
@@ -517,7 +520,7 @@ void main() {
 	#if defined SSGI && !defined ADVANCED_MATERIALS
 	/* RENDERTARGETS:0,6,9,12 */
 	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
-	gl_FragData[2] = vec4(emissive + lava);
+	gl_FragData[2] = vec4(emissive + lava + giEmissive);
 	gl_FragData[3] = albedo;
 	#endif
 
@@ -677,6 +680,7 @@ void main() {
 	#endif
 
 	#ifdef SSGI
+	if (mc_Entity.x == 29998) mat = 9998.0;
 	if (mc_Entity.x == 29999) mat = 9999.0;
 	#endif
 

@@ -14,14 +14,22 @@ vec3 fogColorC0    	= CalcLightColor(fogcolorSun0, fogcolorNight0, weatherCol.rg
 #ifdef VOLUMETRIC_FOG
 #endif
 
+#ifdef END_SMOKE
+#endif
+
 vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float dither, vec3 viewPos, float visibility) {
     dither = InterleavedGradientNoiseVL();
-	float maxDist = 512.0;
+
+	float maxDist = LIGHTSHAFT_MAX_DISTANCE;
 	float depth0 = GetLinearDepth2(pixeldepth0);
 	float depth1 = GetLinearDepth2(pixeldepth1);
 	visibility = clamp(visibility - isEyeInWater, 0.0, 1.0);
 
     #if defined NETHER && defined NETHER_SMOKE
+    visibility = 1.0;
+    #endif
+
+    #if defined END && defined END_SMOKE
     visibility = 1.0;
     #endif
 
@@ -56,16 +64,20 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 wpos.xyz += cameraPosition.xyz + vec3(frametime * 0.25, vh * 24, 0.0);
                 #endif
 
-                #ifdef NETHER
+                #if defined NETHER
                 float noise = getFogSample(wpos.xyz, 80.0, 64.0, 1.25, 1.10);
-                #else
-                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, LIGHTSHAFT_VERTICAL_THICKNESS, 0.4, LIGHTSHAFT_HORIZONTAL_THICKNESS);
+                #elif defined OVERWORLD
+                float noise = getFogSample(wpos.xyz, LIGHTSHAFT_HEIGHT, LIGHTSHAFT_VERTICAL_THICKNESS, 0.75, LIGHTSHAFT_HORIZONTAL_THICKNESS);
+                #elif defined END
+                float noise = getFogSample(wpos.xyz, 75.0, 64.0, 1.25, 1.25);
                 #endif
 
-                #ifdef NETHER
+                #if defined NETHER
                 vec4 fogColor = vec4(netherCol.rgb * netherCol.rgb * 0.025, noise);
-                #else
+                #elif defined OVERWORLD
                 vec4 fogColor = vec4(mix(fogColorC0 * 0.1, fogColorC0 * 0.2, noise), noise);
+                #elif defined END
+                vec4 fogColor = vec4(endCol.rgb * 0.005, noise);
                 #endif
 
                 fogColor.rgb *= fogColor.a;

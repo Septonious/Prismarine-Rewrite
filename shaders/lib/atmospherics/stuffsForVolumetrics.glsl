@@ -13,13 +13,7 @@ uniform sampler2D colortex8;
 float InterleavedGradientNoiseVL() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
 
-	#ifdef TAA
-	n = fract(n + frameCounter / 8.0);
-	#else
-	n = fract(n);
-	#endif
-
-	return n;
+	return fract(n + frameCounter / 8.0);
 }
 
 vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
@@ -89,12 +83,12 @@ float getFogNoise(vec3 pos) {
 }
 #endif
 
-#if ((defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER)
+#if ((defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 float getFogSample(vec3 pos, float height, float verticalThickness, float samples, float amount){
 	float ymult = pow(abs(height - pos.y) / verticalThickness, 2.0);
 	vec3 wind = vec3(frametime * 0.25, 0, 0);
 	
-	#ifdef NETHER
+	#if defined NETHER || defined END
 	pos *= 3.0;
 	#endif
 
@@ -104,8 +98,8 @@ float getFogSample(vec3 pos, float height, float verticalThickness, float sample
           noise+= getFogNoise(pos * samples * 0.12500 + wind * 0.15);
           noise+= getFogNoise(pos * samples * 0.06250 - wind * 0.10);
 
-	#ifdef NETHER
-	noise *= 0.55;
+	#if defined NETHER || defined END
+	noise *= 0.5;
 	#endif
 
 	noise = clamp(noise * LIGHTSHAFT_AMOUNT * amount - (1.0 + ymult), 0.0, 1.0);
