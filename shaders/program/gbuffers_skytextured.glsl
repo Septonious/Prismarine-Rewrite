@@ -92,8 +92,7 @@ void main() {
 	#endif
 
 	#ifdef END
-	albedo.rgb = 0.5 * endCol.rgb;
-	albedo.rgb *= GetLuminance(albedo.rgb);
+	albedo.rgb = 0.25 * endCol.rgb * GetLuminance(endCol.rgb);
 
 	#ifdef END_STARS
 	#ifdef SMALL_STARS

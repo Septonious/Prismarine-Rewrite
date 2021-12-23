@@ -347,7 +347,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 				noise *= max(sqrt(1.0 - length(planeCoord.xz) * 2.5), 0.0);
 				if (nebulaType == 0){
 					#if defined END
-					nebulaColor = mix(endCol.rgb * 4.0, endCol.rgb * 5.0, pow(currentStep, 0.4));
+					nebulaColor = mix(endCol.rgb, endCol.rgb * 1.5, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(nebulaLowCol, nebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER
@@ -355,7 +355,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 					#endif
 				}else{
 					#if defined END
-					nebulaColor = mix(vec3(endCol.r * 2.5, endCol.g, endCol.b) * 4, vec3(endCol.r * 2.5, endCol.g, endCol.b) * 6, pow(currentStep, 0.4));
+					nebulaColor = mix(vec3(endCol.r * 1.5, endCol.g, endCol.b) * 1.5, vec3(endCol.r * 1.75, endCol.g, endCol.b) * 2.0, pow(currentStep, 0.4));
 					#elif defined OVERWORLD
 					nebulaColor = mix(secondnebulaLowCol, secondnebulaHighCol, pow(currentStep, 0.4));
 					#elif defined NETHER

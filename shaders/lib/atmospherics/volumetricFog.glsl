@@ -33,13 +33,17 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
     visibility = 1.0;
     #endif
 
-	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
-	vec3 nViewPos = normalize(viewPos.xyz);
-
 	vec4 vf = vec4(0.0);
     vec4 wpos = vec4(0.0);
 
     if (visibility > 0){
+        #ifdef END
+        vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
+        vec3 nViewPos = normalize(viewPos.xyz);
+        float VoL = dot(nViewPos, lightVec);
+        float scatter = pow(VoL * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 8.0) * 2.0;
+        #endif
+
         for(int i = 0; i < LIGHTSHAFT_SAMPLES; i++) {
 			float minDist = (i + dither) * LIGHTSHAFT_MIN_DISTANCE;
 
@@ -77,7 +81,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
                 #elif defined OVERWORLD
                 vec4 fogColor = vec4(mix(fogColorC0 * 0.1, fogColorC0 * 0.2, noise), noise);
                 #elif defined END
-                vec4 fogColor = vec4(endCol.rgb * 0.005, noise);
+                vec4 fogColor = vec4(vec3(endCol.r, endCol.g * 0.8, endCol.b) * 0.01 * (1.0 + scatter), noise);
                 #endif
 
                 fogColor.rgb *= fogColor.a;
