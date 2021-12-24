@@ -150,8 +150,10 @@ vec3 generateCosineVector(vec3 vector, vec2 xy) {
 }
 
 vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
+	int speed = frameCounter % 255;
+
     float dither = getRandomNoise(gl_FragCoord.xy);
-	dither = fract(dither + frameCounter / 100.0);
+	dither = fract(dither + speed);
 
     vec3 currentPosition = screenPos;
     vec3 hitNormal = normal;
@@ -160,7 +162,7 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
     vec3 weight = vec3(ILLUMINATION_STRENGTH);
 
     for(int i = 0; i < BOUNCES; i++) {
-        vec2 noise = hash(uvec3(gl_FragCoord.xy, frameCounter % 100)).xy;
+        vec2 noise = hash(uvec3(gl_FragCoord.xy, speed)).xy;
 
         hitNormal = normalize(DecodeNormal(texture2D(colortex6, currentPosition.xy).xy));
         currentPosition = screenToView(currentPosition) + hitNormal * 0.001;
@@ -172,7 +174,7 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
         currentPosition = hitPos;
 
         if (hit && hand < 0.5) {
-            vec3 albedo = texture2D(colortex12, currentPosition.xy).rgb;
+            vec3 albedo = texture2D(colortex12, currentPosition.xy).rgb * 2.0;
 
             float isEmissive = texture2D(colortex9, currentPosition.xy).w == 0.0 ? 0.0 : 1.0;
 

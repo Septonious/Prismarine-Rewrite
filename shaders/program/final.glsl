@@ -13,7 +13,6 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform int frameCounter;
 uniform sampler2D colortex1;
 uniform int isEyeInWater;
 uniform float viewWidth, viewHeight;
@@ -33,12 +32,11 @@ const int gaux2Format = RGB10_A2; //reflection image
 const int gaux3Format = RGB16; //normals
 const int gaux4Format = RGB16; //fresnel
 */
-
 const bool colortex1MipmapEnabled = true;
 const bool shadowHardwareFiltering = true;
 const float shadowDistanceRenderMul = 1.0;
 const float aberrationStrength = float(CHROMATIC_ABERRATION_STRENGTH) / 512;
-const int noisetexture2DResolution = 512;
+const int noiseTextureResolution = 512;
 
 const float drynessHalflife = 50.0;
 const float wetnessHalflife = 300.0;
@@ -78,65 +76,56 @@ vec3 getChromaticAbberation(vec2 coord, float amount) {
 }
 #endif
 
-#ifdef CAS
-void ContrastAdaptiveSharpening(out vec3 outColor){
-    // Normalized pixel coordinates (from 0 to 1)
-    vec2 uv = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
-  
-    vec3 originalColor = texture2D(colortex1, uv).rgb;
+#ifdef TAA
+vec2 sharpenOffsets[4] = vec2[4](
+	vec2( 1.0,  0.0),
+	vec2( 0.0,  1.0),
+	vec2(-1.0,  0.0),
+	vec2( 0.0, -1.0)
+);
 
-    // CAS algorithm
-    float maxGreen = originalColor.g;
-    float minGreen = originalColor.g;
 
-    vec4 uvoff = vec4(1.0, 0.0, 1.0, -1.0) / vec4(vec2(viewWidth, viewWidth), vec2(viewHeight, viewHeight));
-    vec3 modifiedColor = vec3(0.0);
-    vec3 newColor = texture2D(colortex1, uv + uvoff.yw).rgb;
-    maxGreen = max(maxGreen, newColor.g);
-    minGreen = min(minGreen, newColor.g);
-    modifiedColor = newColor;
-    	 newColor = texture2D(colortex1, uv + uvoff.xy).rgb;
-    maxGreen = max(maxGreen, newColor.g);
-    minGreen = min(minGreen, newColor.g);
-    modifiedColor += newColor;
-    	 newColor = texture2D(colortex1, uv + uvoff.yz).rgb;
-    maxGreen = max(maxGreen, newColor.g);
-    minGreen = min(minGreen, newColor.g);
-    modifiedColor += newColor;
-    	 newColor = texture2D(colortex1, uv - uvoff.xy).rgb;
-    maxGreen = max(maxGreen, newColor.g);
-    minGreen = min(minGreen, newColor.g);
-    modifiedColor += newColor;
-    maxGreen = max(0.0, maxGreen);
+void SharpenFilter(inout vec3 color, vec2 coord) {
+	float mult = MC_RENDER_QUALITY * 0.125;
+	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
 
-    float adaptiveSharpening = minGreen / maxGreen;
+	color *= MC_RENDER_QUALITY * 0.5 + 1.0;
 
-    adaptiveSharpening = sqrt(max(0.0, adaptiveSharpening));
-    adaptiveSharpening *= mix(-0.125, -0.2, 0.25);
-    outColor = (originalColor + modifiedColor * adaptiveSharpening) / (1.0 + 4.0 * adaptiveSharpening);
+	for(int i = 0; i < 4; i++) {
+		vec2 offset = sharpenOffsets[i] * view;
+		color -= texture2D(colortex1, coord + offset).rgb * mult;
+	}
 }
 #endif
-
 
 //Program//
 void main() {
     vec2 newTexCoord = texCoord;
 
 	#ifdef CHROMATIC_ABERRATION
-	vec4 color = vec4(getChromaticAbberation(texCoord, aberrationStrength), 1.0);
+	vec3 color = getChromaticAbberation(texCoord, aberrationStrength);
 	#else
-	vec4 color = texture2D(colortex1, texCoord);
+	vec3 color = texture2D(colortex1, texCoord).rgb;
 	#endif
 
-    #ifdef CAS
-    ContrastAdaptiveSharpening(color.rgb);
-    #endif
+	#ifdef TAA
+	SharpenFilter(color, newTexCoord);
+	#endif
+
+	#if Sharpen > 0 && !defined DOF && !defined TAA
+	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
+	color *= Sharpen * 0.1 + 0.9;
+	color -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
+	#endif
 
 	#ifdef TEST04	
-	color.rgb *= 1.0 + playerMood;
+	color *= 1.0 + playerMood;
 	#endif
 
-	gl_FragColor = color;
+	gl_FragColor = vec4(color, 1.0);
 }
 
 #endif

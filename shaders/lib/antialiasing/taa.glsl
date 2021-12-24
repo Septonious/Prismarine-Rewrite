@@ -65,7 +65,7 @@ vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view) {
 
 	for(int i = 0; i < 8; i++) {
 		vec2 offset = neighbourhoodOffsets[i] * view;
-		vec3 clr = texture2D(colortex1, texCoord + offset).rgb;
+		vec3 clr = texture2DLod(colortex1, texCoord + offset, 0.0).rgb;
 
 		clr = RGBToYCoCg(clr);
 		minclr = min(minclr, clr); maxclr = max(maxclr, clr);
@@ -78,10 +78,10 @@ vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view) {
 }
 
 vec4 TemporalAA(inout vec3 color, float tempData) {
-	vec3 coord = vec3(texCoord, texture2D(depthtex1, texCoord).r);
+	vec3 coord = vec3(texCoord, texture2DLod(depthtex1, texCoord, 0.0).r);
 	vec2 prvCoord = Reprojection(coord);
 	
-	vec3 tempColor = texture2D(colortex2, prvCoord).gba;
+	vec3 tempColor = texture2DLod(colortex2, prvCoord, 0).gba;
 	vec2 view = vec2(viewWidth, viewHeight);
 
 	if(tempColor == vec3(0.0)){

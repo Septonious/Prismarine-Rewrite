@@ -76,7 +76,7 @@ void main() {
 	vec3 color = texture2D(colortex0, texCoord).rgb;
 
 	#ifdef DENOISE
-	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH * 5.0, texCoord);
+	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH * 4.0, texCoord);
 	#else
 	vec3 gi = texture2D(colortex11, texCoord).rgb;
 	#endif

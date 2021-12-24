@@ -168,8 +168,8 @@ float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
 
 //Program//
 void main() {
-    vec4 color = texture2DLod(colortex0, texCoord, 0.0);
-    vec4 translucent = texture2DLod(colortex1, texCoord, 0.0);
+    vec4 color = texture2D(colortex0, texCoord);
+    vec4 translucent = texture2D(colortex1, texCoord);
 	float z0 = texture2D(depthtex0, texCoord).r;
 	float z1 = texture2D(depthtex1, texCoord).r;
 	vec4 vl = vec4(0.0);

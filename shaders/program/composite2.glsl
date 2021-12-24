@@ -56,7 +56,7 @@ vec3 MotionBlur(vec3 color, float z, float dither) {
 		for(int i = 0; i < 5; i++, coord += velocity) {
 			vec2 sampleCoord = clamp(coord, doublePixel, 1.0 - doublePixel);
 			float mask = float(texture2D(depthtex1, sampleCoord).r > 0.56);
-			mblur += texture2DLod(colortex0, sampleCoord, 0.0).rgb * mask;
+			mblur += texture2D(colortex0, sampleCoord).rgb * mask;
 			mbwg += mask;
 		}
 		mblur /= max(mbwg, 1.0);
@@ -95,7 +95,7 @@ void main() {
 	#endif
 	
 	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH, texCoord);
+	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH * 2.0, texCoord);
 
 	/* RENDERTARGETS:0,11 */
 	gl_FragData[0] = vec4(color, 1.0);

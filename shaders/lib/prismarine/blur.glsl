@@ -1,4 +1,4 @@
-vec2 BlurOffsets[16] = vec2[16](
+vec2 BlurOffsets[32] = vec2[32](
 	vec2( 0.0    ,  0.25  ),
 	vec2(-0.2165 ,  0.125 ),
 	vec2(-0.2165 , -0.125 ),
@@ -14,9 +14,37 @@ vec2 BlurOffsets[16] = vec2[16](
 	vec2( 0      , -0.5   ),
 	vec2( 0.25   , -0.433 ),
 	vec2( 0.433  , -0.2   ),
-	vec2( 0.5    ,  0     )
+	vec2( 0.5    ,  0     ),
+	vec2( 0.433  ,  0.25  ),
+	vec2( 0.25   ,  0.433 ),
+	vec2( 0      ,  0.75  ),
+	vec2(-0.2565 ,  0.7048),
+	vec2(-0.4821 ,  0.5745),
+	vec2(-0.51295,  0.375 ),
+	vec2(-0.7386 ,  0.1302),
+	vec2(-0.7386 , -0.1302),
+	vec2(-0.51295, -0.375 ),
+	vec2(-0.4821 , -0.5745),
+	vec2(-0.2565 , -0.7048),
+	vec2(-0      , -0.75  ),
+	vec2( 0.2565 , -0.7048),
+	vec2( 0.4821 , -0.5745),
+	vec2( 0.51295, -0.375 ),
+	vec2( 0.7386 , -0.1302)
 );
 
+vec3 BoxBlur(sampler2D colortex, float strength, vec2 coord) {
+	vec3 blur = vec3(0.0);
+
+	for(int j = 0; j <= 32; j++){
+		vec2 offset = BlurOffsets[j] * strength * vec2(1.0 / aspectRatio, 1.0);
+		blur += texture2DLod(colortex, texCoord + offset, log2(viewHeight)).rgb;
+	}
+
+	return blur / 32.0;
+}
+
+/*
 #define INV_SQRT_OF_2PI 0.39894228040143267793994605993439
 #define INV_PI 0.31830988618379067153776752674503
 
@@ -54,14 +82,4 @@ vec3 smartDeNoise(sampler2D tex, vec2 uv, float sigma, float kSigma, float thres
     }
     return (aBuff / zBuff).rgb;
 }
-
-vec3 BoxBlur(sampler2D colortex, float strength, vec2 coord) {
-	vec3 blur = vec3(0.0);
-
-	for(int j = 0; j <= 16; j++){
-		vec2 offset = BlurOffsets[j] * strength * vec2(1.0 / aspectRatio, 1.0);
-		blur += texture2D(colortex, coord + offset).rgb;
-	}
-
-	return blur / 16.0;
-}
+*/

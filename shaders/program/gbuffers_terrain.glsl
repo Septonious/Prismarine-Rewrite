@@ -225,8 +225,8 @@ void main() {
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
-            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.1;
-			giEmissive = sqrt(ore) * GLOW_STRENGTH * 2.0;
+            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.25;
+			giEmissive = sqrt(ore) * GLOW_STRENGTH;
         } else if (mat > 100.9 && mat < 101.1){ // Crying Obsidian and Respawn Anchor
 			iEmissive = (albedo.b - albedo.r) * albedo.r * GLOW_STRENGTH;
             iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH;

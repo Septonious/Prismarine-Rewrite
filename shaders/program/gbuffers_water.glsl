@@ -549,7 +549,7 @@ void main() {
 			float absorbDist = 0.0;
 
 			if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)){
-				absorbColor = normalize(waterColor.rgb * WATER_I) * terrainColor * terrainColor * 8.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
+				absorbColor = normalize(waterColor.rgb * WATER_I) * terrainColor * terrainColor * 6.0 * (1.00 - rainStrength * 0.50) * clampTimeBrightness;
 				absorbDist = 1.0 - clamp(difT / 8.0, 0.0, 1.0);
 			}
 			if (glass > 0.5){
@@ -663,9 +663,11 @@ void main() {
 						  tangent.y, binormal.y, normal.y,
 						  tangent.z, binormal.z, normal.z);
 								  
-	viewVector = tbnMatrix * (gl_ModelViewMatrix * gl_Vertex).xyz;
-	
-	dist = length(gl_ModelViewMatrix * gl_Vertex);
+	vec3 viewPosition = mat3(gl_ModelViewMatrix) * gl_Vertex.xyz + gl_ModelViewMatrix[3].xyz; 
+	vec3 viewDirection = normalize(viewPosition);
+	vec3 tangentViewPosition = viewPosition * tbnMatrix;
+	viewVector = normalize(tangentViewPosition);
+	dist = -viewPosition.z;
 
 	#ifdef ADVANCED_MATERIALS
 	vec2 midCoord = (gl_TextureMatrix[0] *  mc_midTexCoord).st;
