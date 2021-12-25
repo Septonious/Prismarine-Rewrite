@@ -97,7 +97,7 @@ void main() {
 	#ifdef OVERWORLD
 	vec3 vl = BoxBlur(colortex1, 0.02, texCoord);
 	#else
-	vec3 vl = BoxBlur(colortex1, 0.01, texCoord);
+	vec3 vl = texture2D(colortex1, texCoord).rgb;
 	#endif
 	#endif
 
