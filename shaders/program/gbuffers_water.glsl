@@ -387,7 +387,7 @@ void main() {
 			vec3 skyReflection = vec3(0.0);
 	
 			fresnel = fresnel * 0.98 + 0.02;
-			fresnel*= max(1.0 - isEyeInWater * 0.5 * water, 0.5);
+			fresnel *= max(1.0 - isEyeInWater * 0.5 * water, 0.5);
 			
 			#if REFLECTION == 2
 			reflection = SimpleReflection(viewPos, newNormal, dither);
