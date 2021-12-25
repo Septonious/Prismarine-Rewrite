@@ -44,7 +44,7 @@ void main() {
 	vec3 color = texture2D(colortex1, texCoord).rgb;
     vec4 prev = vec4(texture2D(colortex2, texCoord).r, 0.0, 0.0, 0.0);
 	
-	#ifdef TAA
+	#if defined TAA && defined OVERWORLD
 	prev = TemporalAA(color, prev.r);
 	#endif
 
