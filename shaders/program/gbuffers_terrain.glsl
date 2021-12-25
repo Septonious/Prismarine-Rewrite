@@ -456,7 +456,7 @@ void main() {
 		depth = 8.0 - depth;
 		if (isEyeInWater == 1){
 			float clampEyeBrightness = clamp(eBS, 0.1, 1.0);
-			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6.0 - rainStrength - rainStrength) * clampEyeBrightness;
+			albedo.rgb *= waterColor.rgb * (5.0 - rainStrength - rainStrength) * clampEyeBrightness;
 			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512.0 * (0.25 + timeBrightness) + depth;
 		}
 		#endif

@@ -95,7 +95,7 @@ void main() {
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 	#ifdef OVERWORLD
-	vec3 vl = BoxBlur(colortex1, 0.02, texCoord.xy);
+	vec3 vl = BoxBlur(colortex1, 0.015, texCoord.xy);
 	#else
 	vec3 vl = BoxBlur(colortex1, 0.01, texCoord.xy);
 	#endif
@@ -114,7 +114,7 @@ void main() {
 	vec3 lightshaftSun      = CalcSunColor(lightshaftMorning, lightshaftDay, lightshaftEvening);
 	vec3 lightshaftCol  	= CalcLightColor(lightshaftSun, lightshaftNight, weatherCol.rgb);
 
-	float visibility0 = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave);
+	float visibility0 = clamp(CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave) + isEyeInWater, 0.0, 1.0);
 	if (isEyeInWater == 1) visibility0 = 1.0 - rainStrength;
 
 	if (visibility0 > 0){

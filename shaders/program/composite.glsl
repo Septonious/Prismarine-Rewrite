@@ -178,11 +178,7 @@ void main() {
 
 	#ifdef OVERWORLD
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
-	visibility = CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave);
-	#endif
-
-	#ifdef VOLUMETRIC_LIGHT
-	if (isEyeInWater == 1) visibility = 1.0 - rainStrength;
+	visibility = clamp(CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave) + isEyeInWater, 0.0, 1.0);
 	#endif
 
 	#else

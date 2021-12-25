@@ -23,12 +23,6 @@ uniform vec3 cameraPosition, previousCameraPosition;
 uniform mat4 gbufferPreviousProjection, gbufferProjectionInverse;
 uniform mat4 gbufferPreviousModelView, gbufferModelViewInverse;
 
-
-//Optifine Constants//
-#if defined VOLUMETRIC_LIGHT || defined VOLUMETRIC_FOG || defined FIREFLIES || defined NETHER_SMOKE
-const bool colortex1MipmapEnabled = true;
-#endif
-
 //Common Functions//
 float GetLuminance(vec3 color) {
 	return dot(color, vec3(0.299, 0.587, 0.114));
