@@ -1,3 +1,5 @@
+
+  
 /* 
 BSL Shaders v7.2.01 by Capt Tatsu 
 https://bitslablab.com 
@@ -13,7 +15,6 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform int frameCounter;
 uniform sampler2D colortex1;
 uniform int isEyeInWater;
 uniform float viewWidth, viewHeight;
@@ -33,7 +34,6 @@ const int gaux2Format = RGB10_A2; //reflection image
 const int gaux3Format = RGB16; //normals
 const int gaux4Format = RGB16; //fresnel
 */
-
 const bool colortex1MipmapEnabled = true;
 const bool shadowHardwareFiltering = true;
 const float shadowDistanceRenderMul = 1.0;
@@ -78,12 +78,36 @@ vec3 getChromaticAbberation(vec2 coord, float amount) {
 }
 #endif
 
+#ifdef TAA
+vec2 sharpenOffsets[4] = vec2[4](
+	vec2( 1.0,  0.0),
+	vec2( 0.0,  1.0),
+	vec2(-1.0,  0.0),
+	vec2( 0.0, -1.0)
+);
+
+
+void SharpenFilter(inout vec3 color, vec2 coord) {
+	float mult = MC_RENDER_QUALITY * 0.125;
+	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
+
+	color *= MC_RENDER_QUALITY * 0.5 + 1.0;
+
+	for(int i = 0; i < 4; i++) {
+		vec2 offset = sharpenOffsets[i] * view;
+		color -= texture2D(colortex1, coord + offset).rgb * mult;
+	}
+}
+#endif
+
 #ifdef CAS
 void ContrastAdaptiveSharpening(out vec3 outColor){
+    // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
   
     vec3 originalColor = texture2D(colortex1, uv).rgb;
 
+    // CAS algorithm
     float maxGreen = originalColor.g;
     float minGreen = originalColor.g;
 
@@ -111,31 +135,43 @@ void ContrastAdaptiveSharpening(out vec3 outColor){
     adaptiveSharpening = minGreen / maxGreen;
 
     adaptiveSharpening = sqrt(max(0.0, adaptiveSharpening));
-    adaptiveSharpening *= mix(-0.125, -0.2, 0.25 * MC_RENDER_QUALITY);
+    adaptiveSharpening *= mix(-0.125, -0.2, 1.0);
     outColor = (originalColor + modifiedColor * adaptiveSharpening) / (1.0 + 4.0 * adaptiveSharpening);
 }
 #endif
-
 
 //Program//
 void main() {
     vec2 newTexCoord = texCoord;
 
 	#ifdef CHROMATIC_ABERRATION
-	vec4 color = vec4(getChromaticAbberation(texCoord, aberrationStrength), 1.0);
+	vec3 color = getChromaticAbberation(texCoord, aberrationStrength);
 	#else
-	vec4 color = texture2D(colortex1, texCoord);
+	vec3 color = texture2D(colortex1, texCoord).rgb;
 	#endif
 
-    #ifdef CAS
-    ContrastAdaptiveSharpening(color.rgb);
+    #ifdef TAA
+    SharpenFilter(color, newTexCoord);
     #endif
 
-	#ifdef TEST04	
-	color.rgb *= 1.0 + playerMood;
+	#ifdef CAS
+	ContrastAdaptiveSharpening(color);
 	#endif
 
-	gl_FragColor = color;
+	#if Sharpen > 0
+	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
+	color *= Sharpen * 0.1 + 0.9;
+	color -= texture2D(colortex1, texCoord.xy + vec2(1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,1.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(-1.0,0.0)*view).rgb * Sharpen * 0.025;
+	color -= texture2D(colortex1, texCoord.xy + vec2(0.0,-1.0)*view).rgb * Sharpen * 0.025;
+	#endif
+
+	#ifdef TEST04	
+	color *= 1.0 + playerMood;
+	#endif
+
+	gl_FragColor = vec4(color, 1.0);
 }
 
 #endif

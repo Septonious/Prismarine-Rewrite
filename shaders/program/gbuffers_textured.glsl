@@ -10,7 +10,7 @@ https://bitslablab.com
 #ifdef FSH
 
 //Varyings//
-varying vec2 texCoord;
+varying vec2 texCoord, lmCoord;
 
 varying vec3 normal;
 varying vec3 sunVec, upVec, eastVec;
@@ -98,7 +98,7 @@ float GetLinearDepth(float depth) {
 #endif
 #include "/lib/lighting/forwardLighting.glsl"
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -107,12 +107,20 @@ void main() {
     vec4 albedo = texture2D(texture, texCoord) * color;
 
 	if (albedo.a > 0.001) {
+		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-		#if defined TAA && defined OVERWORLD
+		#ifdef TAA
 		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
+		#endif
+		vec3 worldPos = ToWorld(viewPos);
+		
+		#ifdef DYNAMIC_HANDLIGHT
+		float heldLightValue = max(float(heldBlockLightValue), float(heldBlockLightValue2));
+		float handlight = clamp((heldLightValue - 2.0 * length(viewPos)) / 15.0, 0.0, 0.9333);
+		lightmap.x = max(lightmap.x, handlight);
 		#endif
 
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
@@ -120,15 +128,29 @@ void main() {
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);
 		#endif
+
+		float NoL = 1.0;
+		//NoL = clamp(dot(normal, lightVec) * 1.01 - 0.01, 0.0, 1.0);
+
+		float NoU = clamp(dot(normal, upVec), -1.0, 1.0);
+		float NoE = clamp(dot(normal, eastVec), -1.0, 1.0);
+		float vanillaDiffuse = (0.25 * NoU + 0.75) + (0.667 - abs(NoE)) * (1.0 - abs(NoU)) * 0.15;
+			  vanillaDiffuse*= vanillaDiffuse;
 		
 		vec3 shadow = vec3(0.0);
+		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NoL, 1.0,
+				    1.0, 0.0, 0.0);
 
-		#ifdef EXP_FOG
+		#if defined EXP_FOG && MC_VERSION >= 11500
 		Fog(albedo.rgb, viewPos);
 		#endif
 
+		#ifdef TEST03
+		albedo.rgb *= 3.0;
+		#endif
+
 		#if ALPHA_BLEND == 0
-		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));
+		albedo.rgb = sqrt(max(albedo.rgb, vec3(0.0)));
 		#endif
 	}
 
@@ -145,13 +167,7 @@ void main() {
 	if (albedo.a > 0.999) albedo.a *= float(difference > opaqueThreshold);
 	else albedo.a *= difference;
 	#endif
-
-	albedo.rgb *= 0.15;
-
-	#ifdef TEST03
-	albedo.rgb *= 4.0;
-	#endif
-
+	
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
@@ -161,12 +177,6 @@ void main() {
 	gl_FragData[2] = vec4(0.0, 0.0, 0.0, 1.0);
 	gl_FragData[3] = vec4(0.0, 0.0, 0.0, 1.0);
 	#endif
-
-	#if defined SSGI && !defined ADVANCED_MATERIALS && defined EMISSIVE_PARTICLES
-	/* RENDERTARGETS:0,9,12 */
-	gl_FragData[1] = vec4(32.0);
-	gl_FragData[2] = vec4(albedo.rgb * 4.0, albedo.a);
-	#endif
 }
 
 #endif
@@ -175,7 +185,7 @@ void main() {
 #ifdef VSH
 
 //Varyings//
-varying vec2 texCoord;
+varying vec2 texCoord, lmCoord;
 
 varying vec3 normal;
 varying vec3 sunVec, upVec, eastVec;
@@ -192,7 +202,7 @@ uniform vec3 cameraPosition;
 
 uniform mat4 gbufferModelView, gbufferModelViewInverse;
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 uniform int frameCounter;
 
 uniform float viewWidth, viewHeight;
@@ -225,7 +235,7 @@ float GetLogarithmicDepth(float depth) {
 #endif
 
 //Includes//
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -236,6 +246,9 @@ float GetLogarithmicDepth(float depth) {
 //Program//
 void main() {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
+    
+	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
+	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, vec2(0.0), vec2(0.9333, 1.0));
 
 	normal = normalize(gl_NormalMatrix * gl_Normal);
     
@@ -263,7 +276,7 @@ void main() {
 	gl_Position.z = GetLogarithmicDepth(gl_Position.z / (far - near)) * gl_Position.w;
 	#endif
 	
-	#if defined TAA && defined OVERWORLD
+	#ifdef TAA
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

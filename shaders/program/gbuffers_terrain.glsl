@@ -131,7 +131,7 @@ float InterleavedGradientNoise() {
 #include "/lib/lighting/forwardLighting.glsl"
 #include "/lib/surface/ggx.glsl"
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -190,7 +190,7 @@ void main() {
 		float candle   = float(mat > 4.98 && mat < 5.02);
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-		#if defined TAA && defined OVERWORLD
+		#ifdef TAA
 		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
@@ -544,7 +544,7 @@ uniform vec3 cameraPosition;
 
 uniform mat4 gbufferModelView, gbufferModelViewInverse;
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 uniform int frameCounter;
 
 uniform float viewWidth, viewHeight;
@@ -568,7 +568,7 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 //Includes//
 #include "/lib/vertex/waving.glsl"
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -654,6 +654,7 @@ void main() {
 	if (mc_Entity.x == 20014) mat = 114.0;
 	if (mc_Entity.x == 20015) mat = 115.0;
 	if (mc_Entity.x == 10206) mat = 116.0;
+	if (mc_Entity.x == 10207) mat = 117.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 
@@ -681,7 +682,7 @@ void main() {
 
 	gl_Position = gl_ProjectionMatrix * gbufferModelView * position;
 	
-	#if defined TAA && defined OVERWORLD
+	#ifdef TAA
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

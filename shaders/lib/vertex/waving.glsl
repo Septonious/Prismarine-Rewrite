@@ -1,3 +1,6 @@
+uniform ivec2 eyeBrightnessSmooth;
+float eBS = eyeBrightnessSmooth.y / 240.0;
+
 const float pi = 3.1415927;
 float pi2wt = 6.2831854 * (frametime * 24.0);
 
@@ -24,14 +27,14 @@ float Noise2D(vec2 pos) {
 vec3 CalcMove(vec3 pos, float density, float speed, vec2 mult) {
     pos = pos * density + frametime * speed;
     vec3 wave = vec3(Noise2D(pos.yz), Noise2D(pos.xz + 0.333), Noise2D(pos.xy + 0.667));
-    return wave * vec3(mult, mult.x);
+    return wave * vec3(mult, mult.x) * eBS * WAVING_AMPLITUDE;
 }
 
 float CalcLilypadMove(vec3 worldpos) {
     worldpos.z -= 0.125;
     float wave = sin(2 * pi * (frametime * 0.7 + worldpos.x * 0.14 + worldpos.z * 0.07)) +
                  sin(2 * pi * (frametime * 0.5 + worldpos.x * 0.10 + worldpos.z * 0.20));
-    return wave * 0.0125;
+    return wave * 0.0125 * eBS * WAVING_AMPLITUDE;
 }
 
 float CalcLavaMove(vec3 worldpos) {
@@ -40,7 +43,7 @@ float CalcLavaMove(vec3 worldpos) {
     if (fy > 0.01) {
     float wave = sin(pi * (frametime * 0.7 + worldpos.x * 0.14 + worldpos.z * 0.07)) +
                  sin(pi * (frametime * 0.5 + worldpos.x * 0.10 + worldpos.z * 0.20));
-    return wave * 0.0125;
+    return wave * 0.0125 * eBS * WAVING_AMPLITUDE;
     } else return 0.0;
 }
 

@@ -2,7 +2,7 @@
 BSL Shaders v8 Series by Capt Tatsu 
 https://bitslablab.com 
 */ 
-
+1
 //Settings//
 #include "/lib/settings.glsl"
 
@@ -133,7 +133,7 @@ uniform float timeAngle;
 
 uniform mat4 gbufferModelView;
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 uniform int frameCounter;
 
 uniform float viewWidth;
@@ -156,7 +156,7 @@ void main() {
 	
 	gl_Position = ftransform();
 	
-	#if defined TAA && defined OVERWORLD
+	#ifdef TAA
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

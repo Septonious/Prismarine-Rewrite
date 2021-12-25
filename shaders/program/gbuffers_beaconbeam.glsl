@@ -65,7 +65,7 @@ varying vec2 texCoord;
 varying vec4 color;
 
 //Uniforms//
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 uniform int frameCounter;
 
 uniform float viewWidth;
@@ -97,7 +97,7 @@ void main() {
 	gl_Position = ftransform();
 	#endif
 	
-	#if defined TAA && defined OVERWORLD
+	#ifdef TAA
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

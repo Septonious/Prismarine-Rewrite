@@ -94,7 +94,11 @@ void main() {
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
+	#ifdef OVERWORLD
+	vec3 vl = BoxBlur(colortex1, 0.02, texCoord.xy);
+	#else
 	vec3 vl = BoxBlur(colortex1, 0.01, texCoord.xy);
+	#endif
 	#endif
 	
 	vec4 screenPos = vec4(texCoord.x, texCoord.y, pixeldepth0, 1.0);

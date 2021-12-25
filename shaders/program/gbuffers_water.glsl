@@ -187,7 +187,7 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 #include "/lib/reflections/simpleReflections.glsl"
 #include "/lib/surface/ggx.glsl"
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -242,7 +242,7 @@ void main() {
 		#endif
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
-		#if defined TAA && defined OVERWORLD
+		#ifdef TAA
 		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
@@ -536,7 +536,7 @@ void main() {
 		 	float oDepth = texture2D(depthtex1, screenPos.xy).r;
 		 	vec3 oScreenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), oDepth);
 			
-		 	#if defined TAA && defined OVERWORLD
+		 	#ifdef TAA
 		 	vec3 oViewPos = ToNDC(vec3(TAAJitter(oScreenPos.xy, -0.5), oScreenPos.z));
 		 	#else
 		 	vec3 oViewPos = ToNDC(oScreenPos);
@@ -610,7 +610,7 @@ uniform vec3 cameraPosition;
 
 uniform mat4 gbufferModelView, gbufferModelViewInverse;
 
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 uniform int frameCounter;
 
 uniform float viewWidth, viewHeight;
@@ -640,7 +640,7 @@ float WavingWater(vec3 worldPos) {
 }
 
 //Includes//
-#if defined TAA && defined OVERWORLD
+#ifdef TAA
 #include "/lib/util/jitter.glsl"
 #endif
 
@@ -713,7 +713,7 @@ void main() {
 	gl_Position = gl_ProjectionMatrix * gbufferModelView * position;
 	if (mat == 0.0) gl_Position.z -= 0.00001;
 	
-	#if defined TAA && defined OVERWORLD
+	#ifdef TAA
 	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }

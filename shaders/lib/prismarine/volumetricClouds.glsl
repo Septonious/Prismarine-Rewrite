@@ -2,44 +2,27 @@
 
 
 #ifdef VOLUMETRIC_CLOUDS
+#include "/lib/prismarine/blur.glsl"
 #endif
 
 float getCloudNoise(vec3 pos){
-	#if VCLOUDS_NOISE_MODE == 1
 	pos *= 0.50;
-	pos.xz *= 0.30;
-	#endif
+	pos.xz *= 0.40;
 
 	vec3 u = floor(pos);
 	vec3 v = fract(pos);
-
 	v = v * v * (3.0 - 2.0 * v);
-	
-	#if VCLOUDS_NOISE_MODE == 0
-	float noisebdl = rand2D(u.xz + u.y * 32.0);
-	float noisebdr = rand2D(u.xz + u.y * 32.0 + vec2(1.0, 0.0));
-	float noisebul = rand2D(u.xz + u.y * 32.0 + vec2(0.0, 1.0));
-	float noisebur = rand2D(u.xz + u.y * 32.0 + vec2(1.0, 1.0));
-	float noisetdl = rand2D(u.xz + u.y * 32.0 + 32.0);
-	float noisetdr = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 0.0));
-	float noisetul = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(0.0, 1.0));
-	float noisetur = rand2D(u.xz + u.y * 32.0 + 32.0 + vec2(1.0, 1.0));
 
-	float noise = mix(mix(mix(noisebdl, noisebdr, v.x), mix(noisebul, noisebur, v.x), v.z), mix(mix(noisetdl, noisetdr, v.x), mix(noisetul, noisetur, v.x), v.z), v.y);
-	return noise;
-
-	#elif VCLOUDS_NOISE_MODE == 1
 	vec2 uv = u.xz + v.xz + u.y * 16.0;
 
 	vec2 coord = uv / 64.0;
-	float a = texture2DLod(noisetex, coord, 2.0).r;
-	float b = texture2DLod(noisetex, coord + 0.25, 2.0).r;
+	float a = texture2D(noisetex, coord).r;
+	float b = texture2D(noisetex, coord + 0.25).r;
 		
 	return mix(a, b, v.y);
-	#endif
 }
-const vec4 cloudGradient = vec4(0.2, 0.2, 0.85, 0.2);
-float getCloudSample(vec3 pos, float height, float stretching){
+
+float getCloudSample(vec3 pos, float height){
 	vec3 wind = vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
 	float amount = CalcTotalAmount(CalcDayAmount(VCLOUDS_AMOUNT_MORNING, VCLOUDS_AMOUNT_DAY, VCLOUDS_AMOUNT_EVENING), VCLOUDS_AMOUNT_NIGHT) * (0.8 + rainStrength * 0.1);
@@ -51,13 +34,12 @@ float getCloudSample(vec3 pos, float height, float stretching){
 		  noiseA+= getCloudNoise(pos / VCLOUDS_SAMPLES * 0.031250 - wind * 0.1) * 6.0 * VCLOUDS_HORIZONTAL_THICKNESS;
 
 	//Sample vertical thickness and height
-	float sampleHeight = abs(height - pos.y) / stretching;
+	float sampleHeight = abs(height - pos.y) / VCLOUDS_VERTICAL_THICKNESS;
 
 	//Shaping
 	float noiseB = clamp(noiseA * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
-	float density = pow(smoothstep(height + stretching * noiseB, height - stretching * noiseB, pos.y), 0.25);
+	float density = pow(smoothstep(height + VCLOUDS_VERTICAL_THICKNESS * noiseB, height - VCLOUDS_VERTICAL_THICKNESS * noiseB, pos.y), 0.25);
 	sampleHeight = pow(sampleHeight, 8.0 * (1.5 - density) * (1.5 - density));
-
 
 	//Output
 	return clamp(noiseA * amount - (10.0 + 5.0 * sampleHeight), 0.0, 1.0);
@@ -94,7 +76,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 
 	float depth0 = GetLinearDepth2(pixeldepth0);
 	float depth1 = GetLinearDepth2(pixeldepth1);
-	float maxDist = 256.0 * VCLOUDS_RANGE;
+	float maxDist = 512.0 * VCLOUDS_RANGE;
 	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
 	float rainFactor = 1.0 - rainStrength * 0.55;
 
@@ -102,7 +84,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 		if (depth1 < minDist){
 			break;
 		}
-
+		
 		wpos = GetWorldSpace(GetLogarithmicDepth(minDist), texCoord.xy);
 
 		if (length(wpos.xz) < maxDist){
@@ -111,31 +93,21 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			else break;
 			#endif
 
-			float cloudWave = getCloudWave((wpos.xz + cameraPosition.xz + vec2(frametime * VCLOUDS_SPEED, 0.0)) * 0.01);
 			wpos.xyz += cameraPosition.xyz + vec3(frametime * VCLOUDS_SPEED, 0.0, 0.0);
 
-			//Cloud noise
-			float stretching = VCLOUDS_VERTICAL_THICKNESS;
-
-			#if VCLOUDS_NOISE_MODE == 1
-			stretching *= 1.25;
-			#endif
-
 			float height = VCLOUDS_HEIGHT * (1.0 + rainStrength * 0.2);
-			float noise = getCloudSample(wpos.xyz, height, stretching);
+			float noise = getCloudSample(wpos.xyz, height);
 
 			//This finds the density of cloud noise at different positions
-			float density = pow(smoothstep(height + stretching * noise, height - stretching * noise, wpos.y), 0.4);
+			float density = pow(smoothstep(height + VCLOUDS_VERTICAL_THICKNESS * noise, height - VCLOUDS_VERTICAL_THICKNESS * noise, wpos.y), 0.4);
 
 			//Color calculation and lighting
 			vec4 cloudsColor = vec4(mix(vcloudsCol * (1.0 + scattering * rainFactor), vcloudsDownCol, noise * density), noise);
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY * isEyeInCave;
 
 			//Underwater fix
-			if (isEyeInWater == 1){
-				float clampEyeBrightness = clamp(eBS, 0.1, 1.0);
-				cloudsColor *= clampEyeBrightness * 0.5;
-			}
+			float clampEyeBrightness = clamp(eBS + (1.0 - isEyeInWater), 0.1, 1.0);
+			cloudsColor *= clampEyeBrightness;
 
 			//Translucency blending, works half correct
 			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT - 10){

@@ -23,13 +23,13 @@ vec3 vcloudsCol     = CalcLightColor(vcSun, vcNight, weatherCol.rgb * 0.4);
 vec3 vcloudsDownCol = CalcLightColor(vcDownSun, vcDownNight, weatherCol.rgb * 0.4);
 
 float getCloudSample(vec2 coord, float VoU, float coverage){
-	coord = floor(coord * 5);
+	coord = floor(coord * 5.0);
 
-	float noise = texture2D(noisetex, coord * 1).x;
-		  noise+= texture2D(noisetex, coord * 0.50).x * 2;
-		  noise+= texture2D(noisetex, coord * 0.25).x * 3;
-		  noise+= texture2D(noisetex, coord * 0.125).x * 4;
-		  noise+= texture2D(noisetex, coord * 0.0625).x * 5;
+	float noise = texture2D(noisetex, coord * 1.0).x;
+		  noise+= texture2D(noisetex, coord * 0.50).x * 2.0;
+		  noise+= texture2D(noisetex, coord * 0.25).x * 3.0;
+		  noise+= texture2D(noisetex, coord * 0.125).x * 4.0;
+		  noise+= texture2D(noisetex, coord * 0.0625).x * 5.0;
 
 	float noiseFade = clamp(sqrt(VoU * 8.0), 0.0, 1.0);
 	float noiseCoverage = (coverage * coverage) + CLOUD_AMOUNT;
@@ -45,7 +45,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 	float cloud = 0.0;
 	float cloudGradient = 0.0;
 	float gradientMix = dither * 0.1;
-	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength * 0.50)) * 2;
+	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength * 0.50)) * 2.0;
 	float scattering = pow(VoL * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
 
 	float cloudHeightFactor = max(1.15 - 0.0025 * cameraPosition.y, 0.0);
@@ -55,8 +55,8 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 
 	vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 	for(int i = 0; i < 10; i++) {
-		vec2 planeCoord = wpos.xz * ((cloudHeight + (i + dither) * 4) / wpos.y) * 0.02;
-		vec2 coord = cameraPosition.xz * 0.001 + planeCoord + vec2(frametime * 0.0025, 0);
+		vec2 planeCoord = wpos.xz * ((cloudHeight + (i + dither) * 4.0) / wpos.y) * 0.02;
+		vec2 coord = cameraPosition.xz * 0.001 + planeCoord + vec2(frametime * 0.0025, 0.0);
 
 		float coverage = float(i - 2.5 + dither) * 0.6;
 		float noise = getCloudSample(coord, VoU, coverage) * CLOUD_AMOUNT;
@@ -114,7 +114,7 @@ void DrawStars(inout vec3 color, vec3 viewPos) {
 	#endif
 
 	#ifdef END
-	color += star * vec3(1.15, 0.85, 1.00) * 100 * endCol.rgb;
+	color += star * vec3(1.15, 0.85, 1.00) * 100.0 * endCol.rgb;
 	#endif
 }
 
@@ -145,7 +145,7 @@ void DrawBigStars(inout vec3 color, vec3 viewPos) {
 	#endif
 
 	#ifdef END
-	color += star * vec3(1.15, 0.85, 1.00) * 128 * endCol.rgb;
+	color += star * vec3(1.15, 0.85, 1.00) * 128.0 * endCol.rgb;
 	#endif
 }
 
@@ -343,7 +343,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 			if (noise > 0.0) {
 				noise *= texture2D(noisetex, coord * 0.25 + wind * 0.25).b;
 				noise *= 1.0 * texture2D(noisetex, coord + wind * 16.0).b + 0.75;
-				noise = noise * noise * 4 * sampleStep;
+				noise = noise * noise * 4.0 * sampleStep;
 				noise *= max(sqrt(1.0 - length(planeCoord.xz) * 2.5), 0.0);
 				if (nebulaType == 0){
 					#if defined END

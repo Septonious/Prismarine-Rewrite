@@ -57,7 +57,6 @@ void Defog(inout vec3 albedo) {
 //Includes//
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/lightColor.glsl"
-#include "/lib/color/blocklightColor.glsl"
 
 //Program//
 void main() {
@@ -74,14 +73,12 @@ void main() {
 
 		albedo.a *= 0.25 * rainStrength * length(albedo.rgb / 3.0) * float(albedo.a > 0.1);
 		albedo.rgb = sqrt(albedo.rgb);
-		albedo.rgb *= (ambientCol + lmCoord.x * lmCoord.x * blocklightCol) * WEATHER_OPACITY;
+		albedo.rgb *= (ambientCol + lmCoord.x) * WEATHER_OPACITY;
 
 		#if MC_VERSION < 10800
 		albedo.a *= 4.0;
 		albedo.rgb *= 0.525;
 		#endif
-		
-		if (gl_FragCoord.z > 0.991) Defog(albedo.rgb);
 
 		#if ALPHA_BLEND == 0
 		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));

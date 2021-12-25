@@ -6,14 +6,14 @@ float GetLinearDepth2(float depth) {
     return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 }
 
-#ifdef BLUE_NOISE_DITHER
-uniform sampler2D colortex8;
-#endif
-
 float InterleavedGradientNoiseVL() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
-
-	return fract(n + frameCounter / 8.0);
+	#ifdef TAA
+	n = fract(n + frameCounter / 6.0);
+	#else
+	n = fract(n);
+	#endif
+	return n;
 }
 
 vec4 GetWorldSpace(float shadowdepth, vec2 texCoord) {
@@ -76,8 +76,7 @@ float getFogNoise(vec3 pos) {
 
 	vec2 coord = uv / 64.0;
 	float a = texture2DLod(noisetex, coord, 4.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
-	coord = uv / 64.0 + 16.0 / 64.0;
-	float b = texture2DLod(noisetex, coord, 4.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
+	float b = texture2DLod(noisetex, coord + 0.25, 4.0).r * LIGHTSHAFT_HORIZONTAL_THICKNESS;
 		
 	return mix(a, b, v.y);
 }

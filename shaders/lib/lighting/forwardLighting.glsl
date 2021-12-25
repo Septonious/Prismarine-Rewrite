@@ -45,7 +45,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #ifdef END
     vec3 sceneLighting = endCol.rgb * (0.06 * fullShadow + 0.02);
     #endif
-
+    
     #else
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
     #endif
@@ -123,11 +123,6 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     //#endif
 
     vec3 minLighting = minLightCol * (1.0 - eBS) * (1.25 - isEyeInWater);
-
-    #ifdef TOON_LIGHTMAP
-    minLighting *= floor(smoothLighting * 8.0 + 1.001) / 4.0;
-    smoothLighting = 1.0;
-    #endif
     
     vec3 albedoNormalized = normalize(albedo.rgb + 0.00001);
     vec3 emissiveLighting = mix(albedoNormalized, vec3(1.0), emission * 0.5);
