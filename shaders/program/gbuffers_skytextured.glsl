@@ -2,7 +2,7 @@
 BSL Shaders v8 Series by Capt Tatsu 
 https://bitslablab.com 
 */ 
-1
+
 //Settings//
 #include "/lib/settings.glsl"
 
@@ -92,7 +92,7 @@ void main() {
 	#endif
 
 	#ifdef END
-	albedo.rgb = 0.25 * endCol.rgb * GetLuminance(endCol.rgb);
+	albedo.rgb = vec3(endCol.r * 1.5, endCol.g, endCol.b) * GetLuminance(endCol.rgb);
 
 	#ifdef END_STARS
 	#ifdef SMALL_STARS

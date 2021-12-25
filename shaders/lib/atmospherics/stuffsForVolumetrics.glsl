@@ -9,9 +9,7 @@ float GetLinearDepth2(float depth) {
 float InterleavedGradientNoiseVL() {
 	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
 	#ifdef TAA
-	n = fract(n + frameCounter / 6.0);
-	#else
-	n = fract(n);
+	n = fract(n + frameCounter / 32.0);
 	#endif
 	return n;
 }
