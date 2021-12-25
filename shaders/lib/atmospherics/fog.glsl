@@ -54,7 +54,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
-	density *= 1.0 - clamp(isEyeInWater, 0.0, 1.0);
+	density *= 1.0 - clamp(float(isEyeInWater), 0.0, 1.0);
 
 	#ifdef OVERWORLD
 	float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.25, 1.0);
@@ -212,7 +212,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 		}
 	}
 	#endif
-	fog *= 1.0 - clamp(isEyeInWater, 0.0, 1.0);
+	fog *= 1.0 - clamp(float(isEyeInWater), 0.0, 1.0);
 	#endif
 
 	#ifdef NETHER
