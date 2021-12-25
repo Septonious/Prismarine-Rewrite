@@ -94,17 +94,9 @@ void main() {
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
-	#ifdef OVERWORLD
-	vec3 vl = BoxBlur(colortex1, 0.02, texCoord);
-	#else
-	vec3 vl = texture2D(colortex1, texCoord).rgb;
+	vec3 vl = BoxBlur(colortex1, 0.01, texCoord.xy);
 	#endif
-	#endif
-
-	//#if defined OVERWORLD && defined VOLUMETRIC_CLOUDS
-	//color.rgb += BoxBlur(colortex8, 0.005, texCoord);
-	//#endif
-
+	
 	vec4 screenPos = vec4(texCoord.x, texCoord.y, pixeldepth0, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
@@ -138,7 +130,6 @@ void main() {
 	float visibility1 = (1.0 - sunVisibility) * (1.0 - rainStrength) * (0.0 + eBS) * (1.0 - isEyeInWater);
 	if (visibility1 > 0) vl *= vec3(100.0, 255.0, 180.0) * FIREFLIES_I * 16.0;	
 	#endif
-
 	#endif
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
@@ -152,12 +143,12 @@ void main() {
     vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
     vec3 gi = computeGI(screenPos.xyz, normal, float(pixeldepth0 < 0.56));
 
-    /*RENDERTARGETS:0,11*/
+    /* RENDERTARGETS:0,11 */
 	gl_FragData[0] = color;
     gl_FragData[1] = vec4(gi, 1.0);
 
     #else
-    /*DRAWBUFFERS:0*/
+    /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;
     #endif
 }
