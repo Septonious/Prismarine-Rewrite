@@ -23,10 +23,6 @@ uniform mat4 gbufferModelView, gbufferPreviousModelView, gbufferModelViewInverse
 uniform sampler2D colortex0, noisetex;
 uniform sampler2D depthtex1;
 
-#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-uniform sampler2D colortex11;
-#endif
-
 //Common Functions//
 vec3 MotionBlur(vec3 color, float z, float dither) {
 	float hand = float(z < 0.56);
@@ -89,16 +85,8 @@ void main() {
 	color = MotionBlur(color, z, dither);
 	#endif
 	
-	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-	vec3 gi = texture2D(colortex11, texCoord.xy).rgb;
-
-	/* RENDERTARGETS:0,11 */
-	gl_FragData[0] = vec4(color, 1.0);
-	gl_FragData[1] = vec4(gi, 1.0);
-	#else
     /*DRAWBUFFERS:0*/
     gl_FragData[0] = vec4(color, 1.0);
-	#endif
 }
 
 #endif
