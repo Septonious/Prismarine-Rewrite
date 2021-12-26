@@ -42,7 +42,7 @@ void main() {
 	vec3 color = texture2DLod(colortex1, texCoord, 0.0).rgb;
 	
     #ifdef FXAA
-	color = FXAA311(color);
+	color = FXAA311(color, colortex1, 1.0);
     #endif
 
     #ifdef TAA

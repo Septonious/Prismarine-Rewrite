@@ -31,7 +31,7 @@ uniform float timeBrightness, timeAngle, rainStrength;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #endif
 
-#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
+#if defined SSGI && !defined ADVANCED_MATERIALS
 uniform sampler2D colortex11;
 #endif
 
@@ -115,7 +115,11 @@ vec2 dofOffsets[60] = vec2[60](
 #endif
 
 #if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-#include "/lib/prismarine/blur.glsl"
+float GetLuminance(vec3 color) {
+	return dot(color,vec3(0.299, 0.587, 0.114));
+}
+
+#include "/lib/antialiasing/fxaa.glsl"
 #endif
 
 //Common Functions//
@@ -191,16 +195,16 @@ void main() {
     #ifdef DISTANT_BLUR
     #endif
 
-	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH * 3.0, texCoord);
+	#if defined SSGI && !defined ADVANCED_MATERIALS
+	vec3 gi = texture2D(colortex11, texCoord.xy).rgb;
+		#ifdef DENOISE
+		gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
+		#endif
+	color.rgb += gi;
+	#endif
 
-	/* RENDERTARGETS:0,11 */
-	gl_FragData[0] = vec4(color, 1.0);
-	gl_FragData[1] = vec4(gi, 1.0);
-	#else
     /*DRAWBUFFERS:0*/
     gl_FragData[0] = vec4(color, 1.0);
-	#endif
 }
 
 #endif

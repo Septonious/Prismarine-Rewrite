@@ -15,7 +15,7 @@ https://bitslablab.com
 //#define SSGI
   #define GI_DEPTH_LENIENCY 5 //[1 5 10 25 50]
   #define DENOISE
-  #define DENOISE_STRENGTH 0.002 //[0.001 0.002 0.003 0.004 0.005 0.006 0.007 0.008]
+  #define DENOISE_STRENGTH 10 //[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
   #define BOUNCES 1 //[1 2 3 4]
   #define ILLUMINATION_STRENGTH 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define STRIDE 48 //[4 8 16 24 32 48 64 96 128]
@@ -839,3 +839,6 @@ https://bitslablab.com
   #if MC_VERSION >= 11500 && MC_VERSION < 11605
   #define NORMAL_SKIP
   #endif
+
+#ifdef DENOISE
+#endif

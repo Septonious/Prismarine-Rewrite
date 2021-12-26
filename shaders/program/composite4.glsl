@@ -18,10 +18,6 @@ uniform float viewWidth, viewHeight, aspectRatio, frameTimeCounter;
 
 uniform sampler2D colortex0;
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
-uniform sampler2D colortex11, depthtex0;
-#endif
-
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
 
@@ -55,9 +51,6 @@ vec3 BloomTile(float lod, vec2 coord, vec2 offset) {
 
 //Includes//
 #include "/lib/util/dither.glsl"
-#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-#include "/lib/prismarine/blur.glsl"
-#endif
 
 //Program//
 void main() {
@@ -72,22 +65,8 @@ void main() {
 		
 		 blur = clamp(blur, vec3(0.0), vec3(1.0));
 
-	#if defined SSGI && !defined ADVANCED_MATERIALS
-	vec3 color = texture2D(colortex0, texCoord).rgb;
-
-	#ifdef DENOISE
-	vec3 gi = BoxBlur(colortex11, DENOISE_STRENGTH * 4.0, texCoord);
-	#else
-	vec3 gi = texture2D(colortex11, texCoord).rgb;
-	#endif
-
-    /* DRAWBUFFERS:01 */
-	gl_FragData[0] = vec4(color + gi, 1.0);
-	gl_FragData[1] = vec4(blur, 1.0);
-	#else
     /* DRAWBUFFERS:1 */
 	gl_FragData[0] = vec4(blur, 1.0);
-	#endif
 }
 
 #endif
