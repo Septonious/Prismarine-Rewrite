@@ -74,14 +74,6 @@ vec3 MotionBlur(vec3 color, float z, float dither) {
 #include "/lib/util/outlineDepth.glsl"
 #endif
 
-#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-float GetLuminance(vec3 color) {
-	return dot(color,vec3(0.299, 0.587, 0.114));
-}
-
-#include "/lib/antialiasing/fxaa.glsl"
-#endif
-
 //Program//
 void main() {
     vec3 color = texture2D(colortex0, texCoord).rgb;
@@ -99,7 +91,6 @@ void main() {
 	
 	#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
 	vec3 gi = texture2D(colortex11, texCoord.xy).rgb;
-		 gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
 
 	/* RENDERTARGETS:0,11 */
 	gl_FragData[0] = vec4(color, 1.0);

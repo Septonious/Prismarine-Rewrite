@@ -219,6 +219,7 @@ void main() {
                 iEmissive = float(max(dif.r, max(dif.g, dif.b)) > 0.1) * 25.0;
                 iEmissive *= float(albedo.r > 0.44 || albedo.g > 0.29);
 				iEmissive *= 0.5;
+				giEmissive = 3.0;
             }
 		} else if (mat > 102.9 && mat < 103.1){
             float core = float(albedo.r < 0.1);

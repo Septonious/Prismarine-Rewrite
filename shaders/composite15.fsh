@@ -1,9 +1,9 @@
 /* 
-BSL Shaders v7.2.01 by Capt Tatsu 
+BSL Shaders v8 Series by Capt Tatsu 
 https://bitslablab.com 
 */ 
 
-#version 130 
+#version 120 
 
 #extension GL_ARB_shader_texture_lod : enable
 

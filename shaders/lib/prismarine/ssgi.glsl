@@ -150,7 +150,7 @@ vec3 generateCosineVector(vec3 vector, vec2 xy) {
 }
 
 vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
-	int speed = frameCounter % 255;
+	int speed = frameCounter % 100;
 
     float dither = getRandomNoise(gl_FragCoord.xy);
 	dither = fract(dither + speed);

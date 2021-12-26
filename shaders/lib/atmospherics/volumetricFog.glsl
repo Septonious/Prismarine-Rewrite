@@ -26,7 +26,7 @@ vec4 getVolumetricFog(float pixeldepth0, float pixeldepth1, vec4 color, float di
 	visibility = clamp(visibility - isEyeInWater, 0.0, 1.0);
 
     #if defined NETHER && defined NETHER_SMOKE
-    visibility = 1.0;
+    visibility = 0.25;
     #endif
 
     #if defined END && defined END_SMOKE

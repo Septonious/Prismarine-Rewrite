@@ -13,25 +13,20 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform float viewWidth, viewHeight;
+uniform float viewWidth, viewHeight, aspectRatio;
 
-uniform sampler2D colortex11;
-
-//Common Functions//
-float GetLuminance(vec3 color) {
-	return dot(color,vec3(0.299, 0.587, 0.114));
-}
+uniform sampler2D colortex0, colortex11;
 
 //Includes//
-#include "/lib/antialiasing/fxaa.glsl"
+#include "/lib/prismarine/blur.glsl"
 
 //Program//
 void main() {
+    vec3 color = texture2D(colortex0, texCoord).rgb;
     vec3 gi = texture2D(colortex11, texCoord).rgb;
-    gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
 
-    /* RENDERTARGETS:11 */
-    gl_FragData[0] = vec4(gi, 1.0);
+    /* DRAWBUFFERS:0 */
+    gl_FragData[0] = vec4(color + gi, 1.0);
 }
 
 #endif

@@ -59,13 +59,13 @@ vec3 ClipAABB(vec3 q,vec3 aabb_min, vec3 aabb_max){
 		return q;
 }
 
-vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view) {
+vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view, sampler2D colortex) {
 	vec3 minclr = RGBToYCoCg(color);
 	vec3 maxclr = minclr;
 
 	for(int i = 0; i < 8; i++) {
 		vec2 offset = neighbourhoodOffsets[i] * view;
-		vec3 clr = texture2DLod(colortex1, texCoord + offset, 0.0).rgb;
+		vec3 clr = texture2DLod(colortex, texCoord + offset, 0.0).rgb;
 
 		clr = RGBToYCoCg(clr);
 		minclr = min(minclr, clr); maxclr = max(maxclr, clr);
@@ -77,18 +77,18 @@ vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view) {
 	return YCoCgToRGB(tempColor);
 }
 
-vec4 TemporalAA(inout vec3 color, float tempData) {
+vec4 TemporalAA(inout vec3 color, float tempData, sampler2D colortex, sampler2D prevtex) {
 	vec3 coord = vec3(texCoord, texture2DLod(depthtex1, texCoord, 0.0).r);
 	vec2 prvCoord = Reprojection(coord);
 	
-	vec3 tempColor = texture2DLod(colortex2, prvCoord, 0).gba;
+	vec3 tempColor = texture2DLod(prevtex, prvCoord, 0).gba;
 	vec2 view = vec2(viewWidth, viewHeight);
 
 	if(tempColor == vec3(0.0)){
 		return vec4(tempData, color);
 	}
 	
-	tempColor = NeighbourhoodClamping(color, tempColor, 1.0 / view);
+	tempColor = NeighbourhoodClamping(color, tempColor, 1.0 / view, colortex);
 	
 	vec2 velocity = (texCoord - prvCoord.xy) * view;
 	float blendFactor = float(

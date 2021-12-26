@@ -13,49 +13,25 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform int frameCounter;
-uniform float viewWidth, viewHeight, aspectRatio;
+uniform float viewWidth, viewHeight;
 
-uniform sampler2D colortex1, colortex2, depthtex1;
-
-uniform vec3 cameraPosition, previousCameraPosition;
-
-uniform mat4 gbufferPreviousProjection, gbufferProjectionInverse;
-uniform mat4 gbufferPreviousModelView, gbufferModelViewInverse;
+uniform sampler2D colortex11;
 
 //Common Functions//
 float GetLuminance(vec3 color) {
-	return dot(color, vec3(0.299, 0.587, 0.114));
+	return dot(color,vec3(0.299, 0.587, 0.114));
 }
 
 //Includes//
-#ifdef TAA
-#include "/lib/antialiasing/taa.glsl"
-#endif
-
-#ifdef FXAA
 #include "/lib/antialiasing/fxaa.glsl"
-#endif
 
 //Program//
 void main() {
-	vec3 color = texture2DLod(colortex1, texCoord, 0.0).rgb;
-	
-    #ifdef FXAA
-	color = FXAA311(color, colortex1, 1.0);
-    #endif
+    vec3 gi = texture2D(colortex11, texCoord).rgb;
+    gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
 
-    #ifdef TAA
-    vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
-    prev = TemporalAA(color, prev.r);
-    #endif
-
-    /*DRAWBUFFERS:1*/
-	gl_FragData[0] = vec4(color, 1.0);
-	#ifdef TAA
-    /*DRAWBUFFERS:12*/
-	gl_FragData[1] = vec4(prev);
-	#endif
+    /* RENDERTARGETS:11 */
+    gl_FragData[0] = vec4(gi, 1.0);
 }
 
 #endif

@@ -31,10 +31,6 @@ uniform float timeBrightness, timeAngle, rainStrength;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #endif
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
-uniform sampler2D colortex11;
-#endif
-
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
 
@@ -114,14 +110,6 @@ vec2 dofOffsets[60] = vec2[60](
 #include "/lib/prismarine/timeCalculations.glsl"
 #endif
 
-#if (defined SSGI && !defined ADVANCED_MATERIALS) && defined DENOISE
-float GetLuminance(vec3 color) {
-	return dot(color,vec3(0.299, 0.587, 0.114));
-}
-
-#include "/lib/antialiasing/fxaa.glsl"
-#endif
-
 //Common Functions//
 vec3 DepthOfField(vec3 color, float z, vec4 viewPos) {
 	vec3 dof = vec3(0.0);
@@ -194,14 +182,6 @@ void main() {
 
     #ifdef DISTANT_BLUR
     #endif
-
-	#if defined SSGI && !defined ADVANCED_MATERIALS
-	vec3 gi = texture2D(colortex11, texCoord.xy).rgb;
-		#ifdef DENOISE
-		gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
-		#endif
-	color.rgb += gi;
-	#endif
 
     /*DRAWBUFFERS:0*/
     gl_FragData[0] = vec4(color, 1.0);
