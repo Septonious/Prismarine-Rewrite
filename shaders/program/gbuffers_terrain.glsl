@@ -253,6 +253,8 @@ void main() {
 			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH;
 		} else if (mat > 116.9 && mat < 117.1) { // Chorus
 			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * float(albedo.b > 0.575) * 0.25 * GLOW_STRENGTH;
+		} else if (mat > 117.9 && mat < 118.1) {
+			iEmissive = 4;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
@@ -658,6 +660,7 @@ void main() {
 	if (mc_Entity.x == 20015) mat = 115.0;
 	if (mc_Entity.x == 10206) mat = 116.0;
 	if (mc_Entity.x == 20017) mat = 117.0;
+	if (mc_Entity.x == 20018) mat = 118.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 

@@ -205,6 +205,7 @@ option.NOISY_TEXTURES.comment=Adds some subtle noise to specific blocks. Inspire
 
 option.shadowMapResolution=Shadowmap Quality
 option.shadowMapResolution.comment=Adjusts shadowmap size. §e[*]§rHigher resolution gives sharper shadows, but reduces performance.
+value.shadowMapResolution.256=bro
 value.shadowMapResolution.512=Very Low (512)
 value.shadowMapResolution.1024=Low (1024)
 value.shadowMapResolution.2048=Medium (2048)

@@ -407,7 +407,7 @@ void main() {
 				#endif
 
 				#ifdef END
-				skyReflection = endCol.rgb * 0.02;
+				skyReflection = endCol.rgb * 0.04;
 
 				#if END_SKY == 1
 				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);

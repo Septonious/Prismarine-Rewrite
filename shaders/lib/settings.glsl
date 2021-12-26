@@ -15,7 +15,7 @@ https://bitslablab.com
 //#define SSGI
   #define GI_DEPTH_LENIENCY 5 //[1 5 10 25 50]
   #define DENOISE
-  #define DENOISE_STRENGTH 10 //[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16]
+  #define DENOISE_STRENGTH 10 //[0.25 0.50 1.00 2.00 4.00 8.00]
   #define BOUNCES 1 //[1 2 3 4]
   #define ILLUMINATION_STRENGTH 0.50 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define STRIDE 48 //[4 8 16 24 32 48 64 96 128]
@@ -487,11 +487,11 @@ https://bitslablab.com
 ////////////////////////////////////
 
 //Lighting//
-  const int shadowMapResolution = 512; //[512 1024 2048 3072 4096 8192]
+  const int shadowMapResolution = 512; //[256 512 1024 2048 3072 4096 8192]
   const float shadowDistance = 256.0; //[128.0 256.0 512.0 1024.0]
   const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
 
-  #define SHADOW_BLUR 1.0 //[1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0]
+  #define SHADOW_BLUR 4.0 //[1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0]
   #define SHADOW_COLOR
   #define SHADOW_FILTER
 

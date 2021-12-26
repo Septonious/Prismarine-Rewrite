@@ -294,7 +294,7 @@ void main() {
 
 		vec3 portColSqrt = vec3(END_R, END_G, END_B) / 255.0 * END_I;
 		vec3 portCol = portColSqrt * portColSqrt * 0.05;
-		vec2 wind = vec2(0, frametime * 0.025);
+		vec2 wind = vec2(0.0, frametime * 0.025);
 
 		float portal = texture2D(noisetex, portalCoord * 0.1 + wind * 0.05).r * 0.25 + 0.375;
 
