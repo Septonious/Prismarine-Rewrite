@@ -1,6 +1,8 @@
 #shaders/lang/en_us.lang
 
 #Profiles
+profile.FOGGY=§dFoggy
+profile.SSGI=§6SSGI
 profile.LOW=§aLow
 profile.MEDIUM=§bMedium
 profile.RUSSIAN_DOOMER=§8Russian Doomer
@@ -431,7 +433,7 @@ option.DISTANT_FADE=Distant Fade
 option.DISTANT_FADE.comment=Fades far chunk borders. §e[*]§rThis option is affected by fog density.
 value.DISTANT_FADE.0=OFF
 value.DISTANT_FADE.1=Overworld Only
-value.DISTANT_FADE.2=Nether & End Only
+value.DISTANT_FADE.2=Nether Only
 value.DISTANT_FADE.3=Full
 
 option.DISTANT_FADE_STYLE=Distant Fade Style

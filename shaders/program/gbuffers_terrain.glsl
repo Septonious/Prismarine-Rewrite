@@ -251,6 +251,8 @@ void main() {
 			iEmissive = GLOW_STRENGTH * GLOW_STRENGTH;
 		} else if (mat > 115.9 && mat < 116.1) { // Lantern
 			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH;
+		} else if (mat > 116.9 && mat < 117.1) { // Chorus
+			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * float(albedo.b > 0.575) * 0.25 * GLOW_STRENGTH;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
@@ -456,7 +458,7 @@ void main() {
 		depth = 8.0 - depth;
 		if (isEyeInWater == 1){
 			float clampEyeBrightness = clamp(eBS, 0.1, 1.0);
-			albedo.rgb *= waterColor.rgb * (5.0 - rainStrength - rainStrength) * clampEyeBrightness;
+			albedo.rgb *= waterColor.rgb * (4.0 - rainStrength - rainStrength) * clampEyeBrightness;
 			albedo.rgb *= waterColor.rgb * waterColor.rgb * 512.0 * (0.25 + timeBrightness) + depth;
 		}
 		#endif
@@ -655,7 +657,7 @@ void main() {
 	if (mc_Entity.x == 20014) mat = 114.0;
 	if (mc_Entity.x == 20015) mat = 115.0;
 	if (mc_Entity.x == 10206) mat = 116.0;
-	if (mc_Entity.x == 10207) mat = 117.0;
+	if (mc_Entity.x == 20017) mat = 117.0;
 	if (mc_Entity.x == 10101) isPlant = 1.0;
 	#endif
 

@@ -407,7 +407,7 @@ void main() {
 				#endif
 
 				#ifdef END
-				skyReflection = endCol.rgb * 0.01;
+				skyReflection = endCol.rgb * 0.02;
 
 				#if END_SKY == 1
 				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
@@ -530,6 +530,7 @@ void main() {
 										   	   specularColor, shadow * vanillaDiffuse, color.a);
 			#endif
 		}
+		#ifdef OVERWORLD
 		glass = float(mat > 1.98 && mat < 2.02);
 		if ((isEyeInWater == 0 && water > 0.5) || glass > 0.5) {
 			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;
@@ -567,6 +568,7 @@ void main() {
 
 			albedo.rgb = mix(albedo.rgb, newAlbedo, absorb);
 		}
+		#endif
 
 		Fog(albedo.rgb, viewPos);
 

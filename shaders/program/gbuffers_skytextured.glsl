@@ -92,7 +92,7 @@ void main() {
 	#endif
 
 	#ifdef END
-	albedo.rgb = vec3(endCol.r * 1.5, endCol.g, endCol.b) * GetLuminance(endCol.rgb);
+	albedo.rgb = vec3(endCol.r * 1.25, endCol.g, endCol.b) * 0.1;
 
 	#ifdef END_STARS
 	#ifdef SMALL_STARS
