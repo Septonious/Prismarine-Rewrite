@@ -14,6 +14,8 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
+uniform float viewWidth, viewHeight;
+
 uniform sampler2D colortex11;
 uniform sampler2D colortex13;
 
@@ -22,11 +24,11 @@ const bool colortex13Clear = false;
 
 //Program//
 void main() {
-    vec3 gi = texture2D(colortex11, texCoord).rgb;
+    vec4 gi = texture2D(colortex11, texCoord);
     vec3 temporalColor = texture2D(colortex13, texCoord).gba;
 
     /* RENDERTARGETS:11,13 */
-    gl_FragData[0] = vec4(gi, 1.0);
+    gl_FragData[0] = gi;
     gl_FragData[1] = vec4(0.0, temporalColor);
 }
 
@@ -49,7 +51,7 @@ void main() {
 #endif
 
 
-#ifndef SSGI
+#if !defined SSGI || (!defined TAA && defined SSGI) || defined ADVANCED_MATERIALS
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 

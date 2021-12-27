@@ -15,31 +15,27 @@ varying vec2 texCoord;
 
 //Uniforms//
 #ifdef DENOISE
-uniform float aspectRatio;
+uniform float viewHeight, viewWidth;
+
 uniform sampler2D colortex6;
-uniform sampler2D depthtex0;
-uniform float far, near, centerDepth;
+uniform sampler2D depthtex0, depthtex1;
+
+uniform mat4 gbufferProjectionInverse;
 #endif
 
-uniform float viewHeight, viewWidth;
 uniform sampler2D colortex11;
 
-//Common Functions//
-float GetLinearDepth(float depth) {
-   return (2.0 * near) / (far + near - depth * (far - near));
-}
-
-//Includes//
 #ifdef DENOISE
+//Includes//
 #include "/lib/prismarine/normalAwareBlur.glsl"
 #endif
 
 //Program//
 void main() {
-    vec3 gi = texture2D(colortex11, texCoord).rgb;
+    vec3 gi = texture(colortex11, texCoord).rgb;
 
     #ifdef DENOISE
-    gi = NormalAwareBlur(colortex11, colortex6, 0.01 * DENOISE_STRENGTH, texCoord, vec2(1, 0));
+    gi.rgb = NormalAwareBlur(colortex11, colortex6, 0.01 * DENOISE_STRENGTH, texCoord, vec2(1, 0));
     #endif
 
     /* RENDERTARGETS:11 */

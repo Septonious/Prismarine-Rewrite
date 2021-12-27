@@ -43,6 +43,7 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/spaceConversion.glsl"
+#include "/lib/prismarine/macros.glsl"
 #include "/lib/prismarine/caustics.glsl"
 #endif
 

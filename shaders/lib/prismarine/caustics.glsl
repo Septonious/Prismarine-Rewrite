@@ -17,7 +17,7 @@ float getCaustics(vec3 pos){
 	float h4 = h(pos + vec3(0, 0, -1));
 	
 	float caustic = max((1 - abs(0.5 - h0)) * (1 - (abs(h1 - h2) + abs(h3 - h4))), 0);
-	caustic = max(pow(caustic, 3.5), 0);
+	caustic = max(pow4(caustic), 0);
 	
 	return caustic;
 }

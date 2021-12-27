@@ -2,6 +2,8 @@
 #include "/lib/lighting/shadows.glsl"
 #endif
 
+#include "/lib/prismarine/macros.glsl"
+
 void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos,
                  vec2 lightmap, float smoothLighting, float NoL, float vanillaDiffuse,
                  float parallaxShadow, float emission, float subsurface) {
@@ -26,7 +28,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     float scattering = 0.0;
     if (subsurface > 0.0){
         float VoL = clamp(dot(normalize(viewPos.xyz), lightVec) * 0.5 + 0.5, 0.0, 1.0);
-        scattering = pow(VoL, 16.0) * (1.0 - rainStrength) * subsurface;
+        scattering = pow16(VoL) * (1.0 - rainStrength) * subsurface;
         NoL = mix(NoL, 1.0, sqrt(subsurface) * 0.7);
         NoL = mix(NoL, 1.0, scattering);
     }
@@ -58,28 +60,28 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     lightmap.x *= 0.0;
     #endif
 
-    float newLightmap = pow(lightmap.x, 8.00) * 2.00 + lightmap.x * 0.75;
+    float newLightmap = pow8(lightmap.x) * 2.00 + lightmap.x * 0.75;
     newLightmap = clamp(newLightmap, 0.25, 1.00);
 
     float lightmapBrightness = lightmap.x * 15.0;
-    float lightMapBrightnessFactor = 1.25 - pow(lightmap.x, 6.0);
+    float lightMapBrightnessFactor = 1.25 - pow8(lightmap.x);
     blocklightCol *= lightMapBrightnessFactor;
     blocklightCol *= 1.00 - lightmap.y * 0.75;
 
     #ifdef ADVANCED_ILLUMINATION
-    float sunlightmap = pow(lightmap.y, 6.0) * timeBrightness * lightmap.y;
+    float sunlightmap = pow8(lightmap.y) * timeBrightness * lightmap.y;
     vec3 sunlight = vec3(ADVANCED_ILLUMINATION_R, ADVANCED_ILLUMINATION_G, ADVANCED_ILLUMINATION_B) / 255.0 * ADVANCED_ILLUMINATION_I;
     sunlight = normalize(sunlight) * sunlightmap;
     #endif
 
     #ifdef LIGHTMAP_BRIGHTNESS_RECOLOR
-    float lightFlatten1 = clamp(1.0 - pow(1.0 - emission, 128.0), 0.0, 1.0);
+    float lightFlatten1 = clamp(1.0 - pow128(1.0 - emission), 0.0, 1.0);
     if (lightFlatten1 == 0){
-        blocklightCol.r *= (pow(newLightmap, 4)) * 3 * LIGHTMAP_R;
+        blocklightCol.r *= (pow4(newLightmap)) * 3.0 * LIGHTMAP_R;
         blocklightCol.g *= (3.50 - newLightmap) * newLightmap * 1.25 * LIGHTMAP_G;
         blocklightCol.b *= (3.50 - newLightmap - newLightmap) * 2.50 * LIGHTMAP_B;
     } else {
-        float blocklightColr = (pow(newLightmap, 4)) * 3 * LIGHTMAP_R;
+        float blocklightColr = (pow4(newLightmap)) * 3 * LIGHTMAP_R;
         float blocklightColg = (3.50 - newLightmap) * newLightmap * 1.25 * LIGHTMAP_G;
         float blocklightColb = (3.50 - newLightmap - newLightmap) * 2.50 * LIGHTMAP_B;
         blocklightCol = mix(blocklightCol, vec3(blocklightColr, blocklightColg, blocklightColb), 0.5);
@@ -128,7 +130,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     vec3 emissiveLighting = mix(albedoNormalized, vec3(1.0), emission * 0.5);
     emissiveLighting *= emission * 4.0;
 
-    float lightFlatten = clamp(1.0 - pow(1.0 - emission, 128.0), 0.0, 1.0);
+    float lightFlatten = clamp(1.0 - pow128(1.0 - emission), 0.0, 1.0);
     blockLighting *= 1.0 - float(lightFlatten > 0.5) * 0.75;
     vanillaDiffuse = mix(vanillaDiffuse, 1.0, lightFlatten);
     smoothLighting = mix(smoothLighting, 1.0, lightFlatten);

@@ -32,7 +32,7 @@ uniform mat4 gbufferPreviousModelView, gbufferModelViewInverse;
 void main() {
     vec3 gi = texture2D(colortex11, texCoord).rgb;
     vec4 prev = vec4(texture2DLod(colortex13, texCoord, 0.0).r, 0.0, 0.0, 0.0);
-    prev = TemporalAA(gi, prev.r, colortex11, colortex13);
+    prev = TemporalAA(gi.rgb, prev.r, colortex11, colortex13);
 
     /* RENDERTARGETS:11,13 */
     gl_FragData[0] = vec4(gi, 1.0);
@@ -58,7 +58,7 @@ void main() {
 #endif
 
 
-#ifndef SSGI
+#if !defined SSGI || (!defined TAA && defined SSGI) || defined ADVANCED_MATERIALS
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 

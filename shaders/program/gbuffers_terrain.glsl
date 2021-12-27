@@ -200,14 +200,15 @@ void main() {
 
 		#ifdef INTEGRATED_EMISSION
 		float iEmissive = 0.0;
+		float jitter = 1.0 - sin(frameTimeCounter + cos(frameTimeCounter)) * BLOCKLIGHT_FLICKERING_STRENGTH;
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
             iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.25;
-			giEmissive = sqrt(ore) * GLOW_STRENGTH;
+			giEmissive = sqrt(ore) * GLOW_STRENGTH * jitter;
         } else if (mat > 100.9 && mat < 101.1){ // Crying Obsidian and Respawn Anchor
 			iEmissive = (albedo.b - albedo.r) * albedo.r * GLOW_STRENGTH;
-            iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH;
+            iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH * jitter;
 		} else if (mat > 101.9 && mat < 102.1){
             vec3 comPos = fract(worldPos.xyz + cameraPosition.xyz);
             comPos = abs(comPos - vec3(0.5));
@@ -231,13 +232,13 @@ void main() {
             iEmissive = min(pow(length(albedo.rgb) * length(albedo.rgb), 2.0) * iEmissive * GLOW_STRENGTH, 0.3);
 			iEmissive *= 8.0 * GLOW_STRENGTH;
 		} else if (mat > 104.9 && mat < 105.1){ // Warped Nether Warts
-			iEmissive = pow(float(albedo.g - albedo.b), 2) * GLOW_STRENGTH;
+			iEmissive = pow2(float(albedo.g - albedo.b)) * GLOW_STRENGTH;
 		} else if (mat > 105.9 && mat < 106.1){ // Warped Nylium
 			if (albedo.g > albedo.b && albedo.g > albedo.r){
 				iEmissive = pow(float(albedo.g - albedo.b), 3.0) * GLOW_STRENGTH;
 			}
 		} else if (mat > 107.9 && mat < 108.1){ // Amethyst
-			iEmissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH;
+			iEmissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH * jitter;
 		} else if (mat > 109.9 && mat < 110.1){ // Glow Lichen
 			iEmissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 3.0;
 		} else if (mat > 110.9 && mat < 111.1){
@@ -249,9 +250,9 @@ void main() {
 		} else if (mat > 113.9 && mat < 114.1) { // Glow berries
 			iEmissive = float(albedo.r > albedo.g || albedo.r > albedo.b) * GLOW_STRENGTH;
 		} else if (mat > 114.9 && mat < 115.1) { // Torches
-			iEmissive = GLOW_STRENGTH * GLOW_STRENGTH;
+			iEmissive = GLOW_STRENGTH * GLOW_STRENGTH * jitter;
 		} else if (mat > 115.9 && mat < 116.1) { // Lantern
-			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH;
+			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH * jitter;
 		} else if (mat > 116.9 && mat < 117.1) { // Chorus
 			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * float(albedo.b > 0.575) * 0.25 * GLOW_STRENGTH;
 		} else if (mat > 117.9 && mat < 118.1) {
@@ -311,16 +312,9 @@ void main() {
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
 		float ec = GetLuminance(albedo.rgb) * 1.7;
-		#ifdef EMISSIVE_RECOLOR
-		if (recolor > 0.5) {
-			albedo.rgb = blocklightCol * pow(ec, 1.5) / (BLOCKLIGHT_I * BLOCKLIGHT_I);
-			albedo.rgb /= 0.7 * albedo.rgb + 0.7;
-		}
-		#else
 		if (recolor > 0.5) {
 			albedo.rgb *= 4.0;
 		}
-		#endif
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);

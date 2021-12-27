@@ -308,7 +308,7 @@ void main() {
 			baseReflectance = vec3(0.02);
 		}
 
-		vlAlbedo = mix(vec3(1.0), albedo.rgb, sqrt(albedo.a)) * (1.0 - pow(albedo.a, 64.0));
+		vlAlbedo = mix(vec3(1.0), albedo.rgb, sqrt(albedo.a)) * (1.0 - pow64(albedo.a));
 		
 		float NoL = clamp(dot(newNormal, lightVec), 0.0, 1.0);
 

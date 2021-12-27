@@ -1,3 +1,8 @@
+#include "/lib/prismarine/macros.glsl"
+#include "/lib/util/encode.glsl"
+
+//huge thanks to niemand for helping me with depth aware blur
+
 float[] KernelOffsets = float[](
     0.06859499456330513,
     0.06758866276489915,
@@ -23,34 +28,33 @@ float[] KernelOffsets = float[](
     0.0001014935746937502
 );
 
-#define pow2(x) x*x
-#define pow4(x) pow2(x) * pow2(x)
-#define pow16(x) pow4(x) * pow4(x)
-#define pow32(x) pow2(x) * pow16(x)
-#define pow64(x) pow4(x) * pow16(x)
-#define pow256(x) pow16(x) * pow16(x)
-#define pow512(x) pow256(x) * pow2(x)
+float linearizeDepth(in float depth, in mat4 projectionInverse) {
+    return 1.0 / ((depth * 2.0 - 1.0) * projectionInverse[2].w + projectionInverse[3].w);
+}
 
 vec3 NormalAwareBlur(sampler2D colortex, sampler2D normaltex, float strength, vec2 coord, vec2 direction) {
 	vec3 blur = vec3(0.0);
-	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
+	vec3 normal = normalize(DecodeNormal(texture2D(normaltex, coord).xy));
+	vec2 pixelSize = 1.0 / vec2(viewWidth, viewHeight);
+
 	float weight = 0.0;
 	float GBufferWeight = 1.0f;
 
-    vec3 normal = texture2D(normaltex, coord).xyz * 2.0 - 1.0;
+	float centerDepth0 = texture2D(depthtex0, coord.xy).x;
+	float centerDepth1 = linearizeDepth(texture2D(depthtex1, coord.xy).x, gbufferProjectionInverse);
 
     for(int i = -21; i <= 21; i++){
-        float KernelWeight = KernelOffsets[abs(i)];
-		vec2 offsetCoord = coord + direction * view * float(i) * DENOISE_STRENGTH;
-        
-        vec3 newNormal = texture2D(normaltex, offsetCoord).xyz * 2.0 - 1.0;
-        
-		float sampleDepth = GetLinearDepth(texture2D(depthtex0, offsetCoord).r);
-		float NormalWeight = pow512(clamp(dot(normal, newNormal), 0.0001f, 1.0f));
-		float DepthWeight = clamp(pow512(1.0f / abs(centerDepth - sampleDepth)), 0.0001f, 1.0f);
-		GBufferWeight = NormalWeight * DepthWeight * KernelWeight;
+        float kernelWeight = KernelOffsets[abs(i)];
+		vec2 offset = direction * pixelSize * float(i) * DENOISE_STRENGTH * float(centerDepth0 > 0.56);
 
-        blur += texture2D(colortex, offsetCoord).rgb * GBufferWeight;
+        vec3 currentNormal = normalize(DecodeNormal(texture2D(normaltex, coord + offset).xy));
+
+		float currentDepth = linearizeDepth(texture2D(depthtex1, coord + offset).x, gbufferProjectionInverse);
+		float depthWeight = pow8(clamp(1.0 - abs(currentDepth - centerDepth1), 0.0001f, 1.0f)); 
+		float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001f, 1.0f));
+        GBufferWeight = depthWeight * normalWeight * kernelWeight;
+
+        blur += texture2D(colortex, coord + offset).rgb * GBufferWeight;
         weight += GBufferWeight;
     }
 

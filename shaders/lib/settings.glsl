@@ -13,10 +13,9 @@ https://bitslablab.com
 
 /////// Screen Space Global Illumination ///////
 //#define SSGI
-//#define DEPTH_AWARE_BLUR
   #define GI_DEPTH_LENIENCY 5.00 //[0.25 0.5 1.00 5.00 10.00 20.00 40.00]
   #define DENOISE
-  #define DENOISE_STRENGTH 2.50 //[1.00 1.50 2.00 2.50 3.00 3.50 4.00]
+  #define DENOISE_STRENGTH 5.00 //[1.00 2.00 3.00 4.00 5.00 6.00]
   #define BOUNCES 1 //[1 2 3 4]
   #define ILLUMINATION_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
   #define STRIDE 48 //[4 8 16 24 32 48 64 96 128]
