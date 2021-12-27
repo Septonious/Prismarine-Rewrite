@@ -169,13 +169,15 @@ screen.INFO.comment=Based on BSL by Capt Tatsu. Made by Septonious
 option.SSGI=Global Illumination
 option.SSGI.comment=Allows each emissive block to have its own light color and completely replaces Minecraft's lighting system. §f[§c-§f] Doesn't work with Iris and causes massive FPS drop!'
 option.BOUNCES=GI Bounces
-option.DENOISE=GI Denoising
+option.DENOISE=Normal Aware Blur
 option.DENOISE_STRENGTH=Denoising Strength
 option.GI_DEPTH_LENIENCY=Depth Leniency
 option.STRIDE=GI Raytracer Stride
 option.ILLUMINATION_STRENGTH=Illumination Strength
 option.EMISSIVE_CONCRETE=Emissive Concrete
 option.EMISSIVE_PARTICLES=Emissive Particles
+option.DEPTH_AWARE_BLUR=Depth Aware Blur
+
 
 option.ADVANCED_ILLUMINATION=Advanced Illumination
 option.LIGHTMAP_BRIGHTNESS_RECOLOR=Brightness Recolor
@@ -547,9 +549,6 @@ option.SKYBOX_BRIGHTNESS=Skybox Brightness
 option.SKYBOX_BRIGHTNESS.comment=Adjusts skybox brightness. §e[*]§rSet to 1.00 when subtractive skybox exists.
 
 #Cloud Config
-option.VCLOUDS_NOISE_MODE=Noise Mode
-value.VCLOUDS_NOISE_MODE.0=Perlin
-value.VCLOUDS_NOISE_MODE.1=Noise Texture
 option.VCLOUDS_AMOUNT=Amount
 option.VCLOUDS_RANGE=Range
 option.VCLOUDS_RANGE.comment=Changes the maximum render distance

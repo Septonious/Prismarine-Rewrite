@@ -6,6 +6,7 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
+#if defined SSGI && defined TAA && !defined ADVANCED_MATERIALS
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
@@ -13,25 +14,20 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform float viewWidth, viewHeight;
-
 uniform sampler2D colortex11;
+uniform sampler2D colortex13;
 
-//Common Functions//
-float GetLuminance(vec3 color) {
-	return dot(color,vec3(0.299, 0.587, 0.114));
-}
-
-//Includes//
-#include "/lib/antialiasing/fxaa.glsl"
+//Optifine Constants//
+const bool colortex13Clear = false;
 
 //Program//
 void main() {
     vec3 gi = texture2D(colortex11, texCoord).rgb;
-    gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
+    vec3 temporalColor = texture2D(colortex13, texCoord).gba;
 
-    /* RENDERTARGETS:11 */
+    /* RENDERTARGETS:11,13 */
     gl_FragData[0] = vec4(gi, 1.0);
+    gl_FragData[1] = vec4(0.0, temporalColor);
 }
 
 #endif
@@ -49,4 +45,28 @@ void main() {
 	gl_Position = ftransform();
 }
 
+#endif
+#endif
+
+
+#ifndef SSGI
+//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+#ifdef FSH
+
+//Program//
+void main() {
+	discard;
+}
+
+#endif
+
+//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+#ifdef VSH
+
+//Program//
+void main() {
+	gl_Position = ftransform();
+}
+
+#endif
 #endif

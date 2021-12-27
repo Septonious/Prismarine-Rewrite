@@ -6,6 +6,7 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
+#if defined SSGI && !defined ADVANCED_MATERIALS
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
@@ -13,45 +14,36 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform float viewWidth, viewHeight, aspectRatio;
-
-uniform sampler2D colortex11, colortex13, depthtex1;
-
-#ifdef TAA
-uniform int frameCounter;
-
-uniform vec3 cameraPosition, previousCameraPosition;
-
-uniform mat4 gbufferPreviousProjection, gbufferProjectionInverse;
-uniform mat4 gbufferPreviousModelView, gbufferModelViewInverse;
+#ifdef DENOISE
+uniform float aspectRatio;
+uniform sampler2D colortex6;
+uniform sampler2D depthtex0;
+uniform float far, near, centerDepth;
 #endif
 
+uniform float viewHeight, viewWidth;
+uniform sampler2D colortex11;
+
 //Common Functions//
-float GetLuminance(vec3 color) {
-	return dot(color,vec3(0.299, 0.587, 0.114));
+float GetLinearDepth(float depth) {
+   return (2.0 * near) / (far + near - depth * (far - near));
 }
 
 //Includes//
-#include "/lib/antialiasing/fxaa.glsl"
-#ifdef TAA
-#include "/lib/antialiasing/taa.glsl"
+#ifdef DENOISE
+#include "/lib/prismarine/normalAwareBlur.glsl"
 #endif
 
 //Program//
 void main() {
     vec3 gi = texture2D(colortex11, texCoord).rgb;
-    gi = FXAA311(gi, colortex11, 16.0 * DENOISE_STRENGTH);
 
-    #ifdef TAA
-    vec4 prev = vec4(texture2DLod(colortex13, texCoord, 0.0).r, 0.0, 0.0, 0.0);
-    prev = TemporalAA(gi, prev.r, colortex11, colortex13);
-    /* RENDERTARGETS:11,13 */
-    gl_FragData[0] = vec4(gi, 1.0);
-    gl_FragData[1] = vec4(prev);
-    #else
-    /* DRAWBUFFERS:0 */
-    gl_FragData[0] = vec4(color + gi, 1.0);
+    #ifdef DENOISE
+    gi = NormalAwareBlur(colortex11, colortex6, 0.01 * DENOISE_STRENGTH, texCoord, vec2(1, 0));
     #endif
+
+    /* RENDERTARGETS:11 */
+    gl_FragData[0] = vec4(gi, 1.0);
 }
 
 #endif
@@ -69,4 +61,28 @@ void main() {
 	gl_Position = ftransform();
 }
 
+#endif
+#endif
+
+
+#ifndef SSGI
+//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+#ifdef FSH
+
+//Program//
+void main() {
+	discard;
+}
+
+#endif
+
+//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+#ifdef VSH
+
+//Program//
+void main() {
+	gl_Position = ftransform();
+}
+
+#endif
 #endif
