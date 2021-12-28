@@ -3,7 +3,7 @@
 
 //huge thanks to niemand for helping me with depth aware blur
 
-const float[22] KernelOffsets = float[22](
+const float[] KernelOffsets = float[](
     0.06859499456330513,
     0.06758866276489915,
     0.0646582434672158,

@@ -1,4 +1,4 @@
-float[22] KernelOffsets = float[22](
+float[] KernelOffsets = float[](
     0.06859499456330513,
     0.06758866276489915,
     0.0646582434672158,
