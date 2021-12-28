@@ -152,7 +152,7 @@ void main() {
 
 	SunGlare(albedo, viewPos.xyz, CalcLightColor(skylightSun, skylightNight, weatherCol.rgb));
 
-	albedo.rgb *= 1 * (1.0 + nightVision);
+	albedo.rgb *= 1.0 + nightVision;
 
 	#if ALPHA_BLEND == 0
 	albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));
