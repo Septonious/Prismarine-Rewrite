@@ -89,7 +89,7 @@ vec3 NormalAwareBlur(float strength, vec2 coord) {
     #endif
     
     for(int i = 0; i <= 60; i++){
-        vec2 offset = dofOffsets[i] * pixelSize * DENOISE_STRENGTH * 8.0 * float(centerDepth0 > 0.56);
+        vec2 offset = dofOffsets[i] * pixelSize * DENOISE_STRENGTH * float(centerDepth0 > 0.56);
 
         vec3 currentNormal = normalize(DecodeNormal(texture2D(colortex6, coord + offset).xy));
         float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001, 1.0));
