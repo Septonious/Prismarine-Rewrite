@@ -486,11 +486,6 @@ void main() {
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
-	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE) || (defined FIREFLIES && defined OVERWORLD) && (!defined ADVANCED_MATERIALS && !defined SSGI)
-	/* DRAWBUFFERS:06 */
-	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
-	#endif
-
 	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
 	/* DRAWBUFFERS:0367 */
 	gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);

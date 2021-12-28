@@ -101,7 +101,7 @@ vec3 NormalAwareBlur(vec2 coord) {
         GBufferWeight *= depthWeight;
         #endif
 
-        blur += texture2D(colortex11, coord + offset).rgb * GBufferWeight;
+        blur += texture2DLod(colortex11, coord + offset, 1.0).rgb * GBufferWeight;
         weight += GBufferWeight;
     }
 

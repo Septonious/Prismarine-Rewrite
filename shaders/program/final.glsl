@@ -135,6 +135,10 @@ void main() {
 	color.rgb *= 1.0 + playerMood;
 	#endif
 
+    #ifdef DO_NOT_CLICK
+    color *= 0.0;
+    #endif
+
 	gl_FragColor = color;
 }
 
