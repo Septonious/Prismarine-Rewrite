@@ -20,6 +20,7 @@ vec3 fogColorC2    	= CalcLightColor(fogcolorSun2, fogcolorNight2, weatherCol.rg
 
 float mefade0 = 1.0 - clamp(abs(timeAngle - 0.5) * 8.0 - 1.5, 0.0, 1.0);
 float dfade0 = 1.0 - timeBrightness;
+float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
 
 float CalcFogDensity(float morning, float day, float evening) {
 	float me = mix(morning, evening, mefade0);
@@ -54,6 +55,8 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
+
+	density *= isEyeInCave * isEyeInCave * isEyeInCave * isEyeInCave;
 	density *= 1.0 - clamp(float(isEyeInWater), 0.0, 1.0);
 
 	#ifdef OVERWORLD
@@ -168,9 +171,10 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	#ifdef OVERWORLD
 	float densitySun = CalcFogDensity(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY);
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
+
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
-	float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
+
 	density *= isEyeInCave * isEyeInCave * isEyeInCave * isEyeInCave;
 
 	float fog = length(viewPos) * density / 64.0;
