@@ -46,7 +46,7 @@ uniform sampler2D depthtex1;
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
+#ifdef SSGI
 uniform sampler2D colortex6, colortex9, colortex11, colortex12;
 #endif
 
@@ -83,7 +83,7 @@ float GetLuminance(vec3 color) {
 
 #include "/lib/prismarine/blur.glsl"
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
+#ifdef SSGI
 #include "/lib/util/encode.glsl"
 #include "/lib/prismarine/ssgi.glsl"
 #endif
@@ -94,16 +94,10 @@ void main() {
 	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
-    vec2 imageSize = vec2(viewWidth, viewHeight);
-    vec2 fragCoord = gl_FragCoord.xy - 0.5f;
-    
-    vec2 halfResolutionTexCoord = floor(fragCoord / 2.0) * 2.0 + 1.0f;
-    halfResolutionTexCoord = clamp(halfResolutionTexCoord / imageSize, 0.0, 1.0);
-
 	#ifdef OVERWORLD
-	vec3 vl = BoxBlur(colortex1, 0.015, halfResolutionTexCoord);
+	vec3 vl = BoxBlur(colortex1, 0.025, texCoord);
 	#else
-	vec3 vl = BoxBlur(colortex1, 0.010, halfResolutionTexCoord);
+	vec3 vl = BoxBlur(colortex1, 0.010, texCoord);
 	#endif
 	#endif
 	
@@ -149,7 +143,7 @@ void main() {
 	color.rgb += vl;
 	#endif
 
-    #if defined SSGI && !defined ADVANCED_MATERIALS
+    #ifdef SSGI
     vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
     vec3 gi = computeGI(screenPos.xyz, normal, float(pixeldepth0 < 0.56));
 

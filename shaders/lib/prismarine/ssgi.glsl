@@ -1,6 +1,6 @@
 //huge thanks to lvutner, belmu and niemand for help!
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
+#ifdef SSGI
 
 //Constants
 #define TAU 6.28318530

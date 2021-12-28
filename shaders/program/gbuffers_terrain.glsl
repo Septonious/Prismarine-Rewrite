@@ -270,7 +270,7 @@ void main() {
 		if (mat > 106.9 && mat < 107.1) albedo.a *= 0.0;
 		#endif
 
-		#if defined SSGI && !defined ADVANCED_MATERIALS
+		#ifdef SSGI
 		#ifdef EMISSIVE_CONCRETE
 		if (mat > 9998.9 && mat < 9999.1) emissive = 16.0;
 		#endif
@@ -495,11 +495,20 @@ void main() {
 	gl_FragData[3] = vec4(fresnel3, 1.0);
 	#endif
 
-	#if defined SSGI && !defined ADVANCED_MATERIALS
+	#ifdef SSGI
 	/* RENDERTARGETS:0,6,9,12 */
 	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
 	gl_FragData[2] = vec4(emissive + lava + giEmissive);
 	gl_FragData[3] = albedo;
+	#endif
+
+	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR && defined ADVANCED_MATERIALS
+	/* RENDERTARGETS:0,3,6,7,9,12 */
+	gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
+	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
+	gl_FragData[3] = vec4(fresnel3, 1.0);
+	gl_FragData[4] = vec4(emissive + lava + giEmissive);
+	gl_FragData[5] = albedo;
 	#endif
 
 }

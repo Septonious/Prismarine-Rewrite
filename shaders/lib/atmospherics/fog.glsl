@@ -70,7 +70,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 	vec3 fog = vec3(0.0);
 	fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC2;
 
-	if (!layer && isEyeInCave > 0.8){
+	if (!layer){
 		#if FOG_COLOR_MODE == 1
 		fog = fogCol * baseGradient * vec3(FOG_R, FOG_G, FOG_B) * FOG_I * fogColorC;
 		#elif FOG_COLOR_MODE == 0
@@ -170,8 +170,8 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
 	if (!layer) density *= FIRST_LAYER_DENSITY;
 	if (layer) density *= SECOND_LAYER_DENSITY;
-	float isEyeInCave = 1.0 - clamp(clamp(cameraPosition.y * 0.005, 0.0, 1.0) * (1.0 - eBS), 0.0, 1.0);
-	density *= clamp(cameraPosition.y * 0.01, 0.01, 1.00) * isEyeInCave;
+	float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
+	density *= isEyeInCave * isEyeInCave * isEyeInCave * isEyeInCave;
 
 	float fog = length(viewPos) * density / 64.0;
 	float clearDay = sunVisibility * (1.0 - rainStrength);
@@ -198,7 +198,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 		vanillaFog = clamp(vanillaFog, 0.0, 1.0);
 		
 		#ifdef OVERWORLD
-		vanillaFog *= isEyeInCave * isEyeInCave * isEyeInCave;
+		vanillaFog *= isEyeInCave * isEyeInCave * isEyeInCave * isEyeInCave;
 		#endif
 	
 		if (vanillaFog > 0.0 && isEyeInCave > 0.25){

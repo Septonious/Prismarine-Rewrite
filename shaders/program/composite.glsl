@@ -41,7 +41,7 @@ uniform mat4 shadowProjection;
 
 uniform sampler2D colortex0, colortex1, depthtex0, depthtex1;
 
-#if defined LIGHTSHAFT_CLOUDY_NOISE || VCLOUDS_NOISE_MODE == 1
+#ifdef LIGHTSHAFT_CLOUDY_NOISE
 uniform sampler2D noisetex;
 #endif
 

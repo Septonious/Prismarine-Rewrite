@@ -105,7 +105,7 @@ void main() {
 	#endif
 
 	float dither = Bayer64(gl_FragCoord.xy);
-	dither = fract(dither + frameCounter / 8.0);
+	dither = fract(dither + frameCounter / 64.0);
 
 	vec4 screenPos = vec4(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);

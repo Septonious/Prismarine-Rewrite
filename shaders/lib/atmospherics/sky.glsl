@@ -3,8 +3,9 @@ vec3 skylightMorning    = vec3(SKYLIGHT_MR,   SKYLIGHT_MG,   SKYLIGHT_MB)   * SK
 vec3 skylightDay        = vec3(SKYLIGHT_DR,   SKYLIGHT_DG,   SKYLIGHT_DB)   * SKYLIGHT_DI / 255.0;
 vec3 skylightEvening    = vec3(SKYLIGHT_ER,   SKYLIGHT_EG,   SKYLIGHT_EB)   * SKYLIGHT_EI / 255.0;
 vec3 skylightNight      = vec3(SKYLIGHT_NR,   SKYLIGHT_NG,   SKYLIGHT_NB)   * SKYLIGHT_NI * 0.3 / 255.0;
-vec3 skylightSun       = CalcSunColor(skylightMorning, skylightDay, skylightEvening);
+vec3 skylightSun        = CalcSunColor(skylightMorning, skylightDay, skylightEvening);
 
+#if SKY_MODE == 0
 vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     vec3 nViewPos = normalize(viewPos);
 
@@ -93,11 +94,13 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     #endif
 
     float isEyeInCave1 = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
-    sky.rgb *= isEyeInCave1 * isEyeInCave1 * isEyeInCave1;
+    sky.rgb *= isEyeInCave1 * isEyeInCave1 * isEyeInCave1 * isEyeInCave1;
 
     sky *= ground;
 
     return sky;
 }
-
+#else
+#include "/lib/atmospherics/sky2.glsl"
+#endif
 #endif

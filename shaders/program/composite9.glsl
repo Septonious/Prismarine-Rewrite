@@ -6,7 +6,7 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
-#if defined SSGI && !defined ADVANCED_MATERIALS
+#ifdef SSGI
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
