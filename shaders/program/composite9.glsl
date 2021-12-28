@@ -35,7 +35,7 @@ void main() {
     vec3 gi = texture2D(colortex11, texCoord).rgb;
 
     #ifdef DENOISE
-    gi.rgb = NormalAwareBlur(0.01 * DENOISE_STRENGTH, texCoord, vec2(1, 0));
+    gi.rgb = NormalAwareBlur(0.01 * DENOISE_STRENGTH, texCoord);
     #endif
 
     /* RENDERTARGETS:11 */

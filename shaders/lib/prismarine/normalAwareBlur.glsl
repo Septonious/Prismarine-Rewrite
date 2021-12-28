@@ -36,7 +36,7 @@ float GetLinearDepth2(float depth) {
 }
 #endif
 
-vec3 NormalAwareBlur(float strength, vec2 coord, vec2 direction) {
+vec3 NormalAwareBlur(float strength, vec2 coord) {
 	vec3 blur = vec3(0.0);
 	vec3 normal = normalize(DecodeNormal(texture2D(colortex6, coord).xy));
 	vec2 pixelSize = 1.0 / vec2(viewWidth, viewHeight);
@@ -58,7 +58,11 @@ vec3 NormalAwareBlur(float strength, vec2 coord, vec2 direction) {
 		float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001, 1.0));
         GBufferWeight = normalWeight * kernelWeight;
 
-
+        #ifndef NETHER
+		float currentDepth = GetLinearDepth2(texture2D(depthtex1, coord + offset).x);
+		float depthWeight = (clamp(1.0 - abs(currentDepth - centerDepth1), 0.0001, 1.0)); 
+        GBufferWeight *= depthWeight;
+        #endif
 
         blur += texture2D(colortex11, coord + offset).rgb * GBufferWeight;
         weight += GBufferWeight;
