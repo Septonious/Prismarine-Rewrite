@@ -88,7 +88,7 @@ vec3 NormalAwareBlur(float strength, vec2 coord) {
 	float centerDepth1 = GetLinearDepth2(texture2D(depthtex1, coord.xy).x);
     #endif
     
-    for(int i = 0; i <= 60; i++){
+    for(int i = 0; i <= DENOISE_QUALITY; i++){
         vec2 offset = dofOffsets[i] * pixelSize * DENOISE_STRENGTH * float(centerDepth0 > 0.56);
 
         vec3 currentNormal = normalize(DecodeNormal(texture2D(colortex6, coord + offset).xy));

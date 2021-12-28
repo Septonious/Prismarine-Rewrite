@@ -15,8 +15,8 @@ https://bitslablab.com
 //#define SSGI
   #define GI_DEPTH_LENIENCY 1.00 //[0.25 0.5 1.00 5.00 10.00 20.00 40.00]
   #define DENOISE
-  #define DENOISE_QUALITY 24 //[2 4 6 8 10 12 14 16 18 20 22 24]
-  #define DENOISE_STRENGTH 4.00 //[1.00 2.00 3.00 4.00 5.00 6.00]
+  #define DENOISE_QUALITY 60 //[10 20 30 40 50 60]
+  #define DENOISE_STRENGTH 5.00 //[1.00 2.00 3.00 4.00 5.00 6.00]
   #define BOUNCES 1 //[1 2 3 4]
   #define ILLUMINATION_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
   #define STRIDE 48 //[4 8 16 24 32 48 64 96 128]
