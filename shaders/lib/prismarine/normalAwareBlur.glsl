@@ -3,29 +3,67 @@
 
 //huge thanks to niemand for helping me with depth aware blur
 
-const float[] KernelOffsets = float[](
-    0.06859499456330513,
-    0.06758866276489915,
-    0.0646582434672158,
-    0.060053666382841785,
-    0.05415271962490796,
-    0.0474096695217294,
-    0.040297683205704475,
-    0.033255219213172406,
-    0.0266443947480172,
-    0.02072610900858287,
-    0.015652912895289143,
-    0.011477248433445731,
-    0.008170442697260053,
-    0.0056470130318222785,
-    0.0037892897088649766,
-    0.0024686712595739543,
-    0.0015614781087428572,
-    0.0009589072215278897,
-    0.0005717237762381398,
-    0.0003309526350349594,
-    0.0001860014387826795,
-    0.0001014935746937502
+vec2 dofOffsets[60] = vec2[60](
+	vec2( 0.0    ,  0.25  ),
+	vec2(-0.2165 ,  0.125 ),
+	vec2(-0.2165 , -0.125 ),
+	vec2( 0      , -0.25  ),
+	vec2( 0.2165 , -0.125 ),
+	vec2( 0.2165 ,  0.125 ),
+	vec2( 0      ,  0.5   ),
+	vec2(-0.25   ,  0.433 ),
+	vec2(-0.433  ,  0.25  ),
+	vec2(-0.5    ,  0     ),
+	vec2(-0.433  , -0.25  ),
+	vec2(-0.25   , -0.433 ),
+	vec2( 0      , -0.5   ),
+	vec2( 0.25   , -0.433 ),
+	vec2( 0.433  , -0.2   ),
+	vec2( 0.5    ,  0     ),
+	vec2( 0.433  ,  0.25  ),
+	vec2( 0.25   ,  0.433 ),
+	vec2( 0      ,  0.75  ),
+	vec2(-0.2565 ,  0.7048),
+	vec2(-0.4821 ,  0.5745),
+	vec2(-0.51295,  0.375 ),
+	vec2(-0.7386 ,  0.1302),
+	vec2(-0.7386 , -0.1302),
+	vec2(-0.51295, -0.375 ),
+	vec2(-0.4821 , -0.5745),
+	vec2(-0.2565 , -0.7048),
+	vec2(-0      , -0.75  ),
+	vec2( 0.2565 , -0.7048),
+	vec2( 0.4821 , -0.5745),
+	vec2( 0.51295, -0.375 ),
+	vec2( 0.7386 , -0.1302),
+	vec2( 0.7386 ,  0.1302),
+	vec2( 0.51295,  0.375 ),
+	vec2( 0.4821 ,  0.5745),
+	vec2( 0.2565 ,  0.7048),
+	vec2( 0      ,  1     ),
+	vec2(-0.2588 ,  0.9659),
+	vec2(-0.5    ,  0.866 ),
+	vec2(-0.7071 ,  0.7071),
+	vec2(-0.866  ,  0.5   ),
+	vec2(-0.9659 ,  0.2588),
+	vec2(-1      ,  0     ),
+	vec2(-0.9659 , -0.2588),
+	vec2(-0.866  , -0.5   ),
+	vec2(-0.7071 , -0.7071),
+	vec2(-0.5    , -0.866 ),
+	vec2(-0.2588 , -0.9659),
+	vec2(-0      , -1     ),
+	vec2( 0.2588 , -0.9659),
+	vec2( 0.5    , -0.866 ),
+	vec2( 0.7071 , -0.7071),
+	vec2( 0.866  , -0.5   ),
+	vec2( 0.9659 , -0.2588),
+	vec2( 1      ,  0     ),
+	vec2( 0.9659 ,  0.2588),
+	vec2( 0.866  ,  0.5   ),
+	vec2( 0.7071 ,  0.7071),
+	vec2( 0.5    ,  0.8660),
+	vec2( 0.2588 ,  0.9659)
 );
 
 #ifndef NETHER
@@ -50,17 +88,16 @@ vec3 NormalAwareBlur(float strength, vec2 coord) {
 	float centerDepth1 = GetLinearDepth2(texture2D(depthtex1, coord.xy).x);
     #endif
     
-    for(int i = -DENOISE_QUALITY; i <= DENOISE_QUALITY; i++){
-        float kernelWeight = KernelOffsets[abs(i)];
-		vec2 offset = direction * pixelSize * float(i) * DENOISE_STRENGTH * float(centerDepth0 > 0.56);
+    for(int i = -4; i <= 4; i++){
+        vec2 offset = dofOffsets[i] * pixelSize * DENOISE_STRENGTH * float(centerDepth0 > 0.56);
 
         vec3 currentNormal = normalize(DecodeNormal(texture2D(colortex6, coord + offset).xy));
-		float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001, 1.0));
-        GBufferWeight = normalWeight * kernelWeight;
+        float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001, 1.0));
+        GBufferWeight = normalWeight;
 
         #ifndef NETHER
-		float currentDepth = GetLinearDepth2(texture2D(depthtex1, coord + offset).x);
-		float depthWeight = (clamp(1.0 - abs(currentDepth - centerDepth1), 0.0001, 1.0)); 
+        float currentDepth = GetLinearDepth2(texture2D(depthtex1, coord + offset).x);
+        float depthWeight = (clamp(1.0 - abs(currentDepth - centerDepth1), 0.0001, 1.0)); 
         GBufferWeight *= depthWeight;
         #endif
 
