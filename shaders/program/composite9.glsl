@@ -32,10 +32,10 @@ uniform sampler2D colortex11;
 
 //Program//
 void main() {
-    vec3 gi = texture(colortex11, texCoord).rgb;
+    vec3 gi = texture2D(colortex11, texCoord).rgb;
 
     #ifdef DENOISE
-    gi.rgb = NormalAwareBlur(colortex11, colortex6, 0.01 * DENOISE_STRENGTH, texCoord, vec2(1, 0));
+    gi.rgb = NormalAwareBlur(0.01 * DENOISE_STRENGTH, texCoord, vec2(1, 0));
     #endif
 
     /* RENDERTARGETS:11 */

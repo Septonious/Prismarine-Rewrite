@@ -64,7 +64,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 				  minDist = minDist * (1.0 - isEyeInWater * 0.8);
 
 			if (visibility0 < 0.6 && isEyeInWater != 1.0){
-				if (depth0 < minDist && color.r < 0.25 && color.b > color.r) visibility = 1.0 - rainStrength;
+				if (depth0 < minDist && color.r < 0.25 && color.b > color.r) visibility = (1.0 - rainStrength) * 0.5;
 				else break;
 			}
 

@@ -234,7 +234,7 @@ void main() {
 	#ifdef REFRACTION
 	vec3 worldPos = ToWorld(viewPos.xyz);
 
-	if (z0 < z1 && translucent.r < 0.25 && translucent.b > translucent.r){
+	if (z0 < z1 && translucent.r < 0.25 && translucent.b > translucent.r && translucent.b > translucent.g){
 		vec2 refractionCoord = getRefract(texCoord.xy, worldPos + cameraPosition);
 		color.rgb = texture2D(colortex0, refractionCoord).rgb;
 	}

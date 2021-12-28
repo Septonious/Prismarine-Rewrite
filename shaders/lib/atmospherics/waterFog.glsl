@@ -19,7 +19,6 @@ vec4 GetWaterFog(vec3 viewPos) {
     float VoL = dot(normalize(viewPos.xyz), lightVec);
     float scattering = pow(VoL * shadowFade * 0.5 + 0.5, 6.0) * clampEyeBrightness;
     waterFogColor *= (1.0 + scattering + scattering + scattering + scattering + scattering + scattering);
-
     waterFogColor *= 1.0 - blindFactor;
 
     #ifdef OVERWORLD

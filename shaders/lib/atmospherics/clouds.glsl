@@ -9,7 +9,7 @@ vec3 vcNight      = vec3(VCLOUD_NR,   VCLOUD_NG,   VCLOUD_NB)   * VCLOUD_NI * 0.
 vec3 vcDownMorning    = vec3(VCLOUDDOWN_MR,   VCLOUDDOWN_MG,   VCLOUDDOWN_MB)   * VCLOUDDOWN_MI / 255;
 vec3 vcDownDay        = vec3(VCLOUDDOWN_DR,   VCLOUDDOWN_DG,   VCLOUDDOWN_DB)   * VCLOUDDOWN_DI / 255;
 vec3 vcDownEvening    = vec3(VCLOUDDOWN_ER,   VCLOUDDOWN_EG,   VCLOUDDOWN_EB)   * VCLOUDDOWN_EI / 255;
-vec3 vcDownNight      = vec3(VCLOUDDOWN_NR,   VCLOUDDOWN_NG,   VCLOUDDOWN_NB)   * VCLOUDDOWN_NI * 0.3 / 255;
+vec3 vcDownNight      = vec3(VCLOUDDOWN_NR,   VCLOUDDOWN_NG,   VCLOUDDOWN_NB)   * VCLOUDDOWN_NI / 255;
 
 #ifdef PERBIOME_CLOUDS_COLOR
 vec3 vcSun = CalcSunColor(vcMorning, vcDay * getBiomeColor(vcDay), vcEvening);
@@ -76,9 +76,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 		cloudGradient * cloud
 	);
 	cloud *= sqrt(sqrt(clamp(VoU * 8.0 - 1.0, 0.0, 1.0)));
-	#ifdef OVERWORLD
-    cloudColor.rgb *= clamp(cameraPosition.y * 0.01, 0.01, 1.0);
-    #endif
+
 	return vec4(cloudColor * colorMultiplier, cloud * cloud * CLOUD_OPACITY);
 }
 #endif

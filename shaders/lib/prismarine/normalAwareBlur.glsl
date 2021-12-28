@@ -3,7 +3,7 @@
 
 //huge thanks to niemand for helping me with depth aware blur
 
-float[] KernelOffsets = float[](
+const float[22] KernelOffsets = float[22](
     0.06859499456330513,
     0.06758866276489915,
     0.0646582434672158,
@@ -29,40 +29,42 @@ float[] KernelOffsets = float[](
 );
 
 #ifndef NETHER
-float linearizeDepth(in float depth, in mat4 projectionInverse) {
-    return 1.0 / ((depth * 2.0 - 1.0) * projectionInverse[2].w + projectionInverse[3].w);
+uniform float far, near;
+
+float GetLinearDepth2(float depth) {
+    return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
 }
 #endif
 
-vec3 NormalAwareBlur(sampler2D colortex, sampler2D normaltex, float strength, vec2 coord, vec2 direction) {
+vec3 NormalAwareBlur(float strength, vec2 coord, vec2 direction) {
 	vec3 blur = vec3(0.0);
-	vec3 normal = normalize(DecodeNormal(texture2D(normaltex, coord).xy));
+	vec3 normal = normalize(DecodeNormal(texture2D(colortex6, coord).xy));
 	vec2 pixelSize = 1.0 / vec2(viewWidth, viewHeight);
 
-	float weight = 0.0f;
-	float GBufferWeight = 1.0f;
+	float weight = 0.0;
+	float GBufferWeight = 1.0;
 
 	float centerDepth0 = texture2D(depthtex0, coord.xy).x;
-    
-    #ifndef NETHER
-	float centerDepth1 = linearizeDepth(texture2D(depthtex1, coord.xy).x, gbufferProjectionInverse);
-    #endif
 
-    for(int i = -21; i <= 21; i++){
+    #ifndef NETHER
+	float centerDepth1 = GetLinearDepth2(texture2D(depthtex1, coord.xy).x);
+    #endif
+    
+    for(int i = -DENOISE_QUALITY; i <= DENOISE_QUALITY; i++){
         float kernelWeight = KernelOffsets[abs(i)];
 		vec2 offset = direction * pixelSize * float(i) * DENOISE_STRENGTH * float(centerDepth0 > 0.56);
 
-        vec3 currentNormal = normalize(DecodeNormal(texture2D(normaltex, coord + offset).xy));
-		float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001f, 1.0f));
+        vec3 currentNormal = normalize(DecodeNormal(texture2D(colortex6, coord + offset).xy));
+		float normalWeight = pow8(clamp(dot(normal, currentNormal), 0.0001, 1.0));
         GBufferWeight = normalWeight * kernelWeight;
 
         #ifndef NETHER
-		float currentDepth = linearizeDepth(texture2D(depthtex1, coord + offset).x, gbufferProjectionInverse);
-		float depthWeight = clamp(1.0 - abs(currentDepth - centerDepth1), 0.0001f, 1.0f); 
+		float currentDepth = GetLinearDepth2(texture2D(depthtex1, coord + offset).x);
+		float depthWeight = (clamp(1.0 - abs(currentDepth - centerDepth1), 0.0001, 1.0)); 
         GBufferWeight *= depthWeight;
         #endif
 
-        blur += texture2D(colortex, coord + offset).rgb * GBufferWeight;
+        blur += texture2D(colortex11, coord + offset).rgb * GBufferWeight;
         weight += GBufferWeight;
     }
 

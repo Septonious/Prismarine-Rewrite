@@ -112,25 +112,6 @@ bool IntersectSSRay(inout vec3 position, vec3 startVS, vec3 rayDirection, float 
 		if (!hit) t += float(stride);
 	}
 
-	if (hit) {
-		bool refhit = true;
-		float refstride = stride;
-		for (int i = 0; i < (2 ^ stride); i++) {
-			t += (refhit && t > 0.0 ? -1.0 : 1.0) * (refstride *= 0.5);
-			position = rayOrigin + t * rayStep;
-
-			float maxZ = position.z;
-			float minZ = position.z - stride * abs(rayStep.z);
-
-			float depth = texelFetch(depthtex1, ivec2(position.xy), 0).x;
-			float ascribedDepth = AscribeDepth(depth, ascribeAmount);
-
-			refhit = maxZ >= depth && minZ <= ascribedDepth;
-
-			hit = hit && depth < 1.0;
-		}
-	}
-
 	position.xy *= viewPixelSize;
 
 	return hit;
@@ -175,11 +156,13 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
 
         if (hit && hand < 0.5) {
             vec3 albedo = texture2D(colortex12, currentPosition.xy).rgb * ILLUMINATION_STRENGTH;
+			//vec3 shadow = texture2D(colortex14, currentPosition.xy).rgb * 0.5;
 
             float isEmissive = texture2D(colortex9, currentPosition.xy).w == 0.0 ? 0.0 : 1.0;
 
             weight *= albedo;
-            illumination += weight * isEmissive;
+            //illumination += weight * (shadow + isEmissive);
+			illumination += weight * isEmissive;
         }
     }
 

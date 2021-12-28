@@ -176,6 +176,7 @@ void main() {
 	#endif
 
 	float emissive = 0.0; float lava = 0.0; float giEmissive = 0.0;
+	vec3 shadow = vec3(0.0);
 
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
@@ -374,7 +375,6 @@ void main() {
 		#endif
 		#endif
 		
-		vec3 shadow = vec3(0.0);
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, color.a, NoL, vanillaDiffuse,
 					parallaxShadow, emission, subsurface);
 					
@@ -500,6 +500,7 @@ void main() {
 	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
 	gl_FragData[2] = vec4(emissive + lava + giEmissive);
 	gl_FragData[3] = albedo;
+	//gl_FragData[4] = vec4(shadow, 1.0);
 	#endif
 
 	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR && defined ADVANCED_MATERIALS
@@ -509,6 +510,7 @@ void main() {
 	gl_FragData[3] = vec4(fresnel3, 1.0);
 	gl_FragData[4] = vec4(emissive + lava + giEmissive);
 	gl_FragData[5] = albedo;
+	//gl_FragData[6] = vec4(shadow, 1.0);
 	#endif
 
 }

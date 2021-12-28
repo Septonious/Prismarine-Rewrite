@@ -167,9 +167,10 @@ screen.INFO.comment=Based on BSL by Capt Tatsu. Made by Septonious
 
 #Lighting
 option.SSGI=Global Illumination
-option.SSGI.comment=Allows each emissive block to have its own light color and completely replaces Minecraft's lighting system. §f[§c-§f] Doesn't work with Iris and causes massive FPS drop!'
+option.SSGI.comment=Provides per-block realistic colored lighting. §f[§c-§f] Doesn't work with Iris and causes massive FPS drop! §cWIP FEATURE! BUGS ARE EXPECTED!
 option.BOUNCES=GI Bounces
 option.DENOISE=Denoising
+option.DENOISE_QUALITY=Denoising Quality
 option.DENOISE_STRENGTH=Denoising Strength
 option.GI_DEPTH_LENIENCY=Depth Leniency
 option.STRIDE=GI Raytracer Stride

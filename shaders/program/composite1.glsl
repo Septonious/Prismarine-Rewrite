@@ -48,6 +48,7 @@ uniform sampler2D colortex1;
 
 #ifdef SSGI
 uniform sampler2D colortex6, colortex9, colortex11, colortex12;
+//uniform sampler2D colortex14;
 #endif
 
 //Optifine Constants//

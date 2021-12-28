@@ -45,10 +45,8 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 	worldPos.xyz /= worldPos.w;
 
 	vec2 pos = (cameraPosition.xz + worldPos.xz);
-	float dither = Bayer64(gl_FragCoord.xy);
 
     float VoU = clamp(dot(nViewPos,  upVec), -1.0, 1.0);
-    float VoL = clamp(dot(nViewPos, sunVec), -1.0, 1.0);
 
 	float densitySun = CalcFogDensity(MORNING_FOG_DENSITY, DAY_FOG_DENSITY, EVENING_FOG_DENSITY);
 	float density = CalcDensity(densitySun, NIGHT_FOG_DENSITY) * FOG_DENSITY;
@@ -102,7 +100,7 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 	
     fog = fog / sqrt(fog * fog + 1.0) * exposure * sunVisibility;
 
-	float sunMix = (VoL * 0.5 + 0.5) * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) *
+	float sunMix = 0.5 * pow(clamp(1.0 - VoU, 0.0, 1.0), 2.0 - sunVisibility) *
                    pow(1.0 - timeBrightness * 0.6, 3.0);
     float horizonMix = pow(1.0 - abs(VoU), 2.5) * 0.125 * (1.0 - timeBrightness * 0.5);
     float lightMix = (1.0 - (1.0 - sunMix) * (1.0 - horizonMix)) * lViewPos;
@@ -140,15 +138,13 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
     );
     fog *= fog;
 
-    float scattering = pow(VoL * shadowFade * 0.5 + 0.5, 6.0) * (1.0 - rainStrength * 0.8);
-
 	float nightGradient = exp(-(VoU * 0.5 + 0.5) * 0.35 / nightDensity);
     vec3 nightFog = fogcolorNight * fogcolorNight * nightGradient * nightExposure;
     fog = mix(nightFog, fog, sunVisibility * sunVisibility);
 
     float rainGradient = exp(-(VoU * 0.5 + 0.5) * 0.125 / weatherDensity);
     vec3 weatherFog = weatherCol.rgb * weatherCol.rgb * 0.1;
-    weatherFog *= GetLuminance(weatherFog / weatherFog) * (0.2 * sunVisibility + 0.2) * (1.0 + scattering) * 0.25;
+    weatherFog *= GetLuminance(weatherFog / weatherFog) * (0.2 * sunVisibility + 0.2);
     fog = mix(fog, weatherFog * rainGradient, rainStrength);
 
 	return fog;
@@ -158,7 +154,6 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
 void NormalFog(inout vec3 color, vec3 viewPos, bool layer) {
 	vec4 worldPos = gbufferModelViewInverse * vec4(viewPos, 1.0);
 	worldPos.xyz /= worldPos.w;
-	float dither = Bayer64(gl_FragCoord.xy);
 
 	#if DISTANT_FADE > 0
 	#if DISTANT_FADE_STYLE == 0

@@ -69,7 +69,7 @@ vec3 GetSkyColor(vec3 viewPos, bool reflection) {
 	float lightAngle = smoothstep(0.0, 0.25, max(sunVec.y, moonVec.y));
     vec3 ozone = zenithColor * mix(vec3(1.0), vec3(1.0), lightAngle);
 
-    float horizon = whereTheHellIsOurHorizon(viewVec.y + 0.025);
+    float horizon = whereTheHellIsOurHorizon(viewVec.y + 0.05);
 
     vec3 absorption = getSkyAbsorption(ozone, horizon);
     vec3 sunlight = getLighting(sunVec.y) * sunLight;
