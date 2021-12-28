@@ -74,7 +74,7 @@ float GetLinearDepth2(float depth) {
 }
 #endif
 
-vec3 NormalAwareBlur(float strength, vec2 coord) {
+vec3 NormalAwareBlur(vec2 coord) {
 	vec3 blur = vec3(0.0);
 	vec3 normal = normalize(DecodeNormal(texture2D(colortex6, coord).xy));
 	vec2 pixelSize = 1.0 / vec2(viewWidth, viewHeight);
