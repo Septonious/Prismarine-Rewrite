@@ -12,7 +12,6 @@ float getFireflyNoise(vec3 pos, float height){
 
 vec3 GetFireflies(float pixeldepth0, vec3 color, float dither) {
 	vec3 ff = vec3(0.0);
-	dither *= 0.5;
 	float visibility = (1.0 - sunVisibility) * (1.0 - rainStrength) * (0.0 + eBS);
 
 	if (visibility > 0.0) {

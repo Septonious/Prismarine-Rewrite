@@ -58,8 +58,8 @@ vec3 GetSkyColor(vec3 viewPos, bool reflection) {
     float WdotS = dot(viewVec, sunVec);
     float WdotM = dot(viewVec, moonVec);
 
-	float rayleighSun = 0.5 + WdotS * 0.5;
-	float rayleighMoon = 0.5 + WdotM * 0.5;
+	float rayleighSun = (0.5 + WdotS * 0.5) * 2.0;
+	float rayleighMoon = (0.5 + WdotM * 0.5) * 0.5;
 	float mieSun = getMie(WdotS, sunVisibility);
 	float mieMoon = getMie(WdotM, moonVisibility);
 

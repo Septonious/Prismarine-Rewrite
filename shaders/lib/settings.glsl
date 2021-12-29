@@ -105,7 +105,7 @@ https://bitslablab.com
 
 /////////// Atmospherics ///////////
 //#define SUN_GLARE
-  #define SKY_MODE 0
+  #define SKY_MODE 0 //[0 1]
   #define SKY_COLOR_MODE 0 //[0 1]
   #define NIGHT_SKY_MODE 1 //[0 1]
   #define END_SKY 1 //[0 1]

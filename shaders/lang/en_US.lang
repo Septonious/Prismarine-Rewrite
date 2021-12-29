@@ -1,13 +1,9 @@
 #shaders/lang/en_us.lang
 
 #Profiles
-profile.FOGGY=§dFoggy
-profile.SSGI=§6SSGI
-profile.LOW=§aLow
-profile.MEDIUM=§bMedium
-profile.RUSSIAN_DOOMER=§8Russian Doomer
-profile.HIGH=§eHigh
-profile.ULTRA=§cUltra
+profile.FOGGY=§aFoggy
+profile.SATURATED=§bSaturated
+profile.ALTERNATIVE=§eAlternative
 
 #Screens
 screen.LIGHTING=Lighting
