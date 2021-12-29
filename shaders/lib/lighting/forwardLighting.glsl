@@ -60,10 +60,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     lightmap.x *= 0.0;
     #endif
 
-    float newLightmap = pow8(lightmap.x) * 2.00 + lightmap.x * 0.75;
-    newLightmap = clamp(newLightmap, 0.25, 1.00);
-
-    float lightmapBrightness = lightmap.x * 15.0;
+    float newLightmap = 0.5 * pow8(lightmap.x) + lightmap.x * 0.75;
     blocklightCol *= 1.00 - lightmap.y * 0.25;
 
     #ifdef ADVANCED_ILLUMINATION
