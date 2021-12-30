@@ -111,7 +111,7 @@ void ContrastAdaptiveSharpening(out vec3 outColor){
     adaptiveSharpening = minGreen / maxGreen;
 
     adaptiveSharpening = sqrt(max(0.0, adaptiveSharpening));
-    adaptiveSharpening *= mix(-0.125, -0.2, 0.25 * MC_RENDER_QUALITY);
+    adaptiveSharpening *= mix(-0.125, -0.2, 0.5);
     outColor = (originalColor + modifiedColor * adaptiveSharpening) / (1.0 + 4.0 * adaptiveSharpening);
 }
 #endif
