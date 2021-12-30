@@ -166,12 +166,6 @@ void GlowOutline(inout vec3 color){
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/atmospherics/fog.glsl"
 
-#ifdef OUTLINE_ENABLED
-#include "/lib/util/outlineOffset.glsl"
-#include "/lib/atmospherics/waterFog.glsl"
-#include "/lib/post/outline.glsl"
-#endif
-
 #if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
 #include "/lib/util/encode.glsl"
 #include "/lib/reflections/raytrace.glsl"
@@ -195,13 +189,6 @@ void main() {
 	vec4 screenPos = vec4(texCoord, z, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
-
-	#ifdef OUTLINE_ENABLED
-	vec4 outerOutline = vec4(0.0), innerOutline = vec4(0.0);
-	Outline(color.rgb, false, outerOutline, innerOutline);
-
-	color.rgb = mix(color.rgb, innerOutline.rgb, innerOutline.a);
-	#endif
 
 	if (z < 1.0) {
 		#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
@@ -303,14 +290,8 @@ void main() {
 		if (blindFactor > 0.0) color.rgb *= 1.0 - blindFactor;
 	}
 
-	#ifdef OUTLINE_ENABLED
-	color.rgb = mix(color.rgb, outerOutline.rgb, outerOutline.a);
-	#endif
-
-	#if MC_VERSION >= 10900
 	float isGlowing = texture2D(colortex3, texCoord).b;
 	if (isGlowing > 0.5) GlowOutline(color.rgb);
-	#endif
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;
 

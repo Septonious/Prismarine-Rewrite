@@ -157,15 +157,6 @@ float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
 #include "/lib/prismarine/volumetricClouds.glsl"
 #endif
 
-#ifdef OUTLINE_ENABLED
-#include "/lib/color/blocklightColor.glsl"
-#include "/lib/util/outlineOffset.glsl"
-#include "/lib/util/outlineMask.glsl"
-#include "/lib/atmospherics/sky.glsl"
-#include "/lib/atmospherics/fog.glsl"
-#include "/lib/post/outline.glsl"
-#endif
-
 //Program//
 void main() {
     vec4 color = texture2D(colortex0, texCoord);
@@ -197,23 +188,10 @@ void main() {
 	color.rgb = pow(color.rgb, vec3(2.2));
 	#endif
 
-	#ifdef OUTLINE_ENABLED
-	vec4 outerOutline = vec4(0.0), innerOutline = vec4(0.0);
-	float outlineMask = GetOutlineMask();
-	if (outlineMask > 0.5 || isEyeInWater > 0.5)
-		Outline(color.rgb, true, outerOutline, innerOutline);
-
-	if(z1 > z0) color.rgb = mix(color.rgb, innerOutline.rgb, innerOutline.a);
-	#endif
-
 	if (isEyeInWater == 1.0) {
 		vec4 waterFog = GetWaterFog(viewPos.xyz);
 		color.rgb = mix(color.rgb, waterFog.rgb, waterFog.a);
 	}
-
-	#ifdef OUTLINE_ENABLED
-	color.rgb = mix(color.rgb, outerOutline.rgb, outerOutline.a);
-	#endif
 
 	#if (defined VOLUMETRIC_FOG && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 	if (visibility > 0) vl += getVolumetricFog(z0, z1, translucent, InterleavedGradientNoiseVL(), viewPos.xyz, visibility);

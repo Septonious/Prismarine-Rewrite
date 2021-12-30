@@ -594,7 +594,7 @@ https://bitslablab.com
   #define FXAA
 //#define VIGNETTE
 //#define DIRTY_LENS
-  #define OUTLINE 0 //[0 1 2 3 4]
+  #define GLOW_OUTLINE
 
 //Tonemap & Color Grading//
   #define EXPOSURE 0.00 //[-2.00 -1.75 -1.50 -1.25 -1.00 -0.75 -0.50 -0.25 0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
@@ -823,30 +823,6 @@ https://bitslablab.com
   #ifdef END
   #undef LENS_FLARE
   #undef REFLECTION_RAIN
-  #endif
-
-//Outline Params//
-  #if OUTLINE > 0
-  #define OUTLINE_ENABLED
-  #endif
-
-  #if OUTLINE == 1
-  #define OUTLINE_OUTER
-  #endif
-
-  #if OUTLINE == 2
-  #define OUTLINE_OUTER
-  #define OUTLINE_OUTER_COLOR
-  #endif
-  
-  #if OUTLINE == 3
-  #define OUTLINE_OUTER
-  #define OUTLINE_OUTER_COLOR
-  #define OUTLINE_INNER
-  #endif
-  
-  #if OUTLINE == 4
-  #define OUTLINE_INNER
   #endif
 
 //Normal Skip for 1.15 - 1.16 G7

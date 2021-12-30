@@ -694,20 +694,6 @@ option.TAA.comment=Enables temporal anti-aliasing, done by smart frame blending 
 option.VIGNETTE=Vignette
 option.Vignette.comment=Fades the edge of the screen to black. §e[*]§rDisable for 360 imaging.
 
-option.DIRTY_LENS=Dirty Lens
-option.DIRTY_LENS.comment=Adds dusty particle effect to bloom. §e[*]§rRequires bloom.
-
-option.RETRO_FILTER=Retro Filter
-option.RETRO_FILTER.comment=Adds pixelation and dithering. §e[*]§rLower render quality for stronger pixelation. §c[-]§rIncompatible with anti-aliasing.
-
-option.OUTLINE=Outline
-option.OUTLINE.comment=Enables outline effect.
-value.OUTLINE.0=OFF
-value.OUTLINE.1=Black
-value.OUTLINE.2=Colored
-value.OUTLINE.3=1.12 Update Art
-value.OUTLINE.4=Dungeons
-
 #Color Grading & Tonemap
 option.EXPOSURE=Exposure
 option.TonemapExposure.comment=Adjusts overall brightness.

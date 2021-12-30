@@ -80,7 +80,7 @@ vec3 getChromaticAbberation(vec2 coord, float amount) {
 
 #ifdef CAS
 void ContrastAdaptiveSharpening(out vec3 outColor){
-    vec2 uv = gl_FragCoord.xy / vec2(viewWidth, viewHeight);
+    vec2 uv = gl_FragCoord.xy / vec2(viewWidth, viewHeight) * MC_RENDER_QUALITY;
   
     vec3 originalColor = texture2D(colortex1, uv).rgb;
 
@@ -119,10 +119,6 @@ void ContrastAdaptiveSharpening(out vec3 outColor){
 
 //Program//
 void main() {
-	vec2 halfView = vec2(viewWidth, viewHeight) / 2.0;
-	vec2 halfCoord = (floor(texCoord * halfView + 1.0)) / halfView;
-    vec2 newTexCoord = halfCoord;
-
 	#ifdef CHROMATIC_ABERRATION
 	vec4 color = vec4(getChromaticAbberation(texCoord, aberrationStrength), 1.0);
 	#else

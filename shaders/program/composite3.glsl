@@ -101,11 +101,6 @@ vec2 dofOffsets[60] = vec2[60](
 //Includes//
 #include "/lib/util/spaceConversion.glsl"
 
-#ifdef OUTLINE_OUTER
-#include "/lib/util/outlineOffset.glsl"
-#include "/lib/util/outlineDepth.glsl"
-#endif
-
 #if defined FOG_BLUR && defined OVERWORLD
 #include "/lib/prismarine/timeCalculations.glsl"
 #endif
@@ -166,10 +161,6 @@ void main() {
 	viewPos /= viewPos.w;
 
     float z1 = texture2D(depthtex1, texCoord.xy).r;
-
-	#ifdef OUTLINE_OUTER
-	DepthOutline(z1);
-	#endif
 
 	color = DepthOfField(color, z1, viewPos);
 	#endif
