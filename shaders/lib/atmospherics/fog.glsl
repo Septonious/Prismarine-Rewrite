@@ -1,7 +1,3 @@
-#if (WATER_MODE == 1 || WATER_MODE == 3) && !defined SKY_VANILLA && !defined NETHER
-uniform vec3 fogColor;
-#endif
-
 #ifdef OVERWORLD
 vec3 fogcolorMorning    = vec3(FOGCOLOR_MR,   FOGCOLOR_MG,   FOGCOLOR_MB)   * FOGCOLOR_MI / 255.0;
 vec3 fogcolorDay        = vec3(FOGCOLOR_DR,   FOGCOLOR_DG,   FOGCOLOR_DB)   * FOGCOLOR_DI / 255.0;
@@ -143,8 +139,8 @@ vec3 GetFogColor(vec3 viewPos, bool layer) {
     fog = mix(nightFog, fog, sunVisibility * sunVisibility);
 
     float rainGradient = exp(-(VoU * 0.5 + 0.5) * 0.125 / weatherDensity);
-    vec3 weatherFog = weatherCol.rgb * weatherCol.rgb * 0.1;
-    weatherFog *= GetLuminance(weatherFog / weatherFog) * (0.2 * sunVisibility + 0.2);
+    vec3 weatherFog = weatherCol.rgb * weatherCol.rgb * 0.01;
+    weatherFog *= GetLuminance(weatherFog / weatherFog) * (1.0 + sunVisibility);
     fog = mix(fog, weatherFog * rainGradient, rainStrength);
 
 	return fog;

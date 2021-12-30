@@ -586,6 +586,9 @@ option.WATER_ALPHA_MODE.comment=Determine whether the water uses shader based or
 value.WATER_ALPHA_MODE.0=Flat
 value.WATER_ALPHA_MODE.1=Vanilla
 
+option.TRANSLUCENCY_BLENDING=Translucency Blending
+option.TRANSLUCENCY_BLENDING.comment=Adds water absorption and glass blending with things behind it.
+
 option.WATER_NORMALS=Normals
 option.WATER_NORMALS.comment=Enables realtime-generated normal mapping for water.
 value.WATER_NORMALS.0=OFF

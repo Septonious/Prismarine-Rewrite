@@ -41,7 +41,7 @@ uniform mat4 shadowProjection;
 
 uniform sampler2D colortex0, colortex1, depthtex0, depthtex1;
 
-#ifdef LIGHTSHAFT_CLOUDY_NOISE
+#if defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG || defined NETHER_SMOKE || defined END_SMOKE || defined VOLUMETRIC_CLOUDS
 uniform sampler2D noisetex;
 #endif
 

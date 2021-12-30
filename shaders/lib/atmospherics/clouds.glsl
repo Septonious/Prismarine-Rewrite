@@ -288,7 +288,7 @@ vec3 DrawRift(vec3 viewPos, float dither, int samples, float nebulaType) {
 			#ifdef END
 			vec3 planeCoord = wpos * (16.0 + currentStep * -8.0) * 0.001 * NEBULA_STRETCHING;
 			#else
-			vec3 planeCoord = wpos * ((6.0 + currentStep * -2.0) / wpos.y) * 0.0025 * NEBULA_STRETCHING;
+			vec3 planeCoord = wpos * ((6.0 + currentStep * -2.0) / wpos.y) * 0.005 * NEBULA_STRETCHING;
 			#endif
 			vec2 coord = (cameraPosition.xz * 0.0000225 * NEBULA_OFFSET_FACTOR + planeCoord.xz);
 

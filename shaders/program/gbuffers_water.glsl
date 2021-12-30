@@ -530,7 +530,7 @@ void main() {
 										   	   specularColor, shadow * vanillaDiffuse, color.a);
 			#endif
 		}
-		#ifdef OVERWORLD
+		#if defined OVERWORLD && defined TRANSLUCENCY_BLENDING
 		glass = float(mat > 1.98 && mat < 2.02);
 		if ((isEyeInWater == 0 && water > 0.5) || glass > 0.5) {
 			vec3 terrainColor = texture2D(gaux2, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).rgb;

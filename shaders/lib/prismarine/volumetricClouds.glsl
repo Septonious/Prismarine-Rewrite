@@ -78,7 +78,7 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 	float depth1 = GetLinearDepth2(pixeldepth1);
 	float maxDist = 512.0 * VCLOUDS_RANGE;
 	float minDist = 0.01 + (dither * VCLOUDS_QUALITY);
-	float rainFactor = (1.0 - rainStrength * 0.55);
+	float rainFactor = (1.0 - rainStrength * 0.4);
 	float blindnessFactor = (1.0 - blindFactor * 0.8);
 
 	for (minDist; minDist < maxDist; minDist += VCLOUDS_QUALITY) {
