@@ -160,12 +160,12 @@ vec3 computeGI(vec3 screenPos, vec3 normal, float hand) {
 
             float isEmissive = texture2D(colortex9, currentPosition.xy).r == 0.0 ? 0.0 : 1.0;
 
-            weight *= albedo * albedo * albedo;
+            weight *= albedo * albedo;
             //illumination += weight * (shadow + isEmissive);
 			illumination += weight * isEmissive;
         }
     }
 
-    return illumination;
+    return illumination * illumination;
 }
 #endif
