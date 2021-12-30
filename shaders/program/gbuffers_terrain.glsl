@@ -175,9 +175,10 @@ void main() {
 
 	float emissive = 0.0; float lava = 0.0; float giEmissive = 0.0;
 	vec3 shadow = vec3(0.0);
+	vec2 lightmap = vec2(0.0);
 
 	if (albedo.a > 0.001) {
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
+		lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 
 		#ifdef OVERWORLD
 		if (isEyeInWater == 1) lightmap.y = clamp(lightmap.y, 0.15, 1.00);
@@ -203,8 +204,8 @@ void main() {
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
-            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.25;
-			giEmissive = sqrt(ore) * GLOW_STRENGTH * jitter;
+            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.4;
+			giEmissive = sqrt(ore) * GLOW_STRENGTH * jitter * 2.0;
         } else if (mat > 100.9 && mat < 101.1){ // Crying Obsidian and Respawn Anchor
 			iEmissive = (albedo.b - albedo.r) * albedo.r * GLOW_STRENGTH;
             iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH * jitter;
@@ -240,8 +241,8 @@ void main() {
 			iEmissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH * jitter;
 		} else if (mat > 109.9 && mat < 110.1){ // Glow Lichen
 			iEmissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 3.0;
-		} else if (mat > 110.9 && mat < 111.1){
-			iEmissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.2 * GLOW_STRENGTH;
+		} else if (mat > 110.9 && mat < 111.1){ // Redstone stuff
+			iEmissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.25 * GLOW_STRENGTH;
 		} else if (mat > 111.9 && mat < 112.1){ // Soul Emissives
 			iEmissive = float(albedo.b > albedo.r || albedo.b > albedo.g) * 0.5 * GLOW_STRENGTH;
 		} else if (mat > 112.9 && mat < 113.1) { // Brewing Stand
@@ -251,11 +252,11 @@ void main() {
 		} else if (mat > 114.9 && mat < 115.1) { // Torches
 			iEmissive = GLOW_STRENGTH * GLOW_STRENGTH * jitter;
 		} else if (mat > 115.9 && mat < 116.1) { // Lantern
-			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH * jitter;
+			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * GLOW_STRENGTH * jitter;
 		} else if (mat > 116.9 && mat < 117.1) { // Chorus
 			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * float(albedo.b > 0.575) * 0.25 * GLOW_STRENGTH;
 		} else if (mat > 117.9 && mat < 118.1) {
-			iEmissive = 4;
+			iEmissive = 0.0;
 		}
 		#ifdef OVERWORLD
 		if (isPlant > 0.9 && isPlant < 1.1){ // Flowers
@@ -273,7 +274,7 @@ void main() {
 		#ifdef EMISSIVE_CONCRETE
 		if (mat > 9998.9 && mat < 9999.1) emissive = 16.0;
 		#endif
-		if (mat > 9997.9 && mat < 9998.1) giEmissive = lightmap.y * timeBrightness;
+		if (mat > 9997.9 && mat < 9998.1) giEmissive = (lightmap.y * timeBrightness) * 0.01;
 		#endif
 
 		float metalness      = 0.0;
@@ -496,7 +497,7 @@ void main() {
 	#ifdef SSGI
 	/* RENDERTARGETS:0,6,9,12 */
 	gl_FragData[1] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
-	gl_FragData[2] = vec4(emissive + lava + giEmissive);
+	gl_FragData[2] = vec4(emissive + lava + giEmissive, 0.0, lightmap.y, 0.0);
 	gl_FragData[3] = albedo;
 	//gl_FragData[4] = vec4(shadow, 1.0);
 	#endif
@@ -506,7 +507,7 @@ void main() {
 	gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
 	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
 	gl_FragData[3] = vec4(fresnel3, 1.0);
-	gl_FragData[4] = vec4(emissive + lava + giEmissive);
+	gl_FragData[4] = vec4(emissive + lava + giEmissive, 0.0, lightmap.y, 0.0);
 	gl_FragData[5] = albedo;
 	//gl_FragData[6] = vec4(shadow, 1.0);
 	#endif
