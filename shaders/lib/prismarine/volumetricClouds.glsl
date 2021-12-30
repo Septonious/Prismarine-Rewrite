@@ -107,7 +107,8 @@ void getVolumetricCloud(float pixeldepth1, float pixeldepth0, float dither, inou
 			cloudsColor.rgb *= cloudsColor.a * VCLOUDS_OPACITY * isEyeInCave;
 
 			//Translucency blending, works half correct
-			if (depth0 < minDist && cameraPosition.y < VCLOUDS_HEIGHT - 10){
+			if (depth0 < minDist){
+				cloudsColor *= translucent;
 				finalColor *= translucent;
 			}
 

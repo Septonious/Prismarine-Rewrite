@@ -181,7 +181,6 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 #include "/lib/util/spaceConversion.glsl"
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/atmospherics/fog.glsl"
-#include "/lib/atmospherics/waterFog.glsl"
 #include "/lib/lighting/forwardLighting.glsl"
 #include "/lib/reflections/raytrace.glsl"
 #include "/lib/reflections/simpleReflections.glsl"
@@ -419,13 +418,8 @@ void main() {
 				#if defined OVERWORLD || defined END
 				vec3 specular = GetSpecularHighlight(newNormal, viewPos,  0.9, vec3(0.02),
 													 specularColor, shadow, color.a);
-				#if ALPHA_BLEND == 0
-				float specularAlpha = pow(mix(albedo.a, 1.0, fresnel), 2.2) * fresnel;
-				#else
-				float specularAlpha = mix(albedo.a , 1.0, fresnel) * fresnel;
-				#endif
 
-				skyReflection += specular / (lightmap.y * specularAlpha);
+				skyReflection += specular / lightmap.y;
 				#endif
 
 				#ifdef OVERWORLD
@@ -559,8 +553,8 @@ void main() {
 			if (glass > 0.5){
 				albedo.a += albedo.a * 0.75;
 				albedo.a = clamp(albedo.a, 0.5, 0.95);
-				absorbColor = normalize(albedo.rgb * 2.0) * terrainColor * 2.0;
-				absorbDist = 1.0 - clamp(difT / 2.0, 0.0, 1.0);
+				absorbColor = normalize(albedo.rgb) * terrainColor * 1.4;
+				absorbDist = 1.0 - clamp(difT, 0.0, 1.0);
 			}
 			
 			vec3 newAlbedo = mix(absorbColor * absorbColor, terrainColor * terrainColor, absorbDist * absorbDist);
@@ -574,10 +568,6 @@ void main() {
 		#endif
 
 		Fog(albedo.rgb, viewPos);
-
-		#if ALPHA_BLEND == 0
-		albedo.rgb = pow(max(albedo.rgb, vec3(0.0)), vec3(1.0 / 2.2));
-		#endif
 	}
 
     /* DRAWBUFFERS: 01 */

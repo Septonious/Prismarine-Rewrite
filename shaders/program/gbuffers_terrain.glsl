@@ -204,8 +204,8 @@ void main() {
         if (mat > 99.9 && mat < 100.1) { // Emissive Ores
             float stoneDif = max(abs(albedo.r - albedo.g), max(abs(albedo.r - albedo.b), abs(albedo.g - albedo.b)));
             float ore = max(max(stoneDif - 0.175, 0.0), 0.0);
-            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.4;
-			giEmissive = sqrt(ore) * GLOW_STRENGTH * jitter * 2.0;
+            iEmissive = sqrt(ore) * GLOW_STRENGTH * 0.25;
+			giEmissive = sqrt(ore) * GLOW_STRENGTH * jitter;
         } else if (mat > 100.9 && mat < 101.1){ // Crying Obsidian and Respawn Anchor
 			iEmissive = (albedo.b - albedo.r) * albedo.r * GLOW_STRENGTH;
             iEmissive *= iEmissive * iEmissive * GLOW_STRENGTH * jitter;
@@ -241,8 +241,8 @@ void main() {
 			iEmissive = float(length(albedo.rgb) > 0.975) * 0.25 * GLOW_STRENGTH * jitter;
 		} else if (mat > 109.9 && mat < 110.1){ // Glow Lichen
 			iEmissive = (1.0 - lightmap.y) * float(albedo.r > albedo.g || albedo.r > albedo.b) * 3.0;
-		} else if (mat > 110.9 && mat < 111.1){ // Redstone stuff
-			iEmissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.25 * GLOW_STRENGTH;
+		} else if (mat > 110.9 && mat < 111.1){
+			iEmissive = float(albedo.r > albedo.g && albedo.r > albedo.b) * 0.2 * GLOW_STRENGTH;
 		} else if (mat > 111.9 && mat < 112.1){ // Soul Emissives
 			iEmissive = float(albedo.b > albedo.r || albedo.b > albedo.g) * 0.5 * GLOW_STRENGTH;
 		} else if (mat > 112.9 && mat < 113.1) { // Brewing Stand
@@ -252,7 +252,7 @@ void main() {
 		} else if (mat > 114.9 && mat < 115.1) { // Torches
 			iEmissive = GLOW_STRENGTH * GLOW_STRENGTH * jitter;
 		} else if (mat > 115.9 && mat < 116.1) { // Lantern
-			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * GLOW_STRENGTH * jitter;
+			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * 2.0 * GLOW_STRENGTH * jitter;
 		} else if (mat > 116.9 && mat < 117.1) { // Chorus
 			iEmissive = float(albedo.r > albedo.b || albedo.r > albedo.g) * float(albedo.b > 0.575) * 0.25 * GLOW_STRENGTH;
 		} else if (mat > 117.9 && mat < 118.1) {
