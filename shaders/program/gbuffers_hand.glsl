@@ -152,12 +152,8 @@ void main() {
 	#endif
 
 	if (albedo.a > 0.001) {
-		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0;
-		lightmap = clamp(lightmap, vec2(0.0), vec2(1.0));
-		#else
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#endif
+
 		lightmap.x = max(lightmap.x, GetHandItem(213));
 
 		float emissive = (GetHandItem(50) + GetHandItem(89) + GetHandItem(213));
@@ -200,11 +196,6 @@ void main() {
 		float heldLightValue = max(float(heldBlockLightValue), float(heldBlockLightValue2));
 		float handlight = clamp(heldLightValue / 15.0, 0.0, 0.9333);
 		lightmap.x = max(lightmap.x, handlight);
-		#endif
-
-		#ifdef TOON_LIGHTMAP
-		lightmap = floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0;
-		lightmap = clamp(lightmap, vec2(0.0), vec2(1.0));
 		#endif
 
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));

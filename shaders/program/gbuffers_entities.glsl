@@ -236,11 +236,6 @@ void main() {
 		float handlight = clamp((heldLightValue - 2.0 * length(viewPos)) / 15.0, 0.0, 0.9333);
 		lightmap.x = max(lightmap.x, handlight);
 		#endif
-
-		#ifdef TOON_LIGHTMAP
-		lightmap = floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0;
-		lightmap = clamp(lightmap, vec2(0.0), vec2(1.0));
-		#endif
 		
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
@@ -320,7 +315,7 @@ void main() {
 
 		#ifdef OVERWORLD
 		float depth = clamp(length(viewPos.xyz), 0, 9);
-		depth = 10 - depth;
+		depth = 10.0 - depth;
 		if (isEyeInWater == 1){
 			albedo.rgb *= vec3(waterColor.r * 2.00, waterColor.g * 1.50, waterColor.b * 0.50) * (6 - rainStrength - rainStrength);
 			albedo.rgb *= waterColor.rgb * waterColor.rgb * 128.0 * (0.25 + timeBrightness) + depth;

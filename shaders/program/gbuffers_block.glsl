@@ -194,19 +194,7 @@ void main() {
 		lightmap.x = max(lightmap.x, handlight);
 		#endif
 
-		#ifdef TOON_LIGHTMAP
-		lightmap = floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0;
-		lightmap = clamp(lightmap, vec2(0.0), vec2(1.0));
-		#endif
-
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
-
-		#ifdef EMISSIVE_RECOLOR
-		if (blockEntityId == 10205 && dot(color.rgb, vec3(1.0)) > 2.66) {
-			float ec = length(albedo.rgb);
-			albedo.rgb = blocklightCol * (ec * 0.63 / BLOCKLIGHT_I) + ec * 0.07;
-		}
-		#endif
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);

@@ -304,11 +304,6 @@ void main() {
 		lightmap.x = max(lightmap.x, handlight);
 		#endif
 
-		#ifdef TOON_LIGHTMAP
-		lightmap = floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0;
-		lightmap = clamp(lightmap, vec2(0.0), vec2(1.0));
-		#endif
-
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
 		float ec = GetLuminance(albedo.rgb) * 1.7;
