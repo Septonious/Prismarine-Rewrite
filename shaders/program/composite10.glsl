@@ -39,8 +39,8 @@ void main() {
     gi = NormalAwareBlur(texCoord);
     #endif
 
-    gi *= 256.0;
-    color.rgb *= 1.0 + gi;
+    gi *= 512.0;
+    color.rgb *= vec3(1.0) + gi;
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = vec4(color, 1.0);
