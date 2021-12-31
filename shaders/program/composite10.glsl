@@ -41,7 +41,7 @@ void main() {
     gi = NormalAwareBlur(texCoord);
     #endif
 
-    gi *= 256.0 * (1.05 - skyLightmap);
+    gi *= 300.0 * (1.05 - skyLightmap);
     color.rgb *= 1.0 + gi + gi + gi + gi;
 
     /* DRAWBUFFERS:0 */

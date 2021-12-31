@@ -136,8 +136,8 @@ void main() {
 
 	#if NIGHT_SKY_MODE == 1
 	if (moonVisibility > 0.0 && rainStrength != 1.0){
-		albedo.rgb += DrawRift(viewPos.xyz, dither, 6, 1);
-		albedo.rgb += DrawRift(viewPos.xyz, dither, 6, 0);
+		albedo.rgb += DrawRift(viewPos.xyz, dither, 4, 1);
+		albedo.rgb += DrawRift(viewPos.xyz, dither, 4, 0);
 	}
 	#endif
 

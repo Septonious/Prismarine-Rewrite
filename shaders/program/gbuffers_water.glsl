@@ -404,8 +404,8 @@ void main() {
 				skyReflection = endCol.rgb * 0.04;
 
 				#if END_SKY == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 6, 0);
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
 				#endif
 
 				#endif
@@ -428,8 +428,8 @@ void main() {
 				#endif
 
 				#if NIGHT_SKY_MODE == 1
-				skyReflection += DrawRift(viewPos.xyz, dither, 6, 1);
-				skyReflection += DrawRift(viewPos.xyz, dither, 6, 0);
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 1);
+				skyReflection += DrawRift(viewPos.xyz, dither, 4, 0);
 				#endif
 
 				skyReflection *= lightmap.y * lightmap.y;
@@ -539,9 +539,9 @@ void main() {
 			vec3 absorbColor = vec3(0.0);
 			float absorbDist = 0.0;
 
-			if ((isEyeInWater == 0 && water > 0.5) || (isEyeInWater == 1 && water < 0.5)){
+			if (isEyeInWater == 0 && water > 0.5){
 				waterColor.g *= 1.35;
-				absorbColor = normalize(waterColor.rgb * WATER_I) * rainFactor * clampTimeBrightness * terrainColor * 2.0;
+				absorbColor = normalize(waterColor.rgb * WATER_I) * rainFactor * clampTimeBrightness * terrainColor * 1.25;
 				absorbDist = 1.0 - clamp(difT / 10.0, 0.0, 1.0);
 			}
 

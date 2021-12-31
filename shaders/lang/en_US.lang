@@ -406,6 +406,7 @@ option.CLOUDS=Clouds
 value.CLOUDS.0=Volumetric
 value.CLOUDS.1=Blocky Planar
 value.CLOUDS.2=Volumetric + Planar
+value.CLOUDS.3=Off
 option.END_SMOKE=End Smoke
 option.END_SMOKE.comment=Enables volumetric fog in The End.
 option.NETHER_SMOKE=Nether Smoke

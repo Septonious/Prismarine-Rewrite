@@ -23,33 +23,30 @@ uniform int frameCounter;
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
 #endif
 
+#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 uniform float blindFactor;
 uniform float rainStrength;
 uniform float shadowFade;
 uniform float timeAngle, timeBrightness;
-uniform float frameTimeCounter;
-uniform float far, near;
-uniform float viewHeight, viewWidth, aspectRatio;
+#endif
+
+uniform vec3 cameraPosition;
 uniform float eyeAltitude;
+uniform float frameTimeCounter;
+uniform float viewHeight, viewWidth, aspectRatio;
 
 uniform ivec2 eyeBrightnessSmooth;
 
-uniform vec3 cameraPosition;
-
+#ifdef SSGI
 uniform mat4 gbufferProjection;
 uniform mat4 gbufferProjectionInverse;
-uniform mat4 gbufferModelViewInverse;
-uniform mat4 gbufferModelView;
 
+uniform sampler2D colortex6, colortex9, colortex11, colortex12;
 uniform sampler2D depthtex0;
-uniform sampler2D depthtex1;
+#endif
+
 uniform sampler2D colortex0;
 uniform sampler2D colortex1;
-
-#ifdef SSGI
-uniform sampler2D colortex6, colortex9, colortex11, colortex12;
-//uniform sampler2D colortex14;
-#endif
 
 //Optifine Constants//
 const bool colortex1MipmapEnabled = true;
@@ -64,21 +61,21 @@ float frametime = frameTimeCounter*ANIMATION_SPEED;
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
+float isEyeInCave = clamp(eyeAltitude * 0.01 + eBS, 0.0, 1.0);
 
 float GetLuminance(vec3 color) {
 	return dot(color,vec3(0.299, 0.587, 0.114));
 }
 
 //Includes//
+#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 #include "/lib/prismarine/timeCalculations.glsl"
-#include "/lib/color/dimensionColor.glsl"
+#include "/lib/color/lightColor.glsl"
 #include "/lib/color/waterColor.glsl"
-#include "/lib/util/dither.glsl"
-
 #ifdef OVERWORLD
 #ifdef PERBIOME_LIGHTSHAFTS
 #include "/lib/prismarine/biomeColor.glsl"
+#endif
 #endif
 #endif
 
@@ -92,15 +89,10 @@ float GetLuminance(vec3 color) {
 //Program//
 void main() {
 	vec4 color = texture2D(colortex0, texCoord.xy);
-	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
 
 	#if ((defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES) && defined OVERWORLD) || (defined NETHER_SMOKE && defined NETHER) || (defined END && defined END_SMOKE)
 	vec3 vl = BoxBlur(colortex1, 0.025, texCoord);
 	#endif
-	
-	vec4 screenPos = vec4(texCoord.x, texCoord.y, pixeldepth0, 1.0);
-	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
-	viewPos /= viewPos.w;
 
 	#ifdef OVERWORLD
 	#ifdef VOLUMETRIC_LIGHT
@@ -141,8 +133,11 @@ void main() {
 	#endif
 
     #ifdef SSGI
+	float pixeldepth0 = texture2D(depthtex0, texCoord.xy).x;
+	vec3 screenPos = vec3(texCoord, pixeldepth0);
+
     vec3 normal = normalize(DecodeNormal(texture2D(colortex6, texCoord.xy).xy));
-    vec3 gi = computeGI(screenPos.xyz, normal, float(pixeldepth0 < 0.56));
+    vec3 gi = computeGI(screenPos, normal, float(pixeldepth0 < 0.56));
 
     /* RENDERTARGETS:0,11 */
 	gl_FragData[0] = color;

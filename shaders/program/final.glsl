@@ -116,7 +116,6 @@ void ContrastAdaptiveSharpening(out vec3 outColor){
 }
 #endif
 
-
 //Program//
 void main() {
 	#ifdef CHROMATIC_ABERRATION

@@ -23,29 +23,35 @@ uniform int worldTime;
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
 #endif
 
-uniform float blindFactor, nightVision;
+uniform float blindFactor;
+uniform float shadowFade;
+uniform float rainStrength;
+uniform float timeAngle, timeBrightness;
+uniform float eyeAltitude;
+
+
 uniform float far, near;
 uniform float frameTimeCounter;
-uniform float rainStrength;
-uniform float shadowFade;
-uniform float timeAngle, timeBrightness;
 uniform float viewWidth, viewHeight, aspectRatio;
 
 uniform ivec2 eyeBrightnessSmooth;
 
 uniform vec3 cameraPosition;
-uniform mat4 gbufferProjection, gbufferProjectionInverse;
+uniform mat4 gbufferProjection;
+
+uniform mat4 gbufferProjectionInverse;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
+uniform sampler2D depthtex0, depthtex1;
 
-uniform sampler2D colortex0, colortex1, depthtex0, depthtex1;
+uniform sampler2D colortex0, colortex1;
 
 #if defined LIGHTSHAFT_CLOUDY_NOISE || defined VOLUMETRIC_FOG || defined NETHER_SMOKE || defined END_SMOKE || defined VOLUMETRIC_CLOUDS
 uniform sampler2D noisetex;
 #endif
 
-#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT || defined FIREFLIES
+#if defined VOLUMETRIC_LIGHT && defined OVERWORLD
 uniform sampler2DShadow shadowtex0;
 uniform sampler2DShadow shadowtex1;
 uniform sampler2D shadowcolor0;
@@ -125,7 +131,7 @@ float isEyeInCave = clamp(cameraPosition.y * 0.01 + eBS, 0.0, 1.0);
 //Includes//
 #include "/lib/prismarine/timeCalculations.glsl"
 #include "/lib/color/dimensionColor.glsl"
-#include "/lib/color/skyColor.glsl"
+
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/dither.glsl"
 #include "/lib/atmospherics/waterFog.glsl"
@@ -172,16 +178,13 @@ void main() {
 	#if defined VOLUMETRIC_FOG || defined VOLUMETRIC_LIGHT
 	visibility = clamp(CalcTotalAmount(CalcDayAmount(1.0, 0.7, 1.0), 0.0) * (1.0 - rainStrength) * (isEyeInCave * isEyeInCave * isEyeInCave) + isEyeInWater, 0.0, 1.0);
 	#endif
-
 	#else
-
 	#if (defined NETHER && defined NETHER_SMOKE) || (defined END && defined END_SMOKE)
 	visibility = 1.0;
 	#endif
-
 	#endif
 
-	vec4 screenPos = vec4(texCoord.x, texCoord.y, z0, 1.0);
+	vec4 screenPos = vec4(texCoord, z0, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
 	

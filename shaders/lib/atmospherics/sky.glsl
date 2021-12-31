@@ -89,7 +89,7 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     sky = mix(nightSky, sky, sunVisibility * sunVisibility);
 
     float rainGradient = exp(-max(VoU, 0.0) / SKY_DENSITY_W);
-    weatherSky *= GetLuminance(weatherSky * 0.01) * clamp(timeBrightness, 0.1, 1.0);
+    weatherSky *= GetLuminance(weatherSky * 0.025) * clamp(timeBrightness, 0.1, 1.0);
     sky = mix(sky, weatherSky * rainGradient, rainStrength);
     #endif
 
