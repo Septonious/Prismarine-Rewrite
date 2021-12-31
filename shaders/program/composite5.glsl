@@ -14,8 +14,6 @@ https://bitslablab.com
 varying vec2 texCoord;
 
 //Uniforms//
-uniform float viewWidth, viewHeight;
-
 uniform sampler2D colortex11;
 uniform sampler2D colortex13;
 

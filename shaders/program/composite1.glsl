@@ -29,7 +29,6 @@ uniform float rainStrength;
 uniform float shadowFade;
 uniform float timeAngle, timeBrightness;
 #endif
-
 uniform vec3 cameraPosition;
 uniform float eyeAltitude;
 uniform float frameTimeCounter;
@@ -42,7 +41,7 @@ uniform mat4 gbufferProjection;
 uniform mat4 gbufferProjectionInverse;
 
 uniform sampler2D colortex6, colortex9, colortex11, colortex12;
-uniform sampler2D depthtex0;
+uniform sampler2D depthtex0, depthtex1;
 #endif
 
 uniform sampler2D colortex0;

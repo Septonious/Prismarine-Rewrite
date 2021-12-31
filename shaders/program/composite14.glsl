@@ -33,6 +33,10 @@ uniform sampler2D noisetex;
 uniform sampler2D depthtex0;
 
 #ifdef LENS_FLARE
+#if defined WEATHER_PERBIOME || FOG_COLOR_MODE == 2 || SKY_COLOR_MODE == 1 || defined PERBIOME_LIGHTSHAFTS || defined PERBIOME_CLOUDS_COLOR
+uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna, isForest, isTaiga, isJungle;
+#endif
+uniform float timeAngle, timeBrightness;
 uniform float blindFactor;
 uniform vec3 sunPosition;
 uniform mat4 gbufferProjection;
@@ -90,6 +94,8 @@ vec2 GetLightPos() {
 #endif
 
 #ifdef LENS_FLARE
+#include "/lib/prismarine/timeCalculations.glsl"
+#include "/lib/color/lightColor.glsl"
 #include "/lib/post/lensFlare.glsl"
 #endif
 
