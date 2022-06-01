@@ -135,7 +135,8 @@ void main() {
     #ifdef DO_NOT_CLICK
     color *= 0.0;
     #endif
-
+	
+	color.r *= 2.0;
 	gl_FragColor = color;
 }
 
